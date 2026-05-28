@@ -1,1194 +1,1194 @@
-!DOCTYPE html
-html lang=ru
-head
-meta charset=UTF-8
-meta name=viewport content=width=device-width, initial-scale=1.0
-titleСвитки Командного Залаtitle
-link href=httpsfonts.googleapis.comcss2family=Cinzel+Decorativewght@400;700;900&family=Cinzelwght@400;600;700&family=UnifrakturMaguntia&family=IM+Fell+Englishital@0;1&display=swap rel=stylesheet
-style
-root {
-  --gold        #c9952a;
-  --gold-bright #f0c040;
-  --gold-dim    #6a4f10;
-  --gold-glow   rgba(240,192,64,0.18);
-  --ember       #d93a08;
-  --ember2      #ff6520;
-  --dark        #080503;
-  --wood        #0e0804;
-  --wood2       #160d05;
-  --wood3       #1e1208;
-  --ash         #c8bba0;
-  --ash2        #8a7d64;
-  --ash3        #4a4030;
-  --code-bg     #050302;
-  --code-border #3a2a08;
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Свитки Командного Зала</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=UnifrakturMaguntia&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:        #c9952a;
+  --gold-bright: #f0c040;
+  --gold-dim:    #6a4f10;
+  --gold-glow:   rgba(240,192,64,0.18);
+  --ember:       #d93a08;
+  --ember2:      #ff6520;
+  --dark:        #080503;
+  --wood:        #0e0804;
+  --wood2:       #160d05;
+  --wood3:       #1e1208;
+  --ash:         #c8bba0;
+  --ash2:        #8a7d64;
+  --ash3:        #4a4030;
+  --code-bg:     #050302;
+  --code-border: #3a2a08;
 }
 
-,before,after{margin0;padding0;box-sizingborder-box}
-html{scroll-behaviorsmooth}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
 
- ══ SCROLLBAR ══ 
--webkit-scrollbar{width6px}
--webkit-scrollbar-track{backgroundvar(--dark)}
--webkit-scrollbar-thumb{backgroundvar(--gold-dim);border-radius3px}
+/* ══ SCROLLBAR ══ */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--dark)}
+::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:3px}
 
- ══ BODY ══ 
+/* ══ BODY ══ */
 body {
-  background var(--dark);
-  color var(--ash);
-  font-family'IM Fell English',Georgia,serif;
-  overflow-xhidden;
-  cursor url(dataimagesvg+xml,%3Csvg xmlns='httpwww.w3.org2000svg' width='16' height='16'%3E%3Ccircle cx='8' cy='8' r='3.5' fill='%23c9952a'%3E%3Csvg%3E) 8 8,auto;
+  background: var(--dark);
+  color: var(--ash);
+  font-family:'IM Fell English',Georgia,serif;
+  overflow-x:hidden;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Ccircle cx='8' cy='8' r='3.5' fill='%23c9952a'/%3E%3C/svg%3E") 8 8,auto;
 }
 
- Noise overlay 
-bodyafter{
-  content'';positionfixed;inset0;z-index0;pointer-eventsnone;
-  background-imageurl(dataimagesvg+xml,%3Csvg xmlns='httpwww.w3.org2000svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'%3E%3CfeColorMatrix type='saturate' values='0'%3E%3Cfilter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'%3E%3Csvg%3E);
-  opacity.5;mix-blend-modeoverlay;
+/* Noise overlay */
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:.5;mix-blend-mode:overlay;
 }
 
- ══ FIRE BG ══ 
-#fire-bg{positionfixed;inset0;z-index0;pointer-eventsnone;overflowhidden}
+/* ══ FIRE BG ══ */
+#fire-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .sp{
-  positionabsolute;bottom-20px;border-radius50%;
-  animationsp-rise linear infinite;opacity0;
+  position:absolute;bottom:-20px;border-radius:50%;
+  animation:sp-rise linear infinite;opacity:0;
 }
 @keyframes sp-rise{
-  0%{transformtranslateY(0) translateX(0);opacity.9}
-  80%{opacity.3}
-  100%{transformtranslateY(-100vh) translateX(var(--d));opacity0}
+  0%{transform:translateY(0) translateX(0);opacity:.9}
+  80%{opacity:.3}
+  100%{transform:translateY(-100vh) translateX(var(--d));opacity:0}
 }
 
- ══ SIDE RUNE STRIP ══ 
+/* ══ SIDE RUNE STRIP ══ */
 .rune-strip{
-  positionfixed;left0;top0;bottom0;width36px;z-index50;
-  backgroundlinear-gradient(180deg,#000 0%,var(--wood) 50%,#000 100%);
-  border-right1px solid var(--gold-dim);
-  displayflex;align-itemscenter;justify-contentcenter;
-  writing-modevertical-rl;
-  font-family'Cinzel Decorative',serif;font-size.55rem;
-  letter-spacing.35em;colorvar(--gold-dim);
-  text-shadow0 0 8px rgba(201,149,42,.3);
-  user-selectnone;
+  position:fixed;left:0;top:0;bottom:0;width:36px;z-index:50;
+  background:linear-gradient(180deg,#000 0%,var(--wood) 50%,#000 100%);
+  border-right:1px solid var(--gold-dim);
+  display:flex;align-items:center;justify-content:center;
+  writing-mode:vertical-rl;
+  font-family:'Cinzel Decorative',serif;font-size:.55rem;
+  letter-spacing:.35em;color:var(--gold-dim);
+  text-shadow:0 0 8px rgba(201,149,42,.3);
+  user-select:none;
 }
 .rune-strip-r{
-  right0;leftauto;
-  border-rightnone;border-left1px solid var(--gold-dim);
+  right:0;left:auto;
+  border-right:none;border-left:1px solid var(--gold-dim);
 }
 
- ══ HEADER ══ 
+/* ══ HEADER ══ */
 header{
-  positionrelative;z-index10;
-  min-height100vh;
-  displayflex;flex-directioncolumn;align-itemscenter;justify-contentcenter;
-  text-aligncenter;padding5rem 3rem;
-  background
+  position:relative;z-index:10;
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:5rem 3rem;
+  background:
     radial-gradient(ellipse 70% 50% at 50% 100%,rgba(217,58,8,.22) 0%,transparent 70%),
     radial-gradient(ellipse 50% 30% at 50% 110%,rgba(201,149,42,.1) 0%,transparent 60%),
     linear-gradient(180deg,#000 0%,var(--wood) 55%,var(--wood2) 100%);
-  border-bottom2px solid var(--gold-dim);
-  overflowhidden;
+  border-bottom:2px solid var(--gold-dim);
+  overflow:hidden;
 }
 
- animated rune watermark 
-headerbefore{
-  content'ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ ᛏ ᛒ ᛖ ᛗ ᛚ ᛜ ᛞ ᛟ';
-  positionabsolute;inset0;displayflex;align-itemscenter;justify-contentcenter;
-  font-size5rem;letter-spacing2rem;colorrgba(201,149,42,.03);
-  pointer-eventsnone;white-spacenowrap;overflowhidden;
-  animationruneScroll 40s linear infinite;
+/* animated rune watermark */
+header::before{
+  content:'ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ ᛏ ᛒ ᛖ ᛗ ᛚ ᛜ ᛞ ᛟ';
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:5rem;letter-spacing:2rem;color:rgba(201,149,42,.03);
+  pointer-events:none;white-space:nowrap;overflow:hidden;
+  animation:runeScroll 40s linear infinite;
 }
-@keyframes runeScroll{from{letter-spacing2rem}to{letter-spacing3rem}}
+@keyframes runeScroll{from{letter-spacing:2rem}to{letter-spacing:3rem}}
 
 .h-eyebrow{
-  font-family'Cinzel',serif;font-size.65rem;letter-spacing.5em;
-  colorvar(--gold-dim);text-transformuppercase;margin-bottom2.5rem;
-  animationfadeUp 1.5s ease both;
+  font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.5em;
+  color:var(--gold-dim);text-transform:uppercase;margin-bottom:2.5rem;
+  animation:fadeUp 1.5s ease both;
 }
 
- TORCHES 
-.torches{displayflex;gap5rem;margin-bottom2rem;animationfadeUp 1s ease both}
-.torch{displayflex;flex-directioncolumn;align-itemscenter}
-.flame-wrap{width24px;height54px;positionrelative}
-.fl{positionabsolute;bottom0;border-radius50% 50% 30% 30%;filterblur(1px);animationburn 1.2s ease-in-out infinite alternate}
-.fl1{width24px;height48px;left0;backgroundlinear-gradient(180deg,#ffe040 0%,var(--ember2) 45%,var(--ember) 80%,transparent 100%)}
-.fl2{width16px;height34px;left4px;bottom4px;backgroundlinear-gradient(180deg,#fff 0%,#ffee66 40%,rgba(255,200,0,.3) 100%);animation-duration.85s;animation-directionalternate-reverse}
-.fl3{width8px;height18px;left8px;bottom8px;backgroundlinear-gradient(180deg,#fff 0%,rgba(255,255,255,.2) 100%);animation-duration.6s}
+/* TORCHES */
+.torches{display:flex;gap:5rem;margin-bottom:2rem;animation:fadeUp 1s ease both}
+.torch{display:flex;flex-direction:column;align-items:center}
+.flame-wrap{width:24px;height:54px;position:relative}
+.fl{position:absolute;bottom:0;border-radius:50% 50% 30% 30%;filter:blur(1px);animation:burn 1.2s ease-in-out infinite alternate}
+.fl1{width:24px;height:48px;left:0;background:linear-gradient(180deg,#ffe040 0%,var(--ember2) 45%,var(--ember) 80%,transparent 100%)}
+.fl2{width:16px;height:34px;left:4px;bottom:4px;background:linear-gradient(180deg,#fff 0%,#ffee66 40%,rgba(255,200,0,.3) 100%);animation-duration:.85s;animation-direction:alternate-reverse}
+.fl3{width:8px;height:18px;left:8px;bottom:8px;background:linear-gradient(180deg,#fff 0%,rgba(255,255,255,.2) 100%);animation-duration:.6s}
 @keyframes burn{
-  0%{transformscaleX(1) scaleY(1) rotate(-3deg)}
-  100%{transformscaleX(.82) scaleY(1.12) rotate(4deg)}
+  0%{transform:scaleX(1) scaleY(1) rotate(-3deg)}
+  100%{transform:scaleX(.82) scaleY(1.12) rotate(4deg)}
 }
-.t-pole{width10px;height70px;backgroundlinear-gradient(90deg,#2a1400,#6a3a10,#2a1400);border-radius2px}
+.t-pole{width:10px;height:70px;background:linear-gradient(90deg,#2a1400,#6a3a10,#2a1400);border-radius:2px}
 
 .h-title{
-  font-family'Cinzel Decorative',serif;font-weight900;
-  font-sizeclamp(2.2rem,7.5vw,5.5rem);line-height1.05;
-  colorvar(--gold-bright);
-  text-shadow0 0 18px rgba(240,192,64,.7),0 0 60px rgba(217,58,8,.4),0 4px 40px #000;
-  animationflicker 8s ease-in-out infinite,fadeUp 1.2s ease both;
-  margin-bottom.8rem;
+  font-family:'Cinzel Decorative',serif;font-weight:900;
+  font-size:clamp(2.2rem,7.5vw,5.5rem);line-height:1.05;
+  color:var(--gold-bright);
+  text-shadow:0 0 18px rgba(240,192,64,.7),0 0 60px rgba(217,58,8,.4),0 4px 40px #000;
+  animation:flicker 8s ease-in-out infinite,fadeUp 1.2s ease both;
+  margin-bottom:.8rem;
 }
 @keyframes flicker{
-  0%,100%{text-shadow0 0 18px rgba(240,192,64,.7),0 0 60px rgba(217,58,8,.4),0 4px 40px #000}
-  50%{text-shadow0 0 30px rgba(240,192,64,1),0 0 90px rgba(217,58,8,.6),0 4px 40px #000}
-  73%{text-shadow0 0 8px rgba(240,192,64,.2),0 0 20px rgba(217,58,8,.1),0 4px 40px #000}
-  74%{text-shadow0 0 25px rgba(240,192,64,.8),0 0 70px rgba(217,58,8,.5),0 4px 40px #000}
+  0%,100%{text-shadow:0 0 18px rgba(240,192,64,.7),0 0 60px rgba(217,58,8,.4),0 4px 40px #000}
+  50%{text-shadow:0 0 30px rgba(240,192,64,1),0 0 90px rgba(217,58,8,.6),0 4px 40px #000}
+  73%{text-shadow:0 0 8px rgba(240,192,64,.2),0 0 20px rgba(217,58,8,.1),0 4px 40px #000}
+  74%{text-shadow:0 0 25px rgba(240,192,64,.8),0 0 70px rgba(217,58,8,.5),0 4px 40px #000}
 }
 
 .h-sub{
-  font-family'IM Fell English',serif;font-styleitalic;
-  font-sizeclamp(.9rem,2vw,1.25rem);colorvar(--ash2);
-  max-width560px;line-height1.7;letter-spacing.04em;
-  animationfadeUp 2s ease both;
+  font-family:'IM Fell English',serif;font-style:italic;
+  font-size:clamp(.9rem,2vw,1.25rem);color:var(--ash2);
+  max-width:560px;line-height:1.7;letter-spacing:.04em;
+  animation:fadeUp 2s ease both;
 }
-.orn{displayflex;align-itemscenter;gap1.5rem;margin2rem 0;animationfadeUp 1.8s ease both}
-.orn-l{flex1;max-width220px;height1px;backgroundlinear-gradient(90deg,transparent,var(--gold-dim),transparent)}
-.orn-sym{font-size1.4rem;colorvar(--gold);text-shadow0 0 14px rgba(240,192,64,.5)}
+.orn{display:flex;align-items:center;gap:1.5rem;margin:2rem 0;animation:fadeUp 1.8s ease both}
+.orn-l{flex:1;max-width:220px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent)}
+.orn-sym{font-size:1.4rem;color:var(--gold);text-shadow:0 0 14px rgba(240,192,64,.5)}
 
- ══ NAV ══ 
+/* ══ NAV ══ */
 nav{
-  positionsticky;top0;z-index200;
-  backgroundrgba(6,4,2,.96);backdrop-filterblur(12px);
-  border-bottom2px solid var(--gold-dim);
-  displayflex;justify-contentcenter;flex-wrapwrap;
-  box-shadow0 6px 40px rgba(0,0,0,.9),0 1px 0 rgba(201,149,42,.15) inset;
+  position:sticky;top:0;z-index:200;
+  background:rgba(6,4,2,.96);backdrop-filter:blur(12px);
+  border-bottom:2px solid var(--gold-dim);
+  display:flex;justify-content:center;flex-wrap:wrap;
+  box-shadow:0 6px 40px rgba(0,0,0,.9),0 1px 0 rgba(201,149,42,.15) inset;
 }
 nav a{
-  font-family'Cinzel',serif;font-size.65rem;font-weight700;
-  letter-spacing.18em;text-transformuppercase;
-  colorvar(--ash3);text-decorationnone;
-  padding1.1rem 1.6rem;
-  positionrelative;transitioncolor .25s;
+  font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ash3);text-decoration:none;
+  padding:1.1rem 1.6rem;
+  position:relative;transition:color .25s;
 }
-nav aafter{
-  content'';positionabsolute;bottom0;left50%;right50%;height2px;
-  backgroundvar(--gold-bright);box-shadow0 0 8px rgba(240,192,64,.6);
-  transitionleft .3s,right .3s;
+nav a::after{
+  content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;
+  background:var(--gold-bright);box-shadow:0 0 8px rgba(240,192,64,.6);
+  transition:left .3s,right .3s;
 }
-nav ahover{colorvar(--gold-bright)}
-nav ahoverafter{left0;right0}
+nav a:hover{color:var(--gold-bright)}
+nav a:hover::after{left:0;right:0}
 
- ══ SEARCH BAR ══ 
+/* ══ SEARCH BAR ══ */
 .search-wrapper{
-  positionrelative;z-index10;
-  padding2.5rem 2rem 0;
-  max-width900px;margin0 auto;
+  position:relative;z-index:10;
+  padding:2.5rem 2rem 0;
+  max-width:900px;margin:0 auto;
 }
 .search-box{
-  width100%;padding1rem 1.5rem 1rem 3.5rem;
-  backgroundrgba(20,12,4,.9);
-  border1px solid var(--gold-dim);
-  border-radius0;colorvar(--ash);
-  font-family'Cinzel',serif;font-size.8rem;letter-spacing.08em;
-  outlinenone;transitionborder-color .3s,box-shadow .3s;
+  width:100%;padding:1rem 1.5rem 1rem 3.5rem;
+  background:rgba(20,12,4,.9);
+  border:1px solid var(--gold-dim);
+  border-radius:0;color:var(--ash);
+  font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:.08em;
+  outline:none;transition:border-color .3s,box-shadow .3s;
 }
-.search-boxplaceholder{colorvar(--ash3);letter-spacing.15em}
-.search-boxfocus{border-colorvar(--gold);box-shadow0 0 20px rgba(201,149,42,.2),inset 0 0 10px rgba(0,0,0,.5)}
+.search-box::placeholder{color:var(--ash3);letter-spacing:.15em}
+.search-box:focus{border-color:var(--gold);box-shadow:0 0 20px rgba(201,149,42,.2),inset 0 0 10px rgba(0,0,0,.5)}
 .search-icon{
-  positionabsolute;left3rem;top50%;transformtranslateY(-50%);
-  colorvar(--gold-dim);font-size1rem;pointer-eventsnone;
-  margin-top1.25rem;
+  position:absolute;left:3rem;top:50%;transform:translateY(-50%);
+  color:var(--gold-dim);font-size:1rem;pointer-events:none;
+  margin-top:1.25rem;
 }
 
- ══ MAIN LAYOUT ══ 
+/* ══ MAIN LAYOUT ══ */
 main{
-  positionrelative;z-index2;
-  max-width1200px;margin0 auto;
-  padding0 2rem 6rem;
-  displaygrid;grid-template-columns240px 1fr;gap3rem;
-  padding-top3rem;
+  position:relative;z-index:2;
+  max-width:1200px;margin:0 auto;
+  padding:0 2rem 6rem;
+  display:grid;grid-template-columns:240px 1fr;gap:3rem;
+  padding-top:3rem;
 }
-@media(max-width860px){
-  main{grid-template-columns1fr}
-  .sidebar{displaynone}
-  .rune-strip,.rune-strip-r{displaynone}
+@media(max-width:860px){
+  main{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .rune-strip,.rune-strip-r{display:none}
 }
 
- ══ SIDEBAR ══ 
+/* ══ SIDEBAR ══ */
 .sidebar{
-  positionsticky;top80px;heightfit-content;
-  border1px solid var(--gold-dim);
-  backgroundrgba(14,8,4,.7);
-  padding0;
+  position:sticky;top:80px;height:fit-content;
+  border:1px solid var(--gold-dim);
+  background:rgba(14,8,4,.7);
+  padding:0;
 }
 .sb-title{
-  font-family'Cinzel',serif;font-size.65rem;font-weight700;
-  letter-spacing.25em;text-transformuppercase;colorvar(--gold);
-  padding.9rem 1.2rem;border-bottom1px solid var(--gold-dim);
-  backgroundrgba(201,149,42,.05);
+  font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;
+  letter-spacing:.25em;text-transform:uppercase;color:var(--gold);
+  padding:.9rem 1.2rem;border-bottom:1px solid var(--gold-dim);
+  background:rgba(201,149,42,.05);
 }
 .sb-link{
-  displayblock;padding.65rem 1.2rem;
-  font-family'Cinzel',serif;font-size.62rem;letter-spacing.1em;
-  colorvar(--ash3);text-decorationnone;text-transformuppercase;
-  border-bottom1px solid rgba(106,79,16,.3);
-  transitioncolor .2s,background .2s,padding-left .2s;
+  display:block;padding:.65rem 1.2rem;
+  font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.1em;
+  color:var(--ash3);text-decoration:none;text-transform:uppercase;
+  border-bottom:1px solid rgba(106,79,16,.3);
+  transition:color .2s,background .2s,padding-left .2s;
 }
-.sb-linkhover{colorvar(--gold-bright);backgroundrgba(201,149,42,.06);padding-left1.8rem}
-.sb-rune{opacity.4;margin-right.4em}
+.sb-link:hover{color:var(--gold-bright);background:rgba(201,149,42,.06);padding-left:1.8rem}
+.sb-rune{opacity:.4;margin-right:.4em}
 
- ══ CONTENT ══ 
+/* ══ CONTENT ══ */
 .content{}
 
- Section header 
-.sec{margin-bottom4rem}
+/* Section header */
+.sec{margin-bottom:4rem}
 .sec-head{
-  displayflex;align-itemscenter;gap1.5rem;
-  margin-bottom2rem;padding-bottom1.2rem;
-  border-bottom1px solid var(--gold-dim);
-  positionrelative;
+  display:flex;align-items:center;gap:1.5rem;
+  margin-bottom:2rem;padding-bottom:1.2rem;
+  border-bottom:1px solid var(--gold-dim);
+  position:relative;
 }
-.sec-headafter{
-  content'';positionabsolute;bottom-1px;left0;width80px;height1px;
-  backgroundvar(--gold-bright);box-shadow0 0 8px rgba(240,192,64,.5);
+.sec-head::after{
+  content:'';position:absolute;bottom:-1px;left:0;width:80px;height:1px;
+  background:var(--gold-bright);box-shadow:0 0 8px rgba(240,192,64,.5);
 }
 .sec-rune{
-  font-size2rem;colorvar(--gold);
-  text-shadow0 0 15px rgba(240,192,64,.4);
-  flex-shrink0;
+  font-size:2rem;color:var(--gold);
+  text-shadow:0 0 15px rgba(240,192,64,.4);
+  flex-shrink:0;
 }
 .sec-label{
-  font-family'Cinzel',serif;font-size.6rem;letter-spacing.3em;
-  colorvar(--gold-dim);text-transformuppercase;margin-bottom.35rem;
+  font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.3em;
+  color:var(--gold-dim);text-transform:uppercase;margin-bottom:.35rem;
 }
 .sec-title{
-  font-family'Cinzel Decorative',serif;font-weight700;
-  font-sizeclamp(1.1rem,2.5vw,1.7rem);
-  colorvar(--gold);line-height1.15;
-  text-shadow0 0 15px rgba(201,149,42,.25);
+  font-family:'Cinzel Decorative',serif;font-weight:700;
+  font-size:clamp(1.1rem,2.5vw,1.7rem);
+  color:var(--gold);line-height:1.15;
+  text-shadow:0 0 15px rgba(201,149,42,.25);
 }
 .sec-desc{
-  font-size.9rem;line-height1.8;colorvar(--ash2);
-  font-styleitalic;margin-bottom1.5rem;
+  font-size:.9rem;line-height:1.8;color:var(--ash2);
+  font-style:italic;margin-bottom:1.5rem;
 }
 
- COMMAND CARD 
+/* COMMAND CARD */
 .cmd-card{
-  positionrelative;
-  backgroundvar(--code-bg);
-  border1px solid var(--code-border);
-  border-left3px solid var(--gold-dim);
-  margin-bottom.75rem;
-  transitionborder-left-color .2s,box-shadow .2s;
-  overflowhidden;
+  position:relative;
+  background:var(--code-bg);
+  border:1px solid var(--code-border);
+  border-left:3px solid var(--gold-dim);
+  margin-bottom:.75rem;
+  transition:border-left-color .2s,box-shadow .2s;
+  overflow:hidden;
 }
-.cmd-cardbefore{
-  content'';positionabsolute;inset0;
-  backgroundlinear-gradient(90deg,rgba(201,149,42,.04) 0%,transparent 40%);
-  pointer-eventsnone;
+.cmd-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(201,149,42,.04) 0%,transparent 40%);
+  pointer-events:none;
 }
-.cmd-cardhover{
-  border-left-colorvar(--gold);
-  box-shadow0 4px 25px rgba(201,149,42,.1),-3px 0 12px rgba(201,149,42,.15);
+.cmd-card:hover{
+  border-left-color:var(--gold);
+  box-shadow:0 4px 25px rgba(201,149,42,.1),-3px 0 12px rgba(201,149,42,.15);
 }
 .cmd-header{
-  displayflex;align-itemsflex-start;gap1rem;
-  padding.9rem 1.2rem;cursorpointer;
-  user-selectnone;
+  display:flex;align-items:flex-start;gap:1rem;
+  padding:.9rem 1.2rem;cursor:pointer;
+  user-select:none;
 }
 .cmd-tag{
-  flex-shrink0;margin-top.1rem;
-  font-family'Cinzel',serif;font-size.55rem;letter-spacing.15em;
-  padding.2rem .6rem;border1px solid var(--gold-dim);
-  colorvar(--gold-dim);text-transformuppercase;white-spacenowrap;
+  flex-shrink:0;margin-top:.1rem;
+  font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.15em;
+  padding:.2rem .6rem;border:1px solid var(--gold-dim);
+  color:var(--gold-dim);text-transform:uppercase;white-space:nowrap;
 }
 .cmd-name{
-  font-family'Cinzel',serif;font-size.9rem;font-weight700;
-  colorvar(--gold-bright);letter-spacing.05em;
-  text-shadow0 0 10px rgba(240,192,64,.2);
-  flex1;
+  font-family:'Cinzel',serif;font-size:.9rem;font-weight:700;
+  color:var(--gold-bright);letter-spacing:.05em;
+  text-shadow:0 0 10px rgba(240,192,64,.2);
+  flex:1;
 }
 .cmd-short{
-  font-size.8rem;colorvar(--ash3);font-styleitalic;
-  font-family'IM Fell English',serif;
-  margin-top.25rem;
+  font-size:.8rem;color:var(--ash3);font-style:italic;
+  font-family:'IM Fell English',serif;
+  margin-top:.25rem;
 }
 .cmd-toggle{
-  flex-shrink0;colorvar(--gold-dim);font-size.7rem;
-  transitiontransform .3s;margin-top.3rem;
+  flex-shrink:0;color:var(--gold-dim);font-size:.7rem;
+  transition:transform .3s;margin-top:.3rem;
 }
-.cmd-card.open .cmd-toggle{transformrotate(180deg)}
+.cmd-card.open .cmd-toggle{transform:rotate(180deg)}
 .cmd-body{
-  displaynone;padding0 1.2rem 1rem;
-  border-top1px solid rgba(58,42,8,.6);
+  display:none;padding:0 1.2rem 1rem;
+  border-top:1px solid rgba(58,42,8,.6);
 }
-.cmd-card.open .cmd-body{displayblock}
+.cmd-card.open .cmd-body{display:block}
 
- Code block 
+/* Code block */
 .code-block{
-  background#020100;border1px solid rgba(58,42,8,.8);
-  padding.8rem 1.1rem;margin.8rem 0;
-  font-family'Courier New',monospace;font-size.78rem;line-height1.6;
-  color#a0b060;overflow-xauto;positionrelative;
+  background:#020100;border:1px solid rgba(58,42,8,.8);
+  padding:.8rem 1.1rem;margin:.8rem 0;
+  font-family:'Courier New',monospace;font-size:.78rem;line-height:1.6;
+  color:#a0b060;overflow-x:auto;position:relative;
 }
-.code-blockbefore{
-  content'⚙';positionabsolute;top.4rem;right.7rem;
-  font-size.65rem;colorvar(--gold-dim);opacity.5;
+.code-block::before{
+  content:'⚙';position:absolute;top:.4rem;right:.7rem;
+  font-size:.65rem;color:var(--gold-dim);opacity:.5;
 }
-.syn{colorvar(--gold);}
-.val{color#7dd080;}
-.cmt{colorvar(--ash3);font-styleitalic;}
-.opt{color#80b0d0;}
-.kw{color#e08040;}
+.syn{color:var(--gold);}
+.val{color:#7dd080;}
+.cmt{color:var(--ash3);font-style:italic;}
+.opt{color:#80b0d0;}
+.kw{color:#e08040;}
 
- Params table 
-.params{width100%;border-collapsecollapse;margin-top1rem;font-size.78rem}
+/* Params table */
+.params{width:100%;border-collapse:collapse;margin-top:1rem;font-size:.78rem}
 .params th{
-  font-family'Cinzel',serif;font-size.6rem;letter-spacing.2em;
-  colorvar(--gold-dim);text-transformuppercase;text-alignleft;
-  padding.5rem .8rem;border-bottom1px solid var(--code-border);backgroundrgba(201,149,42,.04);
+  font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;
+  color:var(--gold-dim);text-transform:uppercase;text-align:left;
+  padding:.5rem .8rem;border-bottom:1px solid var(--code-border);background:rgba(201,149,42,.04);
 }
 .params td{
-  padding.45rem .8rem;border-bottom1px solid rgba(30,18,8,.8);
-  vertical-aligntop;colorvar(--ash2);
+  padding:.45rem .8rem;border-bottom:1px solid rgba(30,18,8,.8);
+  vertical-align:top;color:var(--ash2);
 }
-.params trhover td{backgroundrgba(201,149,42,.03)}
-.params tdfirst-child{font-family'Courier New',monospace;font-size.72rem;color#7dd080;white-spacenowrap}
-.params tdnth-child(2){colorvar(--ash3);font-size.7rem}
+.params tr:hover td{background:rgba(201,149,42,.03)}
+.params td:first-child{font-family:'Courier New',monospace;font-size:.72rem;color:#7dd080;white-space:nowrap}
+.params td:nth-child(2){color:var(--ash3);font-size:.7rem}
 
- Note box 
+/* Note box */
 .note{
-  border-left2px solid var(--ember);padding.6rem 1rem;
-  margin.8rem 0;backgroundrgba(217,58,8,.06);
-  font-size.8rem;colorvar(--ash2);font-styleitalic;
+  border-left:2px solid var(--ember);padding:.6rem 1rem;
+  margin:.8rem 0;background:rgba(217,58,8,.06);
+  font-size:.8rem;color:var(--ash2);font-style:italic;
 }
-.note-title{font-stylenormal;colorvar(--ember2);font-family'Cinzel',serif;font-size.65rem;letter-spacing.15em;text-transformuppercase;margin-bottom.3rem}
+.note-title{font-style:normal;color:var(--ember2);font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.3rem}
 
- SELECTOR TABLE 
+/* SELECTOR TABLE */
 .sel-grid{
-  displaygrid;grid-template-columnsrepeat(auto-fit,minmax(200px,1fr));gap1px;
-  backgroundvar(--gold-dim);border1px solid var(--gold-dim);margin-top1.5rem;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;
+  background:var(--gold-dim);border:1px solid var(--gold-dim);margin-top:1.5rem;
 }
 .sel-cell{
-  backgroundvar(--code-bg);padding1.2rem;transitionbackground .2s;
+  background:var(--code-bg);padding:1.2rem;transition:background .2s;
 }
-.sel-cellhover{backgroundrgba(201,149,42,.07)}
+.sel-cell:hover{background:rgba(201,149,42,.07)}
 .sel-sym{
-  font-family'Cinzel Decorative',serif;font-size1.4rem;
-  colorvar(--gold-bright);text-shadow0 0 12px rgba(240,192,64,.4);
-  margin-bottom.5rem;displayblock;
+  font-family:'Cinzel Decorative',serif;font-size:1.4rem;
+  color:var(--gold-bright);text-shadow:0 0 12px rgba(240,192,64,.4);
+  margin-bottom:.5rem;display:block;
 }
 .sel-name{
-  font-family'Cinzel',serif;font-size.75rem;font-weight700;
-  colorvar(--gold);letter-spacing.08em;text-transformuppercase;margin-bottom.4rem;
+  font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;
+  color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem;
 }
-.sel-desc{font-size.78rem;colorvar(--ash2);line-height1.5;font-styleitalic}
+.sel-desc{font-size:.78rem;color:var(--ash2);line-height:1.5;font-style:italic}
 
- DIVIDER 
+/* DIVIDER */
 .div-gold{
-  positionrelative;text-aligncenter;margin3rem 0;
+  position:relative;text-align:center;margin:3rem 0;
 }
-.div-goldbefore{
-  content'';positionabsolute;top50%;left0;right0;height1px;
-  backgroundlinear-gradient(90deg,transparent,var(--gold-dim) 20%,var(--gold) 50%,var(--gold-dim) 80%,transparent);
+.div-gold::before{
+  content:'';position:absolute;top:50%;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold-dim) 20%,var(--gold) 50%,var(--gold-dim) 80%,transparent);
 }
 .div-gold span{
-  positionrelative;backgroundvar(--dark);padding0 1.5rem;
-  font-family'Cinzel Decorative',serif;font-size1rem;colorvar(--gold-dim);
+  position:relative;background:var(--dark);padding:0 1.5rem;
+  font-family:'Cinzel Decorative',serif;font-size:1rem;color:var(--gold-dim);
 }
 
- REVEAL 
-.reveal{opacity0;transformtranslateY(20px);transitionopacity .7s ease,transform .7s ease}
-.reveal.vis{opacity1;transformnone}
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+.reveal.vis{opacity:1;transform:none}
 
- FOOTER 
+/* FOOTER */
 footer{
-  positionrelative;z-index2;background#000;
-  border-top2px solid var(--gold-dim);
-  padding3rem 2rem;text-aligncenter;
+  position:relative;z-index:2;background:#000;
+  border-top:2px solid var(--gold-dim);
+  padding:3rem 2rem;text-align:center;
 }
 .ft-runes{
-  font-size1.2rem;colorvar(--gold-dim);letter-spacing.5em;
-  displayblock;margin-bottom1.2rem;
-  text-shadow0 0 10px rgba(201,149,42,.2);
+  font-size:1.2rem;color:var(--gold-dim);letter-spacing:.5em;
+  display:block;margin-bottom:1.2rem;
+  text-shadow:0 0 10px rgba(201,149,42,.2);
 }
-.ft-text{font-family'Cinzel',serif;font-size.6rem;letter-spacing.25em;color#2a2010;text-transformuppercase}
-
-@keyframes fadeUp{from{opacity0;transformtranslateY(18px)}to{opacity1;transformnone}}
-
- HIDDEN by search 
-.cmd-card.hidden{displaynone}
-style
-head
-body
-
-div id=fire-bgdiv
-div class=rune-stripᚠ · ᚢ · ᚦ · ᚨ · ᚱ · ᚲ · ᚷ · ᚹ · ᚺ · ᚾ · ᛁ · ᛃ · ᛇ · ᛈ · ᛉ · ᛊ · ᛏ · ᛒ · ᛖ · ᛗ · ᛚ · ᛜ · ᛞ · ᛟdiv
-div class=rune-strip rune-strip-rᛟ · ᛞ · ᛜ · ᛚ · ᛗ · ᛖ · ᛒ · ᛏ · ᛊ · ᛉ · ᛈ · ᛇ · ᛃ · ᛁ · ᚾ · ᚺ · ᚹ · ᚷ · ᚲ · ᚱ · ᚨ · ᚦ · ᚢ · ᚠdiv
-
-!-- ══════════ HEADER ══════════ --
-header
-  p class=h-eyebrowᚷᚱᛁᛗᛟᛁᚱᛖ · Свитки Командного Зала · ᚷᚱᛁᛗᛟᛁᚱᛖp
-  div class=torches
-    div class=torchdiv class=flame-wrapdiv class=fl fl1divdiv class=fl fl2divdiv class=fl fl3divdivdiv class=t-poledivdiv
-    div class=torch style=animation-delay.4sdiv class=flame-wrapdiv class=fl fl1 style=animation-delay.3sdivdiv class=fl fl2 style=animation-delay.2sdivdiv class=fl fl3 style=animation-delay.5sdivdivdiv class=t-poledivdiv
-  div
-  h1 class=h-titleСвиткиbrКомандного Залаh1
-  div class=orndiv class=orn-ldivdiv class=orn-sym⚒divdiv class=orn-ldivdiv
-  p class=h-subПолный кодекс боевых заклинаний, высеченных в камне для датапакеров, администраторов и строителей мировp
-header
-
-!-- ══════════ NAV ══════════ --
-nav
-  a href=#basicsОсновныеa
-  a href=#selectorsСелекторыa
-  a href=#executeExecutea
-  a href=#scoreboardScoreboarda
-  a href=#nbtNBTDataa
-  a href=#itemsПредметыa
-  a href=#worldМирa
-  a href=#serverСерверa
-nav
-
-!-- ══════════ SEARCH ══════════ --
-div class=search-wrapper
-  span class=search-icon⚔span
-  input class=search-box id=searchBox type=text placeholder=Искать команду... (например scoreboard, kill, tp)
-div
-
-!-- ══════════ MAIN ══════════ --
-main
-
-  !-- SIDEBAR --
-  aside class=sidebar
-    div class=sb-titleОглавлениеdiv
-    a href=#basics    class=sb-linkspan class=sb-runeᚠspan Основные командыa
-    a href=#selectors class=sb-linkspan class=sb-runeᚢspan Селекторы целейa
-    a href=#execute   class=sb-linkspan class=sb-runeᚦspan executea
-    a href=#scoreboardclass=sb-linkspan class=sb-runeᚨspan scoreboarda
-    a href=#nbt       class=sb-linkspan class=sb-runeᚱspan data (NBT)a
-    a href=#items     class=sb-linkspan class=sb-runeᚲspan item + Компонентыa
-    a href=#world     class=sb-linkspan class=sb-runeᚷspan Мир и блокиa
-    a href=#entities  class=sb-linkspan class=sb-runeᚹspan Сущности и эффектыa
-    a href=#server    class=sb-linkspan class=sb-runeᚺspan Сервер  Дебагa
-    a href=#tick      class=sb-linkspan class=sb-runeᚾspan tick (Тикрейт)a
-    a href=#misc      class=sb-linkspan class=sb-runeᛁspan Прочееa
-  aside
-
-  !-- CONTENT --
-  div class=content
-
-    !-- ═══ BASICS ═══ --
-    section id=basics class=sec reveal
-      div class=sec-head
-        span class=sec-runeᚠspan
-        div
-          div class=sec-labelРаздел Idiv
-          div class=sec-titleОсновные и системные командыdiv
-        div
-      div
-      p class=sec-descФундамент любого мира — без этих заклинаний не выстоит ни одна крепость.p
-
-      div class=cmd-card data-search=help справка команды
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagСистемаspan
-          divdiv class=cmd-namehelp [команда]divdiv class=cmd-shortСписок доступных команд или справка по конкретнойdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synhelpspanbrspan class=synhelpspan span class=valscoreboardspandiv
-          p style=font-size.82rem;colorvar(--ash2);font-styleitalicВыводит список всех доступных команд. При указании имени — показывает синтаксис конкретной команды.p
-        div
-      div
-
-      div class=cmd-card data-search=reload перезагрузить датапак функции рецепты
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagСистемаspan
-          divdiv class=cmd-namereloaddivdiv class=cmd-shortПерезагрузка датапаков, функций, лут-таблиц и рецептовdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synreloadspandiv
-          div class=notediv class=note-title⚒ Для датапакеровdivГлавная команда разработчика. После каждого изменения в файлах датапака — обязательно reload. Не перезапускает сервер.div
-        div
-      div
-
-      div class=cmd-card data-search=gamemode режим survival creative adventure spectator
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagИгрокspan
-          divdiv class=cmd-namegamemode &lt;режим&gt; [игрок]divdiv class=cmd-shortСмена игрового режимаdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=syngamemodespan span class=kwsurvivalspanbrspan class=syngamemodespan span class=kwcreativespan span class=val@aspanbrspan class=syngamemodespan span class=kwspectatorspan span class=optSteveTheWarriorspandiv
-          table class=paramstrthРежимththОписаниеthtr
-            trtdsurvivaltdtdВыживание — HP, голод, инвентарьtdtr
-            trtdcreativetdtdТворческий — полёт, бесконечные ресурсыtdtr
-            trtdadventuretdtdПриключение — только взаимодействиеtdtr
-            trtdspectatortdtdНаблюдатель — летает сквозь блокиtdtr
-          table
-        div
-      div
-
-      div class=cmd-card data-search=gamerule правило keepInventory daylightCycle
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagМирspan
-          divdiv class=cmd-namegamerule &lt;правило&gt; [значение]divdiv class=cmd-shortНастройка правил мираdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=syngamerulespan span class=kwkeepInventoryspan span class=valtruespanbrspan class=syngamerulespan span class=kwdoDaylightCyclespan span class=valfalsespanbrspan class=syngamerulespan span class=kwmaxCommandChainLengthspan span class=val65536spanbrspan class=syngamerulespan span class=kwcommandModificationBlockLimitspan span class=val32768spandiv
-          table class=paramstrthПравилоththНазначениеthtr
-            trtdkeepInventorytdtdСохранять инвентарь после смертиtdtr
-            trtddoDaylightCycletdtdСмена дня и ночиtdtr
-            trtdcommandBlockOutputtdtdЛогировать вывод КБ в чатtdtr
-            trtdmaxCommandChainLengthtdtdЛимит команд за тик (датапак)tdtr
-            trtdcommandModificationBlockLimittdtdЛимит блоков для fill и clonetdtr
-          table
-        div
-      div
-
-      div class=cmd-card data-search=tp teleport телепортация координаты
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagМирspan
-          divdiv class=cmd-nametp &lt;цель&gt; &lt;x y z&gt;divdiv class=cmd-shortТелепортация сущности в точку или к другой сущностиdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=syntpspan span class=val@sspan span class=opt100 64 -200spanbrspan class=syntpspan span class=val@aspan span class=val@pspanbrspan class=synteleportspan span class=val@e[type=zombie]span span class=opt~ ~10 ~span  span class=cmt# ~ = текущая координатаspandiv
-          div class=notediv class=note-titleТильда (~) и Каретка (^)div~ — относительные координаты от исполнителя. ^ — локальные координаты (вперёдвправовверх от взгляда).div
-        div
-      div
-
-      div class=cmd-card data-search=time время день ночь set
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagМирspan
-          divdiv class=cmd-nametime &lt;setaddquery&gt; &lt;значение&gt;divdiv class=cmd-shortУправление временем сутокdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=syntime setspan span class=kwdayspan    span class=cmt# 1000 тиковspanbrspan class=syntime setspan span class=kwnoonspan   span class=cmt# 6000spanbrspan class=syntime setspan span class=kwnightspan  span class=cmt# 13000spanbrspan class=syntime setspan span class=val18000span  span class=cmt# Полночьspanbrspan class=syntime addspan span class=val6000spanbrspan class=syntime queryspan span class=kwdaytimespandiv
-        div
-      div
-
-      div class=cmd-card data-search=kill убить уничтожить сущность
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagСущностьspan
-          divdiv class=cmd-namekill [цель]divdiv class=cmd-shortМгновенное уничтожение сущностиdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synkillspan                     span class=cmt# Убить себяspanbrspan class=synkillspan span class=val@e[type=zombie]span   span class=cmt# Всех зомбиspanbrspan class=synkillspan span class=val@e[type=!player]span  span class=cmt# Всё кроме игроковspandiv
-        div
-      div
-    section
-
-    div class=div-gold revealspanᚢspandiv
-
-    !-- ═══ SELECTORS ═══ --
-    section id=selectors class=sec reveal
-      div class=sec-head
-        span class=sec-runeᚢspan
-        divdiv class=sec-labelРаздел IIdivdiv class=sec-titleСелекторы целейdivdiv
-      div
-      p class=sec-descКого ты призываешь своим заклинанием — определяют руны-селекторы.p
-
-      div class=sel-grid
-        div class=sel-cellspan class=sel-sym@pspandiv class=sel-nameБлижайший игрокdivp class=sel-descВыбирает одного ближайшего к исполнителю живого игрокаpdiv
-        div class=sel-cellspan class=sel-sym@rspandiv class=sel-nameСлучайный игрокdivp class=sel-descВыбирает случайного игрока на сервереpdiv
-        div class=sel-cellspan class=sel-sym@aspandiv class=sel-nameВсе игрокиdivp class=sel-descВсе игроки, включая мёртвых и в режиме наблюдателяpdiv
-        div class=sel-cellspan class=sel-sym@espandiv class=sel-nameВсе сущностиdivp class=sel-descВсе живые и технические сущности мобы, снаряды, маркеры, стойкиpdiv
-        div class=sel-cellspan class=sel-sym@sspandiv class=sel-nameИсполнительdivp class=sel-descТекущий контекст выполнения — тот, кто запустил командуpdiv
-      div
-
-      div style=margin-top2rem
-        div class=cmd-card data-search=селектор фильтр distance type tag team name scores limit sort
-          div class=cmd-header onclick=toggle(this)
-            span class=cmd-tagФильтрыspan
-            divdiv class=cmd-nameСпецификаторы [@...]divdiv class=cmd-shortФильтрация и ограничение выборки сущностейdivdiv
-            span class=cmd-toggle▼span
-          div
-          div class=cmd-body
-            div class=code-blockspan class=cmt# Только зомби в радиусе 10 блоковspanbrspan class=val@espan[span class=kwtypespan=zombie,span class=kwdistancespan=..10]brbrspan class=cmt# Ближайший игрок с тегом и очкамиspanbrspan class=val@aspan[span class=kwtagspan=warrior,span class=kwscoresspan={kills=5..},span class=kwlimitspan=1,span class=kwsortspan=nearest]brbrspan class=cmt# Все, кроме игроков, в прямоугольникеspanbrspan class=val@espan[span class=kwtypespan=!player,span class=kwdxspan=20,span class=kwdyspan=10,span class=kwdzspan=20]div
-            table class=params
-              trthПараметрththОписаниеthtr
-              trtddistance=..10tdtdРадиус поиска (..10 = до 10, 5..10 = от 5 до 10)tdtr
-              trtddx,dy,dztdtdОбъём зоны поиска параллелепипедомtdtr
-              trtdtype=zombietdtdТип сущности. ! инвертирует type=!playertdtr
-              trtdtag=bosstdtdНаличие строкового тега. tag=!init — отсутствиеtdtr
-              trtdteam=RedtdtdФильтр по скорборд-командеtdtr
-              trtdname=StevetdtdФильтр по имени сущностиtdtr
-              trtdscores={deaths=5..}tdtdПроверка очков скорбордаtdtr
-              trtdlevel=30..tdtdУровень опыта игрокаtdtr
-              trtdgamemode=creativetdtdИгровой режимtdtr
-              trtdlimit=1tdtdОграничение числа целейtdtr
-              trtdsort=nearesttdtdСортировка nearest, furthest, random, arbitrarytdtr
-              trtdnbt={OnGround1b}tdtdПроверка NBT-данных (медленно!)tdtr
-              trtdpredicate=nschecktdtdФайл предиката из датапакаtdtr
-            table
-          div
-        div
-      div
-    section
-
-    div class=div-gold revealspanᚦspandiv
-
-    !-- ═══ EXECUTE ═══ --
-    section id=execute class=sec reveal
-      div class=sec-head
-        span class=sec-runeᚦspan
-        divdiv class=sec-labelРаздел IIIdivdiv class=sec-titleexecute — Конструктор контекстаdivdiv
-      div
-      p class=sec-descСамое мощное заклинание зала. Строится цепочкой модификаторов — каждый меняет контекст выполнения.p
-
-      div class=cmd-card data-search=execute as at in positioned rotated контекст
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagКонтекстspan
-          divdiv class=cmd-nameМодификаторы контекстаdivdiv class=cmd-shortas, at, in, positioned, rotated, facing, anchoreddivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=cmt# Выполнить команду от имени каждого игрокаspanbrspan class=synexecute asspan span class=val@aspan span class=kwrunspan span class=optsay Я воин!spanbrbrspan class=cmt# От имени всех зомби, на их позицииspanbrspan class=synexecute asspan span class=val@e[type=zombie]span span class=synatspan span class=val@sspan span class=kwrunspan span class=optparticle flame ~ ~ ~spanbrbrspan class=cmt# Смотреть в сторону ближайшего игрокаspanbrspan class=synexecute asspan span class=val@e[tag=guard]span span class=synatspan span class=val@sspan span class=synfacing entityspan span class=val@pspan eyes span class=kwrunspan span class=opt...spandiv
-          table class=params
-            trthМодификаторththЧто меняетthtr
-            trtdas &lt;цель&gt;tdtdИсполнителя (@s). Координаты НЕ меняетtdtr
-            trtdat &lt;цель&gt;tdtdПозицию, поворот и измерение на принадлежащие целиtdtr
-            trtdin &lt;измерение&gt;tdtdПереносит контекст в другое измерение (overworldnetherend)tdtr
-            trtdpositioned &lt;x y z&gt;tdtdТолько координаты выполненияtdtr
-            trtdrotated &lt;yaw pitch&gt;tdtdТолько направление взглядаtdtr
-            trtdfacing entity @p eyestdtdПовернуть взгляд к глазамногам сущностиtdtr
-            trtdanchored eyesfeettdtdСмещает ^ ^ ^ относительно уровня глаз или ногtdtr
-          table
-        div
-      div
-
-      div class=cmd-card data-search=execute if unless block entity score data predicate условие
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagУсловияspan
-          divdiv class=cmd-nameif  unless — Ветвлениеdivdiv class=cmd-shortУсловные операторы внутри executedivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=cmt# Если под ногами камень — дать эффектspanbrspan class=synexecute asspan span class=val@aspan span class=synatspan span class=val@sspan span class=kwif blockspan ~ ~-1 ~ stone span class=kwrunspan span class=opteffect give @s speed 1 0spanbrbrspan class=cmt# Если в мире есть драконspanbrspan class=synexecutespan span class=kwif entityspan span class=val@e[type=ender_dragon]span span class=kwrunspan span class=optsay Дракон жив!spanbrbrspan class=cmt# Если очки kills = 10spanbrspan class=synexecute asspan span class=val@aspan span class=kwif scorespan span class=val@sspan kills span class=kwmatchesspan 10.. span class=kwrunspan span class=opt...spanbrbrspan class=cmt# Сложная цепочка (пример из документа)spanbrspan class=synexecute asspan span class=val@a[tag=active]span span class=synatspan span class=val@sspan span class=synanchored eyesspan span class=kwif blockspan ^ ^ ^1 air span class=kwrunspan particle flame ^ ^ ^1div
-          table class=params
-            trthУсловиеththОписаниеthtr
-            trtdif block &lt;xyz&gt; &lt;блок&gt;tdtdПроверка конкретного блока по координатамtdtr
-            trtdif blocks r1 r2 dest allmaskedtdtdСравнение двух регионов блоковtdtr
-            trtdif entity &lt;сущность&gt;tdtdСуществует ли хотя бы одна такая сущностьtdtr
-            trtdif score ... matchestdtdСравнение очков скорборда (&lt; &lt;= = &gt; &gt;= matches)tdtr
-            trtdif data &lt;blockentitystorage&gt;tdtdСуществует ли NBT-тег по путиtdtr
-            trtdif predicate &lt;id&gt;tdtdЗапуск файла-предиката из датапакаtdtr
-            trtdif dimension &lt;id&gt;tdtdКонтекст находится в указанном измеренииtdtr
-            trtdif loaded &lt;xyz&gt;tdtdПрогружен ли чанк по координатам (критично!)tdtr
-          table
-        div
-      div
-
-      div class=cmd-card data-search=execute store result success записать сохранить
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagХранениеspan
-          divdiv class=cmd-namestore resultsuccessdivdiv class=cmd-shortСохранение результата выполнения в переменную или NBTdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=cmt# Записать HP игрока в скорбордspanbrspan class=synexecute store result scorespan span class=val@sspan hp_obj span class=kwrunspan data get entity span class=val@sspan Healthbrbrspan class=cmt# Успех (1 или 0) в storagespanbrspan class=synexecute store success storagespan span class=optmy_packmainspan result span class=kwbytespan 1 span class=kwrunspan span class=opt...spandiv
-          table class=params
-            trthТипththОписаниеthtr
-            trtdresulttdtdЧисловое значение (кол-во предметов, HP, уровень сигнала)tdtr
-            trtdsuccesstdtd1 если команда выполнена, 0 если нетtdtr
-            trtdscore &lt;цель&gt; &lt;объект&gt;tdtdВ переменную скорбордаtdtr
-            trtdstorage &lt;id&gt; &lt;путь&gt; &lt;тип&gt; &lt;x&gt;tdtdВ глобальное хранилище датапакаtdtr
-            trtdentity &lt;сущность&gt; &lt;путь&gt;tdtdВ NBT сущностиtdtr
-            trtdblock &lt;xyz&gt; &lt;путь&gt;tdtdВ NBT блока (сундук, КБ)tdtr
-            trtdbossbar &lt;id&gt; valuemaxtdtdВ значение боссбараtdtr
-          table
-          div class=notediv class=note-titleТипы данныхdivbyte · short · int · long · float · doublediv
-        div
-      div
-    section
-
-    div class=div-gold revealspanᚨspandiv
-
-    !-- ═══ SCOREBOARD ═══ --
-    section id=scoreboard class=sec reveal
-      div class=sec-head
-        span class=sec-runeᚨspan
-        divdiv class=sec-labelРаздел IVdivdiv class=sec-titlescoreboard — Игровая СУБДdivdiv
-      div
-      p class=sec-descСистема переменных и очков. Хранит числа, отслеживает статистику, создаёт игровые механики.p
-
-      div class=cmd-card data-search=scoreboard objectives add remove list setdisplay задача переменная
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagObjectivesspan
-          divdiv class=cmd-namescoreboard objectivesdivdiv class=cmd-shortСоздание и управление задачами (переменными)divdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synscoreboard objectives addspan span class=valkillsspan span class=kwplayerKillCountspanbrspan class=synscoreboard objectives addspan span class=valtimerspan span class=kwdummyspan span class=optТаймерspanbrspan class=synscoreboard objectives setdisplayspan span class=kwsidebarspan span class=valkillsspanbrspan class=synscoreboard objectives listspanbrspan class=synscoreboard objectives removespan span class=valtimerspandiv
-          table class=params
-            trthКритерийththЧто отслеживаетthtr
-            trtddummytdtdИзменяется только командами (основной для датапаков)tdtr
-            trtddeathCounttdtdКоличество смертей игрокаtdtr
-            trtdplayerKillCounttdtdУбийства игроковtdtr
-            trtdcustomminecraft.leave_gametdtdВыходы из игрыtdtr
-          table
-          div class=notediv class=note-titleЯчейки отображенияdivsidebar · list · belowName · sidebar.team.reddiv
-        div
-      div
-
-      div class=cmd-card data-search=scoreboard players get set add remove reset операция математика
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagPlayersspan
-          divdiv class=cmd-namescoreboard playersdivdiv class=cmd-shortРабота с очками сущностей и математикаdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synscoreboard players setspan span class=val@sspan timer span class=opt100spanbrspan class=synscoreboard players addspan span class=val@sspan kills span class=opt1spanbrspan class=synscoreboard players removespan span class=val@aspan hp span class=opt5spanbrspan class=synscoreboard players getspan span class=val@sspan killsbrspan class=synscoreboard players resetspan span class=val@sspan timerbrbrspan class=cmt# Математика между переменнымиspanbrspan class=synscoreboard players operationspan span class=val@sspan result span class=kw+=span span class=val@sspan bonusbrspan class=synscoreboard players operationspan span class=val@sspan hp span class=kw%=span span class=val#constspan dividerbrspan class=synscoreboard players operationspan span class=val@sspan a span class=kwspan span class=val@sspan b  span class=cmt# Обменspandiv
-          div class=notediv class=note-titleОперацииdiv= · += · -= · = · = · %= ·  (макс) · &lt; (мин) ·  (обмен)div
-          div class=notediv class=note-titleФейковые никиdivИспользуй #global или #const как имена без реального игрока scoreboard players set #global timer 0div
-        div
-      div
-    section
-
-    div class=div-gold revealspanᚱspandiv
-
-    !-- ═══ NBT ═══ --
-    section id=nbt class=sec reveal
-      div class=sec-head
-        span class=sec-runeᚱspan
-        divdiv class=sec-labelРаздел Vdivdiv class=sec-titledata — Манипуляция NBTdivdiv
-      div
-      p class=sec-descПрямое чтение и запись в тайные хранилища данных — сущностей, блоков и глобального storage.p
-
-      div class=cmd-card data-search=data get merge modify remove block entity storage nbt путь
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagNBTspan
-          divdiv class=cmd-namedata getmergemodifyremovedivdiv class=cmd-shortЧитать и изменять NBT у сущностей, блоков и хранилищdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=cmt# Читать HP игрокаspanbrspan class=syndata get entityspan span class=val@sspan Healthbrbrspan class=cmt# Слить данные с сущностьюspanbrspan class=syndata merge entityspan span class=val@sspan {CustomName'span class=opt{textВоин}span'}brbrspan class=cmt# Добавить в конец массива хранилищаspanbrspan class=syndata modify storagespan span class=optmy_packmainspan cooldowns span class=kwappend valuespan span class=val100spanbrbrspan class=cmt# Скопировать из сундука в storagespanbrspan class=syndata modify storagespan span class=optmy_packmainspan chest_data span class=kwset from blockspan ~ ~ ~ Itemsbrbrspan class=cmt# Удалить тегspanbrspan class=syndata remove entityspan span class=val@sspan CustomNamediv
-          table class=params
-            trthКомандаththОписаниеthtr
-            trtddata gettdtdВывод NBT или значения тега (с множителем)tdtr
-            trtddata mergetdtdСлияние — перезаписывает совпадения, добавляет новыеtdtr
-            trtddata removetdtdУдаление тега по путиtdtr
-            trtddata modify ... settdtdПолная замена значенияtdtr
-            trtddata modify ... appendtdtdДобавить в конец спискаtdtr
-            trtddata modify ... prependtdtdДобавить в начало спискаtdtr
-            trtddata modify ... insert NtdtdВставить по индексуtdtr
-          table
-          div class=notediv class=note-title⚠ Игрокам нельзя менять NBT напрямуюdivТолько читать. data merge entity @s не работает для игрока. Используй attribute или компоненты.div
-        div
-      div
-    section
-
-    div class=div-gold revealspanᚲspandiv
-
-    !-- ═══ ITEMS ═══ --
-    section id=items class=sec reveal
-      div class=sec-head
-        span class=sec-runeᚲspan
-        divdiv class=sec-labelРаздел VIdivdiv class=sec-titleitem + Компоненты предметовdivdiv
-      div
-      p class=sec-descВ версии 1.20.5+ старые NBT-теги заменены системой компонентов в квадратных скобках.p
-
-      div class=cmd-card data-search=give предмет выдать компоненты 1.20.5
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagИнвентарьspan
-          divdiv class=cmd-namegive &lt;цель&gt; &lt;предмет[компоненты]&gt;divdiv class=cmd-shortВыдача предмета с кастомными свойствамиdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=cmt# Меч с зачарованием и кастомным именемspanbrspan class=syngivespan span class=val@sspan netherite_sword[br  span class=kwcustom_namespan='span class=opt{textКлинок Судьбы,colorgold,boldtrue}span',br  span class=kwenchantmentsspan={levels{minecraftsharpness5,minecraftlooting3}},br  span class=kwlorespan=['span class=opt{textВыкован в горниле,colorgray}span'],br  span class=kwunbreakablespan={}]brbrspan class=cmt# Кастомная едаspanbrspan class=syngivespan span class=val@sspan iron_ingot[span class=kwfoodspan={nutrition4,saturation2.5,can_always_eattrue}]div
-          table class=params
-            trthКомпонентththОписаниеthtr
-            trtdcustom_data={...}tdtdКастомные NBT-теги для датапаковtdtr
-            trtdcustom_name='...'tdtdИмя предмета в JSON-форматеtdtr
-            trtdlore=[...]tdtdОписание — массив JSON-строкtdtr
-            trtddamage=100tdtdТекущая поломка инструментаtdtr
-            trtdmax_stack_size=99tdtdМаксимальный размер стака (1–99)tdtr
-            trtdenchantment_glint_override=truetdtdПринудительный блеск зачарованияtdtr
-            trtdenchantments={levels{...}}tdtdЧары и их уровниtdtr
-            trtdattribute_modifiers=[...]tdtdКастомные атрибуты (скорость, урон)tdtr
-            trtdfood={nutrition4,...}tdtdСделать предмет съедобнымtdtr
-            trtdunbreakable={}tdtdНеломаемый инструментtdtr
-          table
-        div
-      div
-
-      div class=cmd-card data-search=item replace modify слот инвентарь
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagИнвентарьspan
-          divdiv class=cmd-nameitem replacemodifydivdiv class=cmd-shortЗамена и изменение предметов в слотахdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=cmt# Заменить предмет в основной рукеspanbrspan class=synitem replace entityspan span class=val@sspan span class=kwweapon.mainhandspan with diamond_swordbrbrspan class=cmt# Первый слот сундукаspanbrspan class=synitem replace blockspan ~ ~ ~ span class=kwcontainer.0span with apple 32brbrspan class=cmt# Применить модификатор из датапакаspanbrspan class=synitem modify entityspan span class=val@sspan span class=kwweapon.mainhandspan span class=optmy_packadd_firespandiv
-        div
-      div
-
-      div class=cmd-card data-search=enchant зачаровать чар уровень
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagЧарыspan
-          divdiv class=cmd-nameenchant &lt;цель&gt; &lt;чар&gt; [уровень]divdiv class=cmd-shortЗачаровать предмет в рукеdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synenchantspan span class=val@sspan span class=kwminecraftsharpnessspan span class=val5spanbrspan class=synenchantspan span class=val@aspan span class=kwminecraftprotectionspan span class=val4spandiv
-          div class=notediv class=note-titleОграничение выживанияdivРаботает с учётом ограничений режима выживания. Для снятия ограничений — используй give с компонентом enchantments.div
-        div
-      div
-
-      div class=cmd-card data-search=clear очистить инвентарь удалить предмет
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagИнвентарьspan
-          divdiv class=cmd-nameclear [цель] [предмет] [кол-во]divdiv class=cmd-shortОчистка инвентаряdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synclearspan                        span class=cmt# Очистить себя полностьюspanbrspan class=synclearspan span class=val@aspan                   span class=cmt# Всех игроковspanbrspan class=synclearspan span class=val@sspan span class=kwminecraftdirtspan  span class=cmt# Только землюspanbrspan class=synclearspan span class=val@sspan span class=kwminecraftdirtspan span class=val32span span class=cmt# Удалить 32 блока землиspandiv
-        div
-      div
-    section
-
-    div class=div-gold revealspanᚷspandiv
-
-    !-- ═══ WORLD ═══ --
-    section id=world class=sec reveal
-      div class=sec-head
-        span class=sec-runeᚷspan
-        divdiv class=sec-labelРаздел VIIdivdiv class=sec-titleМир и блокиdivdiv
-      div
-      p class=sec-descПереписать облик мира — setblock, fill, clone, fillbiome и структуры.p
-
-      div class=cmd-card data-search=setblock установить блок координаты destroy keep replace
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagБлокиspan
-          divdiv class=cmd-namesetblock &lt;x y z&gt; &lt;блок&gt; [режим]divdiv class=cmd-shortУстановить один блок по координатамdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synsetblockspan span class=opt100 64 -200span span class=kwminecraftstonespanbrspan class=synsetblockspan ~ ~-1 ~ span class=kwminecraftchestspan[span class=optfacing=northspan] span class=valreplacespanbrspan class=synsetblockspan ~ ~ ~ span class=kwminecraftairspan span class=valdestroyspandiv
-          table class=params
-            trthРежимththОписаниеthtr
-            trtddestroytdtdЛомает блок с частицами и дропом предметовtdtr
-            trtdkeeptdtdСтавит только если там был воздухtdtr
-            trtdreplacetdtdМолча заменяет (по умолчанию)tdtr
-          table
-        div
-      div
-
-      div class=cmd-card data-search=fill заполнить область блоки hollow outline replace
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagБлокиspan
-          divdiv class=cmd-namefill &lt;x1 y1 z1&gt; &lt;x2 y2 z2&gt; &lt;блок&gt; [режим]divdiv class=cmd-shortЗаполнение области блокамиdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synfillspan span class=opt~-5 ~-1 ~-5 ~5 ~5 ~5span span class=kwminecraftstonespanbrspan class=synfillspan span class=opt0 60 0 20 70 20span span class=kwminecraftoak_planksspan span class=valhollowspanbrspan class=synfillspan span class=opt0 64 0 100 64 100span span class=kwminecraftgrass_blockspan span class=valreplace minecraftdirtspandiv
-          table class=params
-            trthРежимththОписаниеthtr
-            trtdhollowtdtdКоробка с воздухом внутриtdtr
-            trtdoutlinetdtdКоробка, не трогает содержимоеtdtr
-            trtdkeeptdtdЗаполняет только воздухtdtr
-            trtdreplace [фильтр]tdtdЗаменяет только указанный тип блоковtdtr
-            trtddestroytdtdЛомает с дропом (медленно!)tdtr
-          table
-        div
-      div
-
-      div class=cmd-card data-search=clone копировать регион блоки move force masked filtered
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagБлокиspan
-          divdiv class=cmd-nameclone &lt;r1&gt; &lt;r2&gt; &lt;dest&gt; [режим]divdiv class=cmd-shortКопирование области блоков в другое местоdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synclonespan span class=opt0 64 0 10 74 10span  span class=opt100 64 100span  span class=valmaskedspanbrspan class=synclonespan span class=opt0 64 0 10 74 10span  span class=opt50 64 50span   span class=valfilteredspan span class=kwminecraftchestspanbrspan class=synclonespan span class=opt0 64 0 10 74 10span  span class=opt0 64 15span    span class=valreplace movespandiv
-          table class=params
-            trthРежимththОписаниеthtr
-            trtdmaskedtdtdИгнорирует воздух источникаtdtr
-            trtdfiltered &lt;блок&gt;tdtdКопирует только указанный типtdtr
-            trtdmovetdtdПереносит, удаляет на старом местеtdtr
-            trtdforcetdtdКопирование с перекрытием зонtdtr
-          table
-        div
-      div
-
-      div class=cmd-card data-search=place structure feature template spawn структура спавн nbt
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagСтруктурыspan
-          divdiv class=cmd-nameplace structurefeaturetemplatedivdiv class=cmd-shortГенерация структур и элементов мираdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=cmt# Деревняspanbrspan class=synplace structurespan span class=valminecraftvillage_snowyspan ~ ~ ~brbrspan class=cmt# Одно деревоspanbrspan class=synplace featurespan span class=valminecraftoakspan ~ ~ ~brbrspan class=cmt# Файл .nbt из датапака (полуразрушенный на 70%)spanbrspan class=synplace templatespan span class=valmy_packmy_buildingspan ~ ~ ~ span class=kwnone nonespan span class=opt0.7span span class=val12345spandiv
-          div class=notediv class=note-titleintegritydivПараметр 0.0–1.0 для place template спавн структуры сразу полуразрушенной. 1.0 = целая, 0.5 = половина блоков.div
-        div
-      div
-
-      div class=cmd-card data-search=fillbiome биом регион чанк
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagБиомыspan
-          divdiv class=cmd-namefillbiome &lt;r1&gt; &lt;r2&gt; &lt;id_биома&gt;divdiv class=cmd-shortИзменение биома в регионеdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synfillbiomespan span class=opt0 -64 0 100 320 100span span class=valminecraftdesertspandiv
-          div class=notediv class=note-title⚠ Требует перегрузки чанковdivНажми F3+A после выполнения, чтобы увидеть смену цвета травы и воды. На сервере каждый игрок должен сделать это сам.div
-        div
-      div
-    section
-
-    div class=div-gold revealspanᚹspandiv
-
-    !-- ═══ ENTITIES ═══ --
-    section id=entities class=sec reveal
-      div class=sec-head
-        span class=sec-runeᚹspan
-        divdiv class=sec-labelРаздел VIIIdivdiv class=sec-titleСущности и эффектыdivdiv
-      div
-
-      div class=cmd-card data-search=summon спавн сущность моб NBT маркер interaction block_display
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagСущностиspan
-          divdiv class=cmd-namesummon &lt;сущность&gt; [x y z] [NBT]divdiv class=cmd-shortСоздание сущностей и технических объектовdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=cmt# Обычный зомбиspanbrspan class=synsummonspan span class=valminecraftzombiespan ~ ~ ~brbrspan class=cmt# Технический маркер с тегамиspanbrspan class=synsummonspan span class=valminecraftmarkerspan ~ ~ ~ {Tags[span class=optraycast_pointspan,span class=optinitspan]}brbrspan class=cmt# Дисплей блокаspanbrspan class=synsummonspan span class=valminecraftblock_displayspan ~ ~ ~ {block_state{Namespan class=kwminecraftdiamond_blockspan}}div
-          table class=params
-            trthТехническая сущностьththНазначениеthtr
-            trtdminecraftmarkertdtdНевидимая точка, не лагает. Для хранения координат и теговtdtr
-            trtdminecraftinteractiontdtdНевидимый хитбокс — считывает клики и атаки игроковtdtr
-            trtdminecraftblock_displaytdtdРендеринг блоков любого размера без модовtdtr
-            trtdminecraftitem_displaytdtdРендеринг предметов под любым угломtdtr
-          table
-        div
-      div
-
-      div class=cmd-card data-search=effect эффект зелье give clear частицы
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagЭффектыspan
-          divdiv class=cmd-nameeffect giveclear &lt;цель&gt; &lt;эффект&gt;divdiv class=cmd-shortВыдача и снятие эффектов зелийdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=syneffect givespan span class=val@sspan span class=kwminecraftspeedspan span class=opt60span span class=opt2span span class=valtruespanbrspan class=cmt#                           длит.(сек) уровень скрыть_частицыspanbrspan class=syneffect givespan span class=val@aspan span class=kwminecraftregenerationspan span class=opt20span span class=opt0spanbrspan class=syneffect clearspan span class=val@sspan                    span class=cmt# Снять всёspanbrspan class=syneffect clearspan span class=val@sspan span class=kwminecraftpoisonspan   span class=cmt# Только ядspandiv
-        div
-      div
-
-      div class=cmd-card data-search=attribute атрибут здоровье скорость урон масштаб гравитация прыжок
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagАтрибутыspan
-          divdiv class=cmd-nameattribute &lt;цель&gt; &lt;атрибут&gt; &lt;getbasemodifier&gt;divdiv class=cmd-shortИзменение базовых параметров сущностейdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synattributespan span class=val@sspan span class=kwgeneric.max_healthspan base set span class=val40spanbrspan class=synattributespan span class=val@sspan span class=kwgeneric.movement_speedspan base set span class=val0.15spanbrspan class=synattributespan span class=val@sspan span class=kwgeneric.scalespan base set span class=val2.0span  span class=cmt# 1.20.5+spanbrspan class=synattributespan span class=val@sspan span class=kwgeneric.gravityspan base set span class=val0.04spandiv
-          table class=params
-            trthАтрибутththОписаниеthtr
-            trtdgeneric.max_healthtdtdМаксимальное здоровьеtdtr
-            trtdgeneric.movement_speedtdtdСкорость ходьбы (0.1 = норма)tdtr
-            trtdgeneric.attack_damagetdtdБазовый уронtdtr
-            trtdgeneric.scaletdtdФизический масштаб (0.0625–16.0), 1.20.5+tdtr
-            trtdgeneric.step_heighttdtdВысота блока без прыжкаtdtr
-            trtdgeneric.gravitytdtdСила гравитацииtdtr
-            trtdgeneric.jump_strengthtdtdСила прыжкаtdtr
-          table
-        div
-      div
-
-      div class=cmd-card data-search=xp опыт уровни points add set query
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagИгрокspan
-          divdiv class=cmd-namexp &lt;addsetquery&gt; &lt;цель&gt; &lt;кол-во&gt; [pointslevels]divdiv class=cmd-shortУправление опытом игрокаdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synxp addspan span class=val@sspan span class=opt100span span class=kwpointsspanbrspan class=synxp addspan span class=val@sspan span class=opt5span span class=kwlevelsspanbrspan class=synxp setspan span class=val@sspan span class=opt0span span class=kwlevelsspanbrspan class=synxp queryspan span class=val@sspan span class=kwlevelsspandiv
-        div
-      div
-    section
-
-    div class=div-gold revealspanᚺspandiv
-
-    !-- ═══ SERVER ═══ --
-    section id=server class=sec reveal
-      div class=sec-head
-        span class=sec-runeᚺspan
-        divdiv class=sec-labelРаздел IXdivdiv class=sec-titleАдминистрирование сервераdivdiv
-      div
-
-      div class=cmd-card data-search=op deop kick ban whitelist list stop save admin
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagСерверspan
-          divdiv class=cmd-nameКоманды администратораdivdiv class=cmd-shortop, kick, ban, whitelist, stop, savedivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synopspan span class=valStevespan          span class=cmt# Выдать права оператораspanbrspan class=syndeopspan span class=valStevespan        span class=cmt# Забрать праваspanbrspan class=synkickspan span class=valStevespan span class=optНарушениеspanbrspan class=synbanspan span class=valStevespan span class=optПричинаspan  span class=cmt# Бан по никуspanbrspan class=synban-ipspan span class=valStevespan      span class=cmt# Бан по IPspanbrspan class=synpardonspan span class=valStevespan      span class=cmt# Разбанspanbrspan class=synwhitelist addspan span class=valStevespanbrspan class=synwhitelist onspanbrspan class=synlistspan               span class=cmt# Кто онлайнspanbrspan class=synstopspan              span class=cmt# Безопасная остановкаspanbrspan class=synsave-all flushspan   span class=cmt# Принудительное сохранениеspandiv
-        div
-      div
-
-      div class=cmd-card data-search=perf debug профилировщик лаги TPS производительность
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagДебагspan
-          divdiv class=cmd-nameperf &lt;startstop&gt; и debugdivdiv class=cmd-shortПрофилирование производительности сервераdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synperf startspan     span class=cmt# Запустить 10-20 сек мониторингspanbrspan class=synperf stopspan      span class=cmt# Отчёт в debugprofilerspanbrspan class=syndebug reportspan   span class=cmt# Снимок состояния системыspandiv
-          div class=notediv class=note-titleКогда использоватьdivperf незаменим при падении TPS. Запусти на 15 секунд нагрузки, остановить — и читай отчёт он покажет, какие функции датапака или мобы пожирают тики.div
-        div
-      div
-    section
-
-    div class=div-gold revealspanᚾspandiv
-
-    !-- ═══ TICK ═══ --
-    section id=tick class=sec reveal
-      div class=sec-head
-        span class=sec-runeᚾspan
-        divdiv class=sec-labelРаздел Xdivdiv class=sec-titletick — Управление тикрейтомdivdiv
-      div
-      p class=sec-descКонтроль над самим временем мира — заморозить, ускорить, прокрутить покадрово.p
-
-      div class=cmd-card data-search=tick rate freeze unfreeze step sprint TPS тикрейт время мир
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagДвижокspan
-          divdiv class=cmd-nametick queryratefreezestepsprintdivdiv class=cmd-shortПолный контроль скорости игрового времениdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=syntick queryspan         span class=cmt# Текущий MSPT и TPSspanbrspan class=syntick ratespan span class=val20span       span class=cmt# Норма (20 тиковсек)spanbrspan class=syntick ratespan span class=val5span        span class=cmt# Замедление в 4 разаspanbrspan class=syntick ratespan span class=val500span      span class=cmt# Ускорение для теста фермspanbrspan class=syntick freezespan        span class=cmt# Заморозить мирspanbrspan class=syntick stepspan span class=val1span        span class=cmt# Прокрутить 1 тик (при freeze)spanbrspan class=syntick stepspan span class=val100span      span class=cmt# 100 тиков вперёдspanbrspan class=syntick unfreezespan      span class=cmt# Снять паузуspanbrspan class=syntick sprintspan span class=val72000span  span class=cmt# Прокрутить час игрового времениspandiv
-          div class=notediv class=note-title⚒ Для датапакеровdivtick freeze + tick step 1 = покадровый дебаг. Можно остановить мир, проверить состояние всех NBT и очков, и проверить следующий тик изолированно.div
-        div
-      div
-    section
-
-    div class=div-gold revealspanᛁspandiv
-
-    !-- ═══ MISC ═══ --
-    section id=misc class=sec reveal
-      div class=sec-head
-        span class=sec-runeᛁspan
-        divdiv class=sec-labelРаздел XIdivdiv class=sec-titleПрочие командыdivdiv
-      div
-
-      div class=cmd-card data-search=function функция mcfunction датапак запуск макрос
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagДатапакspan
-          divdiv class=cmd-namefunction &lt;имя&gt; и returndivdiv class=cmd-shortЗапуск файлов функций и возврат значенияdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synfunctionspan span class=optmy_packinitspanbrspan class=synfunctionspan span class=optmy_packbossphase_2spanbrbrspan class=cmt# Макрос (1.20.2+) — передача аргументовspanbrspan class=synfunctionspan span class=optmy_packset_hpspan {value span class=val20span}brspan class=cmt# В файле функции attribute @s generic.max_health base set $(value)spanbrbrspan class=cmt# Возврат значения из функцииspanbrspan class=synreturnspan span class=val1spandiv
-        div
-      div
-
-      div class=cmd-card data-search=tag тег сущность add remove list фильтр
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagДатапакspan
-          divdiv class=cmd-nametag &lt;цель&gt; &lt;addremovelist&gt; &lt;имя&gt;divdiv class=cmd-shortСтроковые метки на сущностях для фильтрацииdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=syntagspan span class=val@sspan span class=kwaddspan span class=optwarriorspanbrspan class=syntagspan span class=val@e[type=zombie]span span class=kwaddspan span class=optcustom_bossspanbrspan class=syntagspan span class=val@sspan span class=kwremovespan span class=optinitspanbrspan class=cmt# Использование @e[tag=custom_boss,limit=1]spandiv
-        div
-      div
-
-      div class=cmd-card data-search=bossbar босс бар полоска создать remove set
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagUIspan
-          divdiv class=cmd-namebossbardivdiv class=cmd-shortСоздание и управление полосками боссовdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synbossbar addspan span class=optmy_packraidspan '{textНабег}'brspan class=synbossbar setspan span class=optmy_packraidspan span class=kwcolorspan redbrspan class=synbossbar setspan span class=optmy_packraidspan span class=kwstylespan notched_10brspan class=synbossbar setspan span class=optmy_packraidspan span class=kwmaxspan span class=val100spanbrspan class=synbossbar setspan span class=optmy_packraidspan span class=kwvaluespan span class=val75spanbrspan class=synbossbar setspan span class=optmy_packraidspan span class=kwplayersspan span class=val@aspandiv
-          div class=notediv class=note-titleЦветаdivpink · blue · red · green · yellow · purple · whitediv
-          div class=notediv class=note-titleСтилиdivprogress · notched_6 · notched_10 · notched_12 · notched_20div
-        div
-      div
-
-      div class=cmd-card data-search=title subtitle actionbar экран текст json
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagUIspan
-          divdiv class=cmd-nametitle &lt;цель&gt; &lt;titlesubtitleactionbar&gt;divdiv class=cmd-shortВывод текста на экран игрокаdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=syntitlespan span class=val@aspan span class=kwtitlespan '{textВЫ ПОБЕДИЛИ,colorgold,boldtrue}'brspan class=syntitlespan span class=val@aspan span class=kwsubtitlespan '{textВолна завершена,colorgray}'brspan class=syntitlespan span class=val@sspan span class=kwactionbarspan '{textКритический удар!,colorred}'brspan class=syntitlespan span class=val@aspan span class=kwtimesspan span class=opt10 40 10span  span class=cmt# fade_in stay fade_out (в тиках)spanbrspan class=syntitlespan span class=val@aspan span class=kwclearspandiv
-        div
-      div
-
-      div class=cmd-card data-search=advancement достижение ачивка grant revoke
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagИгрокspan
-          divdiv class=cmd-nameadvancement grantrevokedivdiv class=cmd-shortВыдача и отзыв достиженийdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synadvancement grantspan span class=val@sspan span class=kwonlyspan span class=optmy_packfirst_killspanbrspan class=synadvancement grantspan span class=val@sspan span class=kweverythingspanbrspan class=synadvancement revokespan span class=val@sspan span class=kwfromspan span class=optminecraftstoryrootspandiv
-          div class=notediv class=note-titleВ датапакахdivДостижения с trigger=impossible используются как невидимые события — игрок не видит их в меню, но execute if score срабатывает.div
-        div
-      div
-
-      div class=cmd-card data-search=worldborder граница мир радиус урон
-        div class=cmd-header onclick=toggle(this)
-          span class=cmd-tagМирspan
-          divdiv class=cmd-nameworldborderdivdiv class=cmd-shortУправление границей мираdivdiv
-          span class=cmd-toggle▼span
-        div
-        div class=cmd-body
-          div class=code-blockspan class=synworldborder setspan span class=val1000span        span class=cmt# Радиус 1000 блоковspanbrspan class=synworldborder addspan span class=val-100span span class=opt60span    span class=cmt# Сужать на 100 блоков за 60 секspanbrspan class=synworldborder centerspan span class=val0 0spanbrspan class=synworldborder damage amountspan span class=val0.5spanbrspan class=synworldborder warning distancespan span class=val50spandiv
-        div
-      div
-
-    section
-
-  div!-- content --
-main
-
-footer
-  span class=ft-runesᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ ᛏ ᛒ ᛖ ᛗ ᛚ ᛜ ᛞ ᛟspan
-  div class=ft-textСвитки Командного Зала · Minecraft Java Edition · Версии 1.20+div
-footer
-
-script
- ── FIRE SPARKS ──
+.ft-text{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.25em;color:#2a2010;text-transform:uppercase}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+/* HIDDEN by search */
+.cmd-card.hidden{display:none}
+</style>
+</head>
+<body>
+
+<div id="fire-bg"></div>
+<div class="rune-strip">ᚠ · ᚢ · ᚦ · ᚨ · ᚱ · ᚲ · ᚷ · ᚹ · ᚺ · ᚾ · ᛁ · ᛃ · ᛇ · ᛈ · ᛉ · ᛊ · ᛏ · ᛒ · ᛖ · ᛗ · ᛚ · ᛜ · ᛞ · ᛟ</div>
+<div class="rune-strip rune-strip-r">ᛟ · ᛞ · ᛜ · ᛚ · ᛗ · ᛖ · ᛒ · ᛏ · ᛊ · ᛉ · ᛈ · ᛇ · ᛃ · ᛁ · ᚾ · ᚺ · ᚹ · ᚷ · ᚲ · ᚱ · ᚨ · ᚦ · ᚢ · ᚠ</div>
+
+<!-- ══════════ HEADER ══════════ -->
+<header>
+  <p class="h-eyebrow">ᚷᚱᛁᛗᛟᛁᚱᛖ · Свитки Командного Зала · ᚷᚱᛁᛗᛟᛁᚱᛖ</p>
+  <div class="torches">
+    <div class="torch"><div class="flame-wrap"><div class="fl fl1"></div><div class="fl fl2"></div><div class="fl fl3"></div></div><div class="t-pole"></div></div>
+    <div class="torch" style="animation-delay:.4s"><div class="flame-wrap"><div class="fl fl1" style="animation-delay:.3s"></div><div class="fl fl2" style="animation-delay:.2s"></div><div class="fl fl3" style="animation-delay:.5s"></div></div><div class="t-pole"></div></div>
+  </div>
+  <h1 class="h-title">Свитки<br>Командного Зала</h1>
+  <div class="orn"><div class="orn-l"></div><div class="orn-sym">⚒</div><div class="orn-l"></div></div>
+  <p class="h-sub">Полный кодекс боевых заклинаний, высеченных в камне для датапакеров, администраторов и строителей миров</p>
+</header>
+
+<!-- ══════════ NAV ══════════ -->
+<nav>
+  <a href="#basics">Основные</a>
+  <a href="#selectors">Селекторы</a>
+  <a href="#execute">Execute</a>
+  <a href="#scoreboard">Scoreboard</a>
+  <a href="#nbt">NBT/Data</a>
+  <a href="#items">Предметы</a>
+  <a href="#world">Мир</a>
+  <a href="#server">Сервер</a>
+</nav>
+
+<!-- ══════════ SEARCH ══════════ -->
+<div class="search-wrapper">
+  <span class="search-icon">⚔</span>
+  <input class="search-box" id="searchBox" type="text" placeholder="Искать команду... (например: scoreboard, kill, tp)">
+</div>
+
+<!-- ══════════ MAIN ══════════ -->
+<main>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-title">Оглавление</div>
+    <a href="#basics"    class="sb-link"><span class="sb-rune">ᚠ</span> Основные команды</a>
+    <a href="#selectors" class="sb-link"><span class="sb-rune">ᚢ</span> Селекторы целей</a>
+    <a href="#execute"   class="sb-link"><span class="sb-rune">ᚦ</span> /execute</a>
+    <a href="#scoreboard"class="sb-link"><span class="sb-rune">ᚨ</span> /scoreboard</a>
+    <a href="#nbt"       class="sb-link"><span class="sb-rune">ᚱ</span> /data (NBT)</a>
+    <a href="#items"     class="sb-link"><span class="sb-rune">ᚲ</span> /item + Компоненты</a>
+    <a href="#world"     class="sb-link"><span class="sb-rune">ᚷ</span> Мир и блоки</a>
+    <a href="#entities"  class="sb-link"><span class="sb-rune">ᚹ</span> Сущности и эффекты</a>
+    <a href="#server"    class="sb-link"><span class="sb-rune">ᚺ</span> Сервер / Дебаг</a>
+    <a href="#tick"      class="sb-link"><span class="sb-rune">ᚾ</span> /tick (Тикрейт)</a>
+    <a href="#misc"      class="sb-link"><span class="sb-rune">ᛁ</span> Прочее</a>
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ═══ BASICS ═══ -->
+    <section id="basics" class="sec reveal">
+      <div class="sec-head">
+        <span class="sec-rune">ᚠ</span>
+        <div>
+          <div class="sec-label">Раздел I</div>
+          <div class="sec-title">Основные и системные команды</div>
+        </div>
+      </div>
+      <p class="sec-desc">Фундамент любого мира — без этих заклинаний не выстоит ни одна крепость.</p>
+
+      <div class="cmd-card" data-search="help справка команды">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Система</span>
+          <div><div class="cmd-name">/help [команда]</div><div class="cmd-short">Список доступных команд или справка по конкретной</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/help</span><br><span class="syn">/help</span> <span class="val">scoreboard</span></div>
+          <p style="font-size:.82rem;color:var(--ash2);font-style:italic">Выводит список всех доступных команд. При указании имени — показывает синтаксис конкретной команды.</p>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="reload перезагрузить датапак функции рецепты">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Система</span>
+          <div><div class="cmd-name">/reload</div><div class="cmd-short">Перезагрузка датапаков, функций, лут-таблиц и рецептов</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/reload</span></div>
+          <div class="note"><div class="note-title">⚒ Для датапакеров</div>Главная команда разработчика. После каждого изменения в файлах датапака — обязательно /reload. Не перезапускает сервер.</div>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="gamemode режим survival creative adventure spectator">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Игрок</span>
+          <div><div class="cmd-name">/gamemode &lt;режим&gt; [игрок]</div><div class="cmd-short">Смена игрового режима</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/gamemode</span> <span class="kw">survival</span><br><span class="syn">/gamemode</span> <span class="kw">creative</span> <span class="val">@a</span><br><span class="syn">/gamemode</span> <span class="kw">spectator</span> <span class="opt">SteveTheWarrior</span></div>
+          <table class="params"><tr><th>Режим</th><th>Описание</th></tr>
+            <tr><td>survival</td><td>Выживание — HP, голод, инвентарь</td></tr>
+            <tr><td>creative</td><td>Творческий — полёт, бесконечные ресурсы</td></tr>
+            <tr><td>adventure</td><td>Приключение — только взаимодействие</td></tr>
+            <tr><td>spectator</td><td>Наблюдатель — летает сквозь блоки</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="gamerule правило keepInventory daylightCycle">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Мир</span>
+          <div><div class="cmd-name">/gamerule &lt;правило&gt; [значение]</div><div class="cmd-short">Настройка правил мира</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/gamerule</span> <span class="kw">keepInventory</span> <span class="val">true</span><br><span class="syn">/gamerule</span> <span class="kw">doDaylightCycle</span> <span class="val">false</span><br><span class="syn">/gamerule</span> <span class="kw">maxCommandChainLength</span> <span class="val">65536</span><br><span class="syn">/gamerule</span> <span class="kw">commandModificationBlockLimit</span> <span class="val">32768</span></div>
+          <table class="params"><tr><th>Правило</th><th>Назначение</th></tr>
+            <tr><td>keepInventory</td><td>Сохранять инвентарь после смерти</td></tr>
+            <tr><td>doDaylightCycle</td><td>Смена дня и ночи</td></tr>
+            <tr><td>commandBlockOutput</td><td>Логировать вывод КБ в чат</td></tr>
+            <tr><td>maxCommandChainLength</td><td>Лимит команд за тик (датапак)</td></tr>
+            <tr><td>commandModificationBlockLimit</td><td>Лимит блоков для /fill и /clone</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="tp teleport телепортация координаты">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Мир</span>
+          <div><div class="cmd-name">/tp &lt;цель&gt; &lt;x y z&gt;</div><div class="cmd-short">Телепортация сущности в точку или к другой сущности</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/tp</span> <span class="val">@s</span> <span class="opt">100 64 -200</span><br><span class="syn">/tp</span> <span class="val">@a</span> <span class="val">@p</span><br><span class="syn">/teleport</span> <span class="val">@e[type=zombie]</span> <span class="opt">~ ~10 ~</span>  <span class="cmt"># ~ = текущая координата</span></div>
+          <div class="note"><div class="note-title">Тильда (~) и Каретка (^)</div>~ — относительные координаты от исполнителя. ^ — локальные координаты (вперёд/вправо/вверх от взгляда).</div>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="time время день ночь set">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Мир</span>
+          <div><div class="cmd-name">/time &lt;set|add|query&gt; &lt;значение&gt;</div><div class="cmd-short">Управление временем суток</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/time set</span> <span class="kw">day</span>    <span class="cmt"># 1000 тиков</span><br><span class="syn">/time set</span> <span class="kw">noon</span>   <span class="cmt"># 6000</span><br><span class="syn">/time set</span> <span class="kw">night</span>  <span class="cmt"># 13000</span><br><span class="syn">/time set</span> <span class="val">18000</span>  <span class="cmt"># Полночь</span><br><span class="syn">/time add</span> <span class="val">6000</span><br><span class="syn">/time query</span> <span class="kw">daytime</span></div>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="kill убить уничтожить сущность">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Сущность</span>
+          <div><div class="cmd-name">/kill [цель]</div><div class="cmd-short">Мгновенное уничтожение сущности</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/kill</span>                     <span class="cmt"># Убить себя</span><br><span class="syn">/kill</span> <span class="val">@e[type=zombie]</span>   <span class="cmt"># Всех зомби</span><br><span class="syn">/kill</span> <span class="val">@e[type=!player]</span>  <span class="cmt"># Всё кроме игроков</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div-gold reveal"><span>ᚢ</span></div>
+
+    <!-- ═══ SELECTORS ═══ -->
+    <section id="selectors" class="sec reveal">
+      <div class="sec-head">
+        <span class="sec-rune">ᚢ</span>
+        <div><div class="sec-label">Раздел II</div><div class="sec-title">Селекторы целей</div></div>
+      </div>
+      <p class="sec-desc">Кого ты призываешь своим заклинанием — определяют руны-селекторы.</p>
+
+      <div class="sel-grid">
+        <div class="sel-cell"><span class="sel-sym">@p</span><div class="sel-name">Ближайший игрок</div><p class="sel-desc">Выбирает одного ближайшего к исполнителю живого игрока</p></div>
+        <div class="sel-cell"><span class="sel-sym">@r</span><div class="sel-name">Случайный игрок</div><p class="sel-desc">Выбирает случайного игрока на сервере</p></div>
+        <div class="sel-cell"><span class="sel-sym">@a</span><div class="sel-name">Все игроки</div><p class="sel-desc">Все игроки, включая мёртвых и в режиме наблюдателя</p></div>
+        <div class="sel-cell"><span class="sel-sym">@e</span><div class="sel-name">Все сущности</div><p class="sel-desc">Все живые и технические сущности: мобы, снаряды, маркеры, стойки</p></div>
+        <div class="sel-cell"><span class="sel-sym">@s</span><div class="sel-name">Исполнитель</div><p class="sel-desc">Текущий контекст выполнения — тот, кто запустил команду</p></div>
+      </div>
+
+      <div style="margin-top:2rem">
+        <div class="cmd-card" data-search="селектор фильтр distance type tag team name scores limit sort">
+          <div class="cmd-header" onclick="toggle(this)">
+            <span class="cmd-tag">Фильтры</span>
+            <div><div class="cmd-name">Спецификаторы [@...]</div><div class="cmd-short">Фильтрация и ограничение выборки сущностей</div></div>
+            <span class="cmd-toggle">▼</span>
+          </div>
+          <div class="cmd-body">
+            <div class="code-block"><span class="cmt"># Только зомби в радиусе 10 блоков</span><br><span class="val">@e</span>[<span class="kw">type</span>=zombie,<span class="kw">distance</span>=..10]<br><br><span class="cmt"># Ближайший игрок с тегом и очками</span><br><span class="val">@a</span>[<span class="kw">tag</span>=warrior,<span class="kw">scores</span>={kills=5..},<span class="kw">limit</span>=1,<span class="kw">sort</span>=nearest]<br><br><span class="cmt"># Все, кроме игроков, в прямоугольнике</span><br><span class="val">@e</span>[<span class="kw">type</span>=!player,<span class="kw">dx</span>=20,<span class="kw">dy</span>=10,<span class="kw">dz</span>=20]</div>
+            <table class="params">
+              <tr><th>Параметр</th><th>Описание</th></tr>
+              <tr><td>distance=..10</td><td>Радиус поиска (..10 = до 10, 5..10 = от 5 до 10)</td></tr>
+              <tr><td>dx,dy,dz</td><td>Объём зоны поиска параллелепипедом</td></tr>
+              <tr><td>type=zombie</td><td>Тип сущности. ! инвертирует: type=!player</td></tr>
+              <tr><td>tag=boss</td><td>Наличие строкового тега. tag=!init — отсутствие</td></tr>
+              <tr><td>team=Red</td><td>Фильтр по скорборд-команде</td></tr>
+              <tr><td>name="Steve"</td><td>Фильтр по имени сущности</td></tr>
+              <tr><td>scores={deaths=5..}</td><td>Проверка очков скорборда</td></tr>
+              <tr><td>level=30..</td><td>Уровень опыта игрока</td></tr>
+              <tr><td>gamemode=creative</td><td>Игровой режим</td></tr>
+              <tr><td>limit=1</td><td>Ограничение числа целей</td></tr>
+              <tr><td>sort=nearest</td><td>Сортировка: nearest, furthest, random, arbitrary</td></tr>
+              <tr><td>nbt={OnGround:1b}</td><td>Проверка NBT-данных (медленно!)</td></tr>
+              <tr><td>predicate=ns:check</td><td>Файл предиката из датапака</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div-gold reveal"><span>ᚦ</span></div>
+
+    <!-- ═══ EXECUTE ═══ -->
+    <section id="execute" class="sec reveal">
+      <div class="sec-head">
+        <span class="sec-rune">ᚦ</span>
+        <div><div class="sec-label">Раздел III</div><div class="sec-title">/execute — Конструктор контекста</div></div>
+      </div>
+      <p class="sec-desc">Самое мощное заклинание зала. Строится цепочкой модификаторов — каждый меняет контекст выполнения.</p>
+
+      <div class="cmd-card" data-search="execute as at in positioned rotated контекст">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Контекст</span>
+          <div><div class="cmd-name">Модификаторы контекста</div><div class="cmd-short">as, at, in, positioned, rotated, facing, anchored</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="cmt"># Выполнить команду от имени каждого игрока</span><br><span class="syn">/execute as</span> <span class="val">@a</span> <span class="kw">run</span> <span class="opt">say Я воин!</span><br><br><span class="cmt"># От имени всех зомби, на их позиции</span><br><span class="syn">/execute as</span> <span class="val">@e[type=zombie]</span> <span class="syn">at</span> <span class="val">@s</span> <span class="kw">run</span> <span class="opt">particle flame ~ ~ ~</span><br><br><span class="cmt"># Смотреть в сторону ближайшего игрока</span><br><span class="syn">/execute as</span> <span class="val">@e[tag=guard]</span> <span class="syn">at</span> <span class="val">@s</span> <span class="syn">facing entity</span> <span class="val">@p</span> eyes <span class="kw">run</span> <span class="opt">...</span></div>
+          <table class="params">
+            <tr><th>Модификатор</th><th>Что меняет</th></tr>
+            <tr><td>as &lt;цель&gt;</td><td>Исполнителя (@s). Координаты НЕ меняет</td></tr>
+            <tr><td>at &lt;цель&gt;</td><td>Позицию, поворот и измерение на принадлежащие цели</td></tr>
+            <tr><td>in &lt;измерение&gt;</td><td>Переносит контекст в другое измерение (overworld/nether/end)</td></tr>
+            <tr><td>positioned &lt;x y z&gt;</td><td>Только координаты выполнения</td></tr>
+            <tr><td>rotated &lt;yaw pitch&gt;</td><td>Только направление взгляда</td></tr>
+            <tr><td>facing entity @p eyes</td><td>Повернуть взгляд к глазам/ногам сущности</td></tr>
+            <tr><td>anchored eyes|feet</td><td>Смещает ^ ^ ^ относительно уровня глаз или ног</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="execute if unless block entity score data predicate условие">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Условия</span>
+          <div><div class="cmd-name">if / unless — Ветвление</div><div class="cmd-short">Условные операторы внутри /execute</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="cmt"># Если под ногами камень — дать эффект</span><br><span class="syn">/execute as</span> <span class="val">@a</span> <span class="syn">at</span> <span class="val">@s</span> <span class="kw">if block</span> ~ ~-1 ~ stone <span class="kw">run</span> <span class="opt">effect give @s speed 1 0</span><br><br><span class="cmt"># Если в мире есть дракон</span><br><span class="syn">/execute</span> <span class="kw">if entity</span> <span class="val">@e[type=ender_dragon]</span> <span class="kw">run</span> <span class="opt">say Дракон жив!</span><br><br><span class="cmt"># Если очки kills >= 10</span><br><span class="syn">/execute as</span> <span class="val">@a</span> <span class="kw">if score</span> <span class="val">@s</span> kills <span class="kw">matches</span> 10.. <span class="kw">run</span> <span class="opt">...</span><br><br><span class="cmt"># Сложная цепочка (пример из документа)</span><br><span class="syn">/execute as</span> <span class="val">@a[tag=active]</span> <span class="syn">at</span> <span class="val">@s</span> <span class="syn">anchored eyes</span> <span class="kw">if block</span> ^ ^ ^1 air <span class="kw">run</span> particle flame ^ ^ ^1</div>
+          <table class="params">
+            <tr><th>Условие</th><th>Описание</th></tr>
+            <tr><td>if block &lt;xyz&gt; &lt;блок&gt;</td><td>Проверка конкретного блока по координатам</td></tr>
+            <tr><td>if blocks r1 r2 dest all|masked</td><td>Сравнение двух регионов блоков</td></tr>
+            <tr><td>if entity &lt;сущность&gt;</td><td>Существует ли хотя бы одна такая сущность</td></tr>
+            <tr><td>if score ... matches</td><td>Сравнение очков скорборда (&lt; &lt;= = &gt; &gt;= matches)</td></tr>
+            <tr><td>if data &lt;block|entity|storage&gt;</td><td>Существует ли NBT-тег по пути</td></tr>
+            <tr><td>if predicate &lt;id&gt;</td><td>Запуск файла-предиката из датапака</td></tr>
+            <tr><td>if dimension &lt;id&gt;</td><td>Контекст находится в указанном измерении?</td></tr>
+            <tr><td>if loaded &lt;xyz&gt;</td><td>Прогружен ли чанк по координатам (критично!)</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="execute store result success записать сохранить">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Хранение</span>
+          <div><div class="cmd-name">store result|success</div><div class="cmd-short">Сохранение результата выполнения в переменную или NBT</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="cmt"># Записать HP игрока в скорборд</span><br><span class="syn">/execute store result score</span> <span class="val">@s</span> hp_obj <span class="kw">run</span> data get entity <span class="val">@s</span> Health<br><br><span class="cmt"># Успех (1 или 0) в storage</span><br><span class="syn">/execute store success storage</span> <span class="opt">my_pack:main</span> result <span class="kw">byte</span> 1 <span class="kw">run</span> <span class="opt">...</span></div>
+          <table class="params">
+            <tr><th>Тип</th><th>Описание</th></tr>
+            <tr><td>result</td><td>Числовое значение (кол-во предметов, HP, уровень сигнала)</td></tr>
+            <tr><td>success</td><td>1 если команда выполнена, 0 если нет</td></tr>
+            <tr><td>score &lt;цель&gt; &lt;объект&gt;</td><td>В переменную скорборда</td></tr>
+            <tr><td>storage &lt;id&gt; &lt;путь&gt; &lt;тип&gt; &lt;x&gt;</td><td>В глобальное хранилище датапака</td></tr>
+            <tr><td>entity &lt;сущность&gt; &lt;путь&gt;</td><td>В NBT сущности</td></tr>
+            <tr><td>block &lt;xyz&gt; &lt;путь&gt;</td><td>В NBT блока (сундук, КБ)</td></tr>
+            <tr><td>bossbar &lt;id&gt; value|max</td><td>В значение боссбара</td></tr>
+          </table>
+          <div class="note"><div class="note-title">Типы данных</div>byte · short · int · long · float · double</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div-gold reveal"><span>ᚨ</span></div>
+
+    <!-- ═══ SCOREBOARD ═══ -->
+    <section id="scoreboard" class="sec reveal">
+      <div class="sec-head">
+        <span class="sec-rune">ᚨ</span>
+        <div><div class="sec-label">Раздел IV</div><div class="sec-title">/scoreboard — Игровая СУБД</div></div>
+      </div>
+      <p class="sec-desc">Система переменных и очков. Хранит числа, отслеживает статистику, создаёт игровые механики.</p>
+
+      <div class="cmd-card" data-search="scoreboard objectives add remove list setdisplay задача переменная">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Objectives</span>
+          <div><div class="cmd-name">scoreboard objectives</div><div class="cmd-short">Создание и управление задачами (переменными)</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/scoreboard objectives add</span> <span class="val">kills</span> <span class="kw">playerKillCount</span><br><span class="syn">/scoreboard objectives add</span> <span class="val">timer</span> <span class="kw">dummy</span> <span class="opt">"Таймер"</span><br><span class="syn">/scoreboard objectives setdisplay</span> <span class="kw">sidebar</span> <span class="val">kills</span><br><span class="syn">/scoreboard objectives list</span><br><span class="syn">/scoreboard objectives remove</span> <span class="val">timer</span></div>
+          <table class="params">
+            <tr><th>Критерий</th><th>Что отслеживает</th></tr>
+            <tr><td>dummy</td><td>Изменяется только командами (основной для датапаков)</td></tr>
+            <tr><td>deathCount</td><td>Количество смертей игрока</td></tr>
+            <tr><td>playerKillCount</td><td>Убийства игроков</td></tr>
+            <tr><td>custom:minecraft.leave_game</td><td>Выходы из игры</td></tr>
+          </table>
+          <div class="note"><div class="note-title">Ячейки отображения</div>sidebar · list · belowName · sidebar.team.red</div>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="scoreboard players get set add remove reset операция математика">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Players</span>
+          <div><div class="cmd-name">scoreboard players</div><div class="cmd-short">Работа с очками сущностей и математика</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/scoreboard players set</span> <span class="val">@s</span> timer <span class="opt">100</span><br><span class="syn">/scoreboard players add</span> <span class="val">@s</span> kills <span class="opt">1</span><br><span class="syn">/scoreboard players remove</span> <span class="val">@a</span> hp <span class="opt">5</span><br><span class="syn">/scoreboard players get</span> <span class="val">@s</span> kills<br><span class="syn">/scoreboard players reset</span> <span class="val">@s</span> timer<br><br><span class="cmt"># Математика между переменными</span><br><span class="syn">/scoreboard players operation</span> <span class="val">@s</span> result <span class="kw">+=</span> <span class="val">@s</span> bonus<br><span class="syn">/scoreboard players operation</span> <span class="val">@s</span> hp <span class="kw">%=</span> <span class="val">#const</span> divider<br><span class="syn">/scoreboard players operation</span> <span class="val">@s</span> a <span class="kw">><</span> <span class="val">@s</span> b  <span class="cmt"># Обмен</span></div>
+          <div class="note"><div class="note-title">Операции</div>= · += · -= · *= · /= · %= · > (макс) · &lt; (мин) · >< (обмен)</div>
+          <div class="note"><div class="note-title">Фейковые ники</div>Используй #global или #const как имена без реального игрока: scoreboard players set #global timer 0</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div-gold reveal"><span>ᚱ</span></div>
+
+    <!-- ═══ NBT ═══ -->
+    <section id="nbt" class="sec reveal">
+      <div class="sec-head">
+        <span class="sec-rune">ᚱ</span>
+        <div><div class="sec-label">Раздел V</div><div class="sec-title">/data — Манипуляция NBT</div></div>
+      </div>
+      <p class="sec-desc">Прямое чтение и запись в тайные хранилища данных — сущностей, блоков и глобального storage.</p>
+
+      <div class="cmd-card" data-search="data get merge modify remove block entity storage nbt путь">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">NBT</span>
+          <div><div class="cmd-name">/data get|merge|modify|remove</div><div class="cmd-short">Читать и изменять NBT у сущностей, блоков и хранилищ</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="cmt"># Читать HP игрока</span><br><span class="syn">/data get entity</span> <span class="val">@s</span> Health<br><br><span class="cmt"># Слить данные с сущностью</span><br><span class="syn">/data merge entity</span> <span class="val">@s</span> {CustomName:'<span class="opt">{"text":"Воин"}</span>'}<br><br><span class="cmt"># Добавить в конец массива хранилища</span><br><span class="syn">/data modify storage</span> <span class="opt">my_pack:main</span> cooldowns <span class="kw">append value</span> <span class="val">100</span><br><br><span class="cmt"># Скопировать из сундука в storage</span><br><span class="syn">/data modify storage</span> <span class="opt">my_pack:main</span> chest_data <span class="kw">set from block</span> ~ ~ ~ Items<br><br><span class="cmt"># Удалить тег</span><br><span class="syn">/data remove entity</span> <span class="val">@s</span> CustomName</div>
+          <table class="params">
+            <tr><th>Команда</th><th>Описание</th></tr>
+            <tr><td>/data get</td><td>Вывод NBT или значения тега (с множителем)</td></tr>
+            <tr><td>/data merge</td><td>Слияние — перезаписывает совпадения, добавляет новые</td></tr>
+            <tr><td>/data remove</td><td>Удаление тега по пути</td></tr>
+            <tr><td>/data modify ... set</td><td>Полная замена значения</td></tr>
+            <tr><td>/data modify ... append</td><td>Добавить в конец списка</td></tr>
+            <tr><td>/data modify ... prepend</td><td>Добавить в начало списка</td></tr>
+            <tr><td>/data modify ... insert N</td><td>Вставить по индексу</td></tr>
+          </table>
+          <div class="note"><div class="note-title">⚠ Игрокам нельзя менять NBT напрямую</div>Только читать. /data merge entity @s не работает для игрока. Используй /attribute или компоненты.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div-gold reveal"><span>ᚲ</span></div>
+
+    <!-- ═══ ITEMS ═══ -->
+    <section id="items" class="sec reveal">
+      <div class="sec-head">
+        <span class="sec-rune">ᚲ</span>
+        <div><div class="sec-label">Раздел VI</div><div class="sec-title">/item + Компоненты предметов</div></div>
+      </div>
+      <p class="sec-desc">В версии 1.20.5+ старые NBT-теги заменены системой компонентов в квадратных скобках.</p>
+
+      <div class="cmd-card" data-search="give предмет выдать компоненты 1.20.5">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Инвентарь</span>
+          <div><div class="cmd-name">/give &lt;цель&gt; &lt;предмет[компоненты]&gt;</div><div class="cmd-short">Выдача предмета с кастомными свойствами</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="cmt"># Меч с зачарованием и кастомным именем</span><br><span class="syn">/give</span> <span class="val">@s</span> netherite_sword[<br>  <span class="kw">custom_name</span>='<span class="opt">{"text":"Клинок Судьбы","color":"gold","bold":true}</span>',<br>  <span class="kw">enchantments</span>={levels:{"minecraft:sharpness":5,"minecraft:looting":3}},<br>  <span class="kw">lore</span>=['<span class="opt">{"text":"Выкован в горниле","color":"gray"}</span>'],<br>  <span class="kw">unbreakable</span>={}]<br><br><span class="cmt"># Кастомная еда</span><br><span class="syn">/give</span> <span class="val">@s</span> iron_ingot[<span class="kw">food</span>={nutrition:4,saturation:2.5,can_always_eat:true}]</div>
+          <table class="params">
+            <tr><th>Компонент</th><th>Описание</th></tr>
+            <tr><td>custom_data={...}</td><td>Кастомные NBT-теги для датапаков</td></tr>
+            <tr><td>custom_name='...'</td><td>Имя предмета в JSON-формате</td></tr>
+            <tr><td>lore=[...]</td><td>Описание — массив JSON-строк</td></tr>
+            <tr><td>damage=100</td><td>Текущая поломка инструмента</td></tr>
+            <tr><td>max_stack_size=99</td><td>Максимальный размер стака (1–99)</td></tr>
+            <tr><td>enchantment_glint_override=true</td><td>Принудительный блеск зачарования</td></tr>
+            <tr><td>enchantments={levels:{...}}</td><td>Чары и их уровни</td></tr>
+            <tr><td>attribute_modifiers=[...]</td><td>Кастомные атрибуты (скорость, урон)</td></tr>
+            <tr><td>food={nutrition:4,...}</td><td>Сделать предмет съедобным</td></tr>
+            <tr><td>unbreakable={}</td><td>Неломаемый инструмент</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="item replace modify слот инвентарь">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Инвентарь</span>
+          <div><div class="cmd-name">/item replace|modify</div><div class="cmd-short">Замена и изменение предметов в слотах</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="cmt"># Заменить предмет в основной руке</span><br><span class="syn">/item replace entity</span> <span class="val">@s</span> <span class="kw">weapon.mainhand</span> with diamond_sword<br><br><span class="cmt"># Первый слот сундука</span><br><span class="syn">/item replace block</span> ~ ~ ~ <span class="kw">container.0</span> with apple 32<br><br><span class="cmt"># Применить модификатор из датапака</span><br><span class="syn">/item modify entity</span> <span class="val">@s</span> <span class="kw">weapon.mainhand</span> <span class="opt">my_pack:add_fire</span></div>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="enchant зачаровать чар уровень">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Чары</span>
+          <div><div class="cmd-name">/enchant &lt;цель&gt; &lt;чар&gt; [уровень]</div><div class="cmd-short">Зачаровать предмет в руке</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/enchant</span> <span class="val">@s</span> <span class="kw">minecraft:sharpness</span> <span class="val">5</span><br><span class="syn">/enchant</span> <span class="val">@a</span> <span class="kw">minecraft:protection</span> <span class="val">4</span></div>
+          <div class="note"><div class="note-title">Ограничение выживания</div>Работает с учётом ограничений режима выживания. Для снятия ограничений — используй /give с компонентом enchantments.</div>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="clear очистить инвентарь удалить предмет">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Инвентарь</span>
+          <div><div class="cmd-name">/clear [цель] [предмет] [кол-во]</div><div class="cmd-short">Очистка инвентаря</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/clear</span>                        <span class="cmt"># Очистить себя полностью</span><br><span class="syn">/clear</span> <span class="val">@a</span>                   <span class="cmt"># Всех игроков</span><br><span class="syn">/clear</span> <span class="val">@s</span> <span class="kw">minecraft:dirt</span>  <span class="cmt"># Только землю</span><br><span class="syn">/clear</span> <span class="val">@s</span> <span class="kw">minecraft:dirt</span> <span class="val">32</span> <span class="cmt"># Удалить 32 блока земли</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div-gold reveal"><span>ᚷ</span></div>
+
+    <!-- ═══ WORLD ═══ -->
+    <section id="world" class="sec reveal">
+      <div class="sec-head">
+        <span class="sec-rune">ᚷ</span>
+        <div><div class="sec-label">Раздел VII</div><div class="sec-title">Мир и блоки</div></div>
+      </div>
+      <p class="sec-desc">Переписать облик мира — setblock, fill, clone, fillbiome и структуры.</p>
+
+      <div class="cmd-card" data-search="setblock установить блок координаты destroy keep replace">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Блоки</span>
+          <div><div class="cmd-name">/setblock &lt;x y z&gt; &lt;блок&gt; [режим]</div><div class="cmd-short">Установить один блок по координатам</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/setblock</span> <span class="opt">100 64 -200</span> <span class="kw">minecraft:stone</span><br><span class="syn">/setblock</span> ~ ~-1 ~ <span class="kw">minecraft:chest</span>[<span class="opt">facing=north</span>] <span class="val">replace</span><br><span class="syn">/setblock</span> ~ ~ ~ <span class="kw">minecraft:air</span> <span class="val">destroy</span></div>
+          <table class="params">
+            <tr><th>Режим</th><th>Описание</th></tr>
+            <tr><td>destroy</td><td>Ломает блок с частицами и дропом предметов</td></tr>
+            <tr><td>keep</td><td>Ставит только если там был воздух</td></tr>
+            <tr><td>replace</td><td>Молча заменяет (по умолчанию)</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="fill заполнить область блоки hollow outline replace">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Блоки</span>
+          <div><div class="cmd-name">/fill &lt;x1 y1 z1&gt; &lt;x2 y2 z2&gt; &lt;блок&gt; [режим]</div><div class="cmd-short">Заполнение области блоками</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/fill</span> <span class="opt">~-5 ~-1 ~-5 ~5 ~5 ~5</span> <span class="kw">minecraft:stone</span><br><span class="syn">/fill</span> <span class="opt">0 60 0 20 70 20</span> <span class="kw">minecraft:oak_planks</span> <span class="val">hollow</span><br><span class="syn">/fill</span> <span class="opt">0 64 0 100 64 100</span> <span class="kw">minecraft:grass_block</span> <span class="val">replace minecraft:dirt</span></div>
+          <table class="params">
+            <tr><th>Режим</th><th>Описание</th></tr>
+            <tr><td>hollow</td><td>Коробка с воздухом внутри</td></tr>
+            <tr><td>outline</td><td>Коробка, не трогает содержимое</td></tr>
+            <tr><td>keep</td><td>Заполняет только воздух</td></tr>
+            <tr><td>replace [фильтр]</td><td>Заменяет только указанный тип блоков</td></tr>
+            <tr><td>destroy</td><td>Ломает с дропом (медленно!)</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="clone копировать регион блоки move force masked filtered">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Блоки</span>
+          <div><div class="cmd-name">/clone &lt;r1&gt; &lt;r2&gt; &lt;dest&gt; [режим]</div><div class="cmd-short">Копирование области блоков в другое место</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/clone</span> <span class="opt">0 64 0 10 74 10</span>  <span class="opt">100 64 100</span>  <span class="val">masked</span><br><span class="syn">/clone</span> <span class="opt">0 64 0 10 74 10</span>  <span class="opt">50 64 50</span>   <span class="val">filtered</span> <span class="kw">minecraft:chest</span><br><span class="syn">/clone</span> <span class="opt">0 64 0 10 74 10</span>  <span class="opt">0 64 15</span>    <span class="val">replace move</span></div>
+          <table class="params">
+            <tr><th>Режим</th><th>Описание</th></tr>
+            <tr><td>masked</td><td>Игнорирует воздух источника</td></tr>
+            <tr><td>filtered &lt;блок&gt;</td><td>Копирует только указанный тип</td></tr>
+            <tr><td>move</td><td>Переносит, удаляет на старом месте</td></tr>
+            <tr><td>force</td><td>Копирование с перекрытием зон</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="place structure feature template spawn структура спавн nbt">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Структуры</span>
+          <div><div class="cmd-name">/place structure|feature|template</div><div class="cmd-short">Генерация структур и элементов мира</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="cmt"># Деревня</span><br><span class="syn">/place structure</span> <span class="val">minecraft:village_snowy</span> ~ ~ ~<br><br><span class="cmt"># Одно дерево</span><br><span class="syn">/place feature</span> <span class="val">minecraft:oak</span> ~ ~ ~<br><br><span class="cmt"># Файл .nbt из датапака (полуразрушенный на 70%)</span><br><span class="syn">/place template</span> <span class="val">my_pack:my_building</span> ~ ~ ~ <span class="kw">none none</span> <span class="opt">0.7</span> <span class="val">12345</span></div>
+          <div class="note"><div class="note-title">integrity</div>Параметр 0.0–1.0 для /place template: спавн структуры сразу полуразрушенной. 1.0 = целая, 0.5 = половина блоков.</div>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="fillbiome биом регион чанк">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Биомы</span>
+          <div><div class="cmd-name">/fillbiome &lt;r1&gt; &lt;r2&gt; &lt;id_биома&gt;</div><div class="cmd-short">Изменение биома в регионе</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/fillbiome</span> <span class="opt">0 -64 0 100 320 100</span> <span class="val">minecraft:desert</span></div>
+          <div class="note"><div class="note-title">⚠ Требует перегрузки чанков</div>Нажми F3+A после выполнения, чтобы увидеть смену цвета травы и воды. На сервере каждый игрок должен сделать это сам.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div-gold reveal"><span>ᚹ</span></div>
+
+    <!-- ═══ ENTITIES ═══ -->
+    <section id="entities" class="sec reveal">
+      <div class="sec-head">
+        <span class="sec-rune">ᚹ</span>
+        <div><div class="sec-label">Раздел VIII</div><div class="sec-title">Сущности и эффекты</div></div>
+      </div>
+
+      <div class="cmd-card" data-search="summon спавн сущность моб NBT маркер interaction block_display">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Сущности</span>
+          <div><div class="cmd-name">/summon &lt;сущность&gt; [x y z] [NBT]</div><div class="cmd-short">Создание сущностей и технических объектов</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="cmt"># Обычный зомби</span><br><span class="syn">/summon</span> <span class="val">minecraft:zombie</span> ~ ~ ~<br><br><span class="cmt"># Технический маркер с тегами</span><br><span class="syn">/summon</span> <span class="val">minecraft:marker</span> ~ ~ ~ {Tags:["<span class="opt">raycast_point</span>","<span class="opt">init</span>"]}<br><br><span class="cmt"># Дисплей блока</span><br><span class="syn">/summon</span> <span class="val">minecraft:block_display</span> ~ ~ ~ {block_state:{Name:"<span class="kw">minecraft:diamond_block</span>"}}</div>
+          <table class="params">
+            <tr><th>Техническая сущность</th><th>Назначение</th></tr>
+            <tr><td>minecraft:marker</td><td>Невидимая точка, не лагает. Для хранения координат и тегов</td></tr>
+            <tr><td>minecraft:interaction</td><td>Невидимый хитбокс — считывает клики и атаки игроков</td></tr>
+            <tr><td>minecraft:block_display</td><td>Рендеринг блоков любого размера без модов</td></tr>
+            <tr><td>minecraft:item_display</td><td>Рендеринг предметов под любым углом</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="effect эффект зелье give clear частицы">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Эффекты</span>
+          <div><div class="cmd-name">/effect give|clear &lt;цель&gt; &lt;эффект&gt;</div><div class="cmd-short">Выдача и снятие эффектов зелий</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/effect give</span> <span class="val">@s</span> <span class="kw">minecraft:speed</span> <span class="opt">60</span> <span class="opt">2</span> <span class="val">true</span><br><span class="cmt">#                           длит.(сек) уровень скрыть_частицы</span><br><span class="syn">/effect give</span> <span class="val">@a</span> <span class="kw">minecraft:regeneration</span> <span class="opt">20</span> <span class="opt">0</span><br><span class="syn">/effect clear</span> <span class="val">@s</span>                    <span class="cmt"># Снять всё</span><br><span class="syn">/effect clear</span> <span class="val">@s</span> <span class="kw">minecraft:poison</span>   <span class="cmt"># Только яд</span></div>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="attribute атрибут здоровье скорость урон масштаб гравитация прыжок">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Атрибуты</span>
+          <div><div class="cmd-name">/attribute &lt;цель&gt; &lt;атрибут&gt; &lt;get|base|modifier&gt;</div><div class="cmd-short">Изменение базовых параметров сущностей</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/attribute</span> <span class="val">@s</span> <span class="kw">generic.max_health</span> base set <span class="val">40</span><br><span class="syn">/attribute</span> <span class="val">@s</span> <span class="kw">generic.movement_speed</span> base set <span class="val">0.15</span><br><span class="syn">/attribute</span> <span class="val">@s</span> <span class="kw">generic.scale</span> base set <span class="val">2.0</span>  <span class="cmt"># 1.20.5+</span><br><span class="syn">/attribute</span> <span class="val">@s</span> <span class="kw">generic.gravity</span> base set <span class="val">0.04</span></div>
+          <table class="params">
+            <tr><th>Атрибут</th><th>Описание</th></tr>
+            <tr><td>generic.max_health</td><td>Максимальное здоровье</td></tr>
+            <tr><td>generic.movement_speed</td><td>Скорость ходьбы (0.1 = норма)</td></tr>
+            <tr><td>generic.attack_damage</td><td>Базовый урон</td></tr>
+            <tr><td>generic.scale</td><td>Физический масштаб (0.0625–16.0), 1.20.5+</td></tr>
+            <tr><td>generic.step_height</td><td>Высота блока без прыжка</td></tr>
+            <tr><td>generic.gravity</td><td>Сила гравитации</td></tr>
+            <tr><td>generic.jump_strength</td><td>Сила прыжка</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="xp опыт уровни points add set query">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Игрок</span>
+          <div><div class="cmd-name">/xp &lt;add|set|query&gt; &lt;цель&gt; &lt;кол-во&gt; [points|levels]</div><div class="cmd-short">Управление опытом игрока</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/xp add</span> <span class="val">@s</span> <span class="opt">100</span> <span class="kw">points</span><br><span class="syn">/xp add</span> <span class="val">@s</span> <span class="opt">5</span> <span class="kw">levels</span><br><span class="syn">/xp set</span> <span class="val">@s</span> <span class="opt">0</span> <span class="kw">levels</span><br><span class="syn">/xp query</span> <span class="val">@s</span> <span class="kw">levels</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div-gold reveal"><span>ᚺ</span></div>
+
+    <!-- ═══ SERVER ═══ -->
+    <section id="server" class="sec reveal">
+      <div class="sec-head">
+        <span class="sec-rune">ᚺ</span>
+        <div><div class="sec-label">Раздел IX</div><div class="sec-title">Администрирование сервера</div></div>
+      </div>
+
+      <div class="cmd-card" data-search="op deop kick ban whitelist list stop save admin">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Сервер</span>
+          <div><div class="cmd-name">Команды администратора</div><div class="cmd-short">op, kick, ban, whitelist, stop, save</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/op</span> <span class="val">Steve</span>          <span class="cmt"># Выдать права оператора</span><br><span class="syn">/deop</span> <span class="val">Steve</span>        <span class="cmt"># Забрать права</span><br><span class="syn">/kick</span> <span class="val">Steve</span> <span class="opt">Нарушение</span><br><span class="syn">/ban</span> <span class="val">Steve</span> <span class="opt">Причина</span>  <span class="cmt"># Бан по нику</span><br><span class="syn">/ban-ip</span> <span class="val">Steve</span>      <span class="cmt"># Бан по IP</span><br><span class="syn">/pardon</span> <span class="val">Steve</span>      <span class="cmt"># Разбан</span><br><span class="syn">/whitelist add</span> <span class="val">Steve</span><br><span class="syn">/whitelist on</span><br><span class="syn">/list</span>               <span class="cmt"># Кто онлайн</span><br><span class="syn">/stop</span>              <span class="cmt"># Безопасная остановка</span><br><span class="syn">/save-all flush</span>   <span class="cmt"># Принудительное сохранение</span></div>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="perf debug профилировщик лаги TPS производительность">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Дебаг</span>
+          <div><div class="cmd-name">/perf &lt;start|stop&gt; и /debug</div><div class="cmd-short">Профилирование производительности сервера</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/perf start</span>     <span class="cmt"># Запустить 10-20 сек мониторинг</span><br><span class="syn">/perf stop</span>      <span class="cmt"># Отчёт в /debug/profiler/</span><br><span class="syn">/debug report</span>   <span class="cmt"># Снимок состояния системы</span></div>
+          <div class="note"><div class="note-title">Когда использовать</div>/perf незаменим при падении TPS. Запусти на 15 секунд нагрузки, остановить — и читай отчёт: он покажет, какие функции датапака или мобы пожирают тики.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div-gold reveal"><span>ᚾ</span></div>
+
+    <!-- ═══ TICK ═══ -->
+    <section id="tick" class="sec reveal">
+      <div class="sec-head">
+        <span class="sec-rune">ᚾ</span>
+        <div><div class="sec-label">Раздел X</div><div class="sec-title">/tick — Управление тикрейтом</div></div>
+      </div>
+      <p class="sec-desc">Контроль над самим временем мира — заморозить, ускорить, прокрутить покадрово.</p>
+
+      <div class="cmd-card" data-search="tick rate freeze unfreeze step sprint TPS тикрейт время мир">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Движок</span>
+          <div><div class="cmd-name">/tick query|rate|freeze|step|sprint</div><div class="cmd-short">Полный контроль скорости игрового времени</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/tick query</span>         <span class="cmt"># Текущий MSPT и TPS</span><br><span class="syn">/tick rate</span> <span class="val">20</span>       <span class="cmt"># Норма (20 тиков/сек)</span><br><span class="syn">/tick rate</span> <span class="val">5</span>        <span class="cmt"># Замедление в 4 раза</span><br><span class="syn">/tick rate</span> <span class="val">500</span>      <span class="cmt"># Ускорение для теста ферм</span><br><span class="syn">/tick freeze</span>        <span class="cmt"># Заморозить мир</span><br><span class="syn">/tick step</span> <span class="val">1</span>        <span class="cmt"># Прокрутить 1 тик (при freeze)</span><br><span class="syn">/tick step</span> <span class="val">100</span>      <span class="cmt"># 100 тиков вперёд</span><br><span class="syn">/tick unfreeze</span>      <span class="cmt"># Снять паузу</span><br><span class="syn">/tick sprint</span> <span class="val">72000</span>  <span class="cmt"># Прокрутить час игрового времени</span></div>
+          <div class="note"><div class="note-title">⚒ Для датапакеров</div>/tick freeze + /tick step 1 = покадровый дебаг. Можно остановить мир, проверить состояние всех NBT и очков, и проверить следующий тик изолированно.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="div-gold reveal"><span>ᛁ</span></div>
+
+    <!-- ═══ MISC ═══ -->
+    <section id="misc" class="sec reveal">
+      <div class="sec-head">
+        <span class="sec-rune">ᛁ</span>
+        <div><div class="sec-label">Раздел XI</div><div class="sec-title">Прочие команды</div></div>
+      </div>
+
+      <div class="cmd-card" data-search="function функция mcfunction датапак запуск макрос">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Датапак</span>
+          <div><div class="cmd-name">/function &lt;имя&gt; и /return</div><div class="cmd-short">Запуск файлов функций и возврат значения</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/function</span> <span class="opt">my_pack:init</span><br><span class="syn">/function</span> <span class="opt">my_pack:boss/phase_2</span><br><br><span class="cmt"># Макрос (1.20.2+) — передача аргументов</span><br><span class="syn">/function</span> <span class="opt">my_pack:set_hp</span> {value: <span class="val">20</span>}<br><span class="cmt"># В файле функции: /attribute @s generic.max_health base set $(value)</span><br><br><span class="cmt"># Возврат значения из функции</span><br><span class="syn">/return</span> <span class="val">1</span></div>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="tag тег сущность add remove list фильтр">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Датапак</span>
+          <div><div class="cmd-name">/tag &lt;цель&gt; &lt;add|remove|list&gt; &lt;имя&gt;</div><div class="cmd-short">Строковые метки на сущностях для фильтрации</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/tag</span> <span class="val">@s</span> <span class="kw">add</span> <span class="opt">warrior</span><br><span class="syn">/tag</span> <span class="val">@e[type=zombie]</span> <span class="kw">add</span> <span class="opt">custom_boss</span><br><span class="syn">/tag</span> <span class="val">@s</span> <span class="kw">remove</span> <span class="opt">init</span><br><span class="cmt"># Использование: @e[tag=custom_boss,limit=1]</span></div>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="bossbar босс бар полоска создать remove set">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">UI</span>
+          <div><div class="cmd-name">/bossbar</div><div class="cmd-short">Создание и управление полосками боссов</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/bossbar add</span> <span class="opt">my_pack:raid</span> '{"text":"Набег"}'<br><span class="syn">/bossbar set</span> <span class="opt">my_pack:raid</span> <span class="kw">color</span> red<br><span class="syn">/bossbar set</span> <span class="opt">my_pack:raid</span> <span class="kw">style</span> notched_10<br><span class="syn">/bossbar set</span> <span class="opt">my_pack:raid</span> <span class="kw">max</span> <span class="val">100</span><br><span class="syn">/bossbar set</span> <span class="opt">my_pack:raid</span> <span class="kw">value</span> <span class="val">75</span><br><span class="syn">/bossbar set</span> <span class="opt">my_pack:raid</span> <span class="kw">players</span> <span class="val">@a</span></div>
+          <div class="note"><div class="note-title">Цвета</div>pink · blue · red · green · yellow · purple · white</div>
+          <div class="note"><div class="note-title">Стили</div>progress · notched_6 · notched_10 · notched_12 · notched_20</div>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="title subtitle actionbar экран текст json">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">UI</span>
+          <div><div class="cmd-name">/title &lt;цель&gt; &lt;title|subtitle|actionbar&gt;</div><div class="cmd-short">Вывод текста на экран игрока</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/title</span> <span class="val">@a</span> <span class="kw">title</span> '{"text":"ВЫ ПОБЕДИЛИ","color":"gold","bold":true}'<br><span class="syn">/title</span> <span class="val">@a</span> <span class="kw">subtitle</span> '{"text":"Волна завершена","color":"gray"}'<br><span class="syn">/title</span> <span class="val">@s</span> <span class="kw">actionbar</span> '{"text":"Критический удар!","color":"red"}'<br><span class="syn">/title</span> <span class="val">@a</span> <span class="kw">times</span> <span class="opt">10 40 10</span>  <span class="cmt"># fade_in stay fade_out (в тиках)</span><br><span class="syn">/title</span> <span class="val">@a</span> <span class="kw">clear</span></div>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="advancement достижение ачивка grant revoke">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Игрок</span>
+          <div><div class="cmd-name">/advancement grant|revoke</div><div class="cmd-short">Выдача и отзыв достижений</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/advancement grant</span> <span class="val">@s</span> <span class="kw">only</span> <span class="opt">my_pack:first_kill</span><br><span class="syn">/advancement grant</span> <span class="val">@s</span> <span class="kw">everything</span><br><span class="syn">/advancement revoke</span> <span class="val">@s</span> <span class="kw">from</span> <span class="opt">minecraft:story/root</span></div>
+          <div class="note"><div class="note-title">В датапаках</div>Достижения с trigger=impossible используются как невидимые события — игрок не видит их в меню, но /execute if score срабатывает.</div>
+        </div>
+      </div>
+
+      <div class="cmd-card" data-search="worldborder граница мир радиус урон">
+        <div class="cmd-header" onclick="toggle(this)">
+          <span class="cmd-tag">Мир</span>
+          <div><div class="cmd-name">/worldborder</div><div class="cmd-short">Управление границей мира</div></div>
+          <span class="cmd-toggle">▼</span>
+        </div>
+        <div class="cmd-body">
+          <div class="code-block"><span class="syn">/worldborder set</span> <span class="val">1000</span>        <span class="cmt"># Радиус 1000 блоков</span><br><span class="syn">/worldborder add</span> <span class="val">-100</span> <span class="opt">60</span>    <span class="cmt"># Сужать на 100 блоков за 60 сек</span><br><span class="syn">/worldborder center</span> <span class="val">0 0</span><br><span class="syn">/worldborder damage amount</span> <span class="val">0.5</span><br><span class="syn">/worldborder warning distance</span> <span class="val">50</span></div>
+        </div>
+      </div>
+
+    </section>
+
+  </div><!-- /content -->
+</main>
+
+<footer>
+  <span class="ft-runes">ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ ᛏ ᛒ ᛖ ᛗ ᛚ ᛜ ᛞ ᛟ</span>
+  <div class="ft-text">Свитки Командного Зала · Minecraft Java Edition · Версии 1.20+</div>
+</footer>
+
+<script>
+// ── FIRE SPARKS ──
 const fb = document.getElementById('fire-bg');
-for(let i=0;i70;i++){
+for(let i=0;i<70;i++){
   const s=document.createElement('div');
   s.className='sp';
-  const size=1+Math.random()3;
+  const size=1+Math.random()*3;
   s.style.cssText=`
-    left${Math.random()100}%;
-    width${size}px;height${size}px;
-    background${Math.random().6'#f0c040''#ff6520'};
-    animation-duration${5+Math.random()9}s;
-    animation-delay-${Math.random()12}s;
-    --d${(Math.random()-.5)180}px;
-    box-shadow0 0 ${size2}px ${Math.random().5'#f0c040''#ff6520'};
+    left:${Math.random()*100}%;
+    width:${size}px;height:${size}px;
+    background:${Math.random()>.6?'#f0c040':'#ff6520'};
+    animation-duration:${5+Math.random()*9}s;
+    animation-delay:-${Math.random()*12}s;
+    --d:${(Math.random()-.5)*180}px;
+    box-shadow:0 0 ${size*2}px ${Math.random()>.5?'#f0c040':'#ff6520'};
   `;
   fb.appendChild(s);
 }
 
- ── CARD TOGGLE ──
+// ── CARD TOGGLE ──
 function toggle(header){
   const card=header.closest('.cmd-card');
   card.classList.toggle('open');
 }
 
- ── SEARCH ──
+// ── SEARCH ──
 const search=document.getElementById('searchBox');
 const cards=document.querySelectorAll('.cmd-card');
-search.addEventListener('input',()={
+search.addEventListener('input',()=>{
   const q=search.value.toLowerCase().trim();
-  cards.forEach(c={
+  cards.forEach(c=>{
     if(!q){c.classList.remove('hidden');return}
-    const txt=(c.dataset.search'')+' '+(c.textContent'');
+    const txt=(c.dataset.search||'')+' '+(c.textContent||'');
     c.classList.toggle('hidden',!txt.toLowerCase().includes(q));
   });
 });
 
- ── SCROLL REVEAL ──
-const obs=new IntersectionObserver(entries={
-  entries.forEach(e={if(e.isIntersecting)e.target.classList.add('vis')});
-},{threshold.08});
-document.querySelectorAll('.reveal').forEach(el=obs.observe(el));
-script
-body
-html
+// ── SCROLL REVEAL ──
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')});
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
