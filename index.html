@@ -1,1194 +1,1671 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Свитки Командного Зала</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=UnifrakturMaguntia&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
-<style>
-:root {
-  --gold:        #c9952a;
-  --gold-bright: #f0c040;
-  --gold-dim:    #6a4f10;
-  --gold-glow:   rgba(240,192,64,0.18);
-  --ember:       #d93a08;
-  --ember2:      #ff6520;
-  --dark:        #080503;
-  --wood:        #0e0804;
-  --wood2:       #160d05;
-  --wood3:       #1e1208;
-  --ash:         #c8bba0;
-  --ash2:        #8a7d64;
-  --ash3:        #4a4030;
-  --code-bg:     #050302;
-  --code-border: #3a2a08;
+import React, { useState, useEffect } from "react";
+import { 
+  Shield, 
+  HelpCircle, 
+  Sparkles, 
+  Layers, 
+  Flame, 
+  Swords, 
+  BookOpen, 
+  ExternalLink,
+  ChevronRight,
+  Info,
+  Terminal,
+  Copy,
+  CheckCircle2,
+  Bookmark,
+  Compass,
+  AlertTriangle,
+  RotateCcw,
+  Sliders,
+  Cpu,
+  Skull,
+  Wrench,
+  Zap,
+  Eye,
+  VolumeX,
+  PlusCircle,
+  EyeOff,
+  Search,
+  Check,
+  Server,
+  Play
+} from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import WitherfiteWorkspace from "./components/WitherfiteWorkspace";
+
+// Pre-configured runic symbols for background details
+const RUNES = "ᚠ ᚢ ᚦ ᚨ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ ᛏ ᛒ ᛖ ᛗ ᛚ ᛜ ᛞ ᛟ";
+
+interface Spark {
+  id: number;
+  left: number;
+  size: number;
+  color: string;
+  duration: number;
+  delay: number;
+  d: number;
 }
 
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-
-/* ══ SCROLLBAR ══ */
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:var(--dark)}
-::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:3px}
-
-/* ══ BODY ══ */
-body {
-  background: var(--dark);
-  color: var(--ash);
-  font-family:'IM Fell English',Georgia,serif;
-  overflow-x:hidden;
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Ccircle cx='8' cy='8' r='3.5' fill='%23c9952a'/%3E%3C/svg%3E") 8 8,auto;
+interface CommandItem {
+  id: string;
+  tag: string;
+  name: string;
+  short: string;
+  code: string;
+  explanation: string;
+  warnNote?: string;
+  isSpecialNote?: boolean;
+  params?: { key: string; val: string }[];
 }
 
-/* Noise overlay */
-body::after{
-  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  opacity:.5;mix-blend-mode:overlay;
+interface CommandSection {
+  id: string;
+  rune: string;
+  title: string;
+  eyebrow: string;
+  desc: string;
+  items: CommandItem[];
 }
 
-/* ══ FIRE BG ══ */
-#fire-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.sp{
-  position:absolute;bottom:-20px;border-radius:50%;
-  animation:sp-rise linear infinite;opacity:0;
-}
-@keyframes sp-rise{
-  0%{transform:translateY(0) translateX(0);opacity:.9}
-  80%{opacity:.3}
-  100%{transform:translateY(-100vh) translateX(var(--d));opacity:0}
-}
+export default function App() {
+  // Navigation: "simulator" | "builder" | "codex" | "wiki"
+  const [activeTab, setActiveTab] = useState<"simulator" | "builder" | "codex" | "wiki">("simulator");
+  const [isWorkspaceExpanded, setIsWorkspaceExpanded] = useState<boolean>(false);
+  const [sparks, setSparks] = useState<Spark[]>([]);
+  const [openCards, setOpenCards] = useState<Record<string, boolean>>({});
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [copiedCardId, setCopiedCardId] = useState<string | null>(null);
 
-/* ══ SIDE RUNE STRIP ══ */
-.rune-strip{
-  position:fixed;left:0;top:0;bottom:0;width:36px;z-index:50;
-  background:linear-gradient(180deg,#000 0%,var(--wood) 50%,#000 100%);
-  border-right:1px solid var(--gold-dim);
-  display:flex;align-items:center;justify-content:center;
-  writing-mode:vertical-rl;
-  font-family:'Cinzel Decorative',serif;font-size:.55rem;
-  letter-spacing:.35em;color:var(--gold-dim);
-  text-shadow:0 0 8px rgba(201,149,42,.3);
-  user-select:none;
-}
-.rune-strip-r{
-  right:0;left:auto;
-  border-right:none;border-left:1px solid var(--gold-dim);
-}
+  // NBT Builder states
+  const [isNoAI, setIsNoAI] = useState<boolean>(true);
+  const [isSilent, setIsSilent] = useState<boolean>(true);
+  const [isNoGravity, setIsNoGravity] = useState<boolean>(false);
+  const [isInvulnerable, setIsInvulnerable] = useState<boolean>(false);
+  const [customName, setCustomName] = useState<string>("Wither_Prisoner");
+  const [coordX, setCoordX] = useState<string>("~");
+  const [coordY, setCoordY] = useState<string>("~2");
+  const [coordZ, setCoordZ] = useState<string>("~");
+  const [isBedrockVersion, setIsBedrockVersion] = useState<boolean>(false);
+  const [copiedBuilder, setCopiedBuilder] = useState<boolean>(false);
 
-/* ══ HEADER ══ */
-header{
-  position:relative;z-index:10;
-  min-height:100vh;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:5rem 3rem;
-  background:
-    radial-gradient(ellipse 70% 50% at 50% 100%,rgba(217,58,8,.22) 0%,transparent 70%),
-    radial-gradient(ellipse 50% 30% at 50% 110%,rgba(201,149,42,.1) 0%,transparent 60%),
-    linear-gradient(180deg,#000 0%,var(--wood) 55%,var(--wood2) 100%);
-  border-bottom:2px solid var(--gold-dim);
-  overflow:hidden;
-}
+  // Initialize sparks once for the beautiful glowing lava background
+  useEffect(() => {
+    const list: Spark[] = [];
+    for (let i = 0; i < 75; i++) {
+      const size = 1 + Math.random() * 3;
+      list.push({
+        id: i,
+        left: Math.random() * 100,
+        size,
+        color: Math.random() > 0.6 ? "#f0c040" : "#ff6520",
+        duration: 5 + Math.random() * 9,
+        delay: -Math.random() * 12,
+        d: (Math.random() - 0.5) * 180
+      });
+    }
+    setSparks(list);
+  }, []);
 
-/* animated rune watermark */
-header::before{
-  content:'ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ ᛏ ᛒ ᛖ ᛗ ᛚ ᛜ ᛞ ᛟ';
-  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-size:5rem;letter-spacing:2rem;color:rgba(201,149,42,.03);
-  pointer-events:none;white-space:nowrap;overflow:hidden;
-  animation:runeScroll 40s linear infinite;
-}
-@keyframes runeScroll{from{letter-spacing:2rem}to{letter-spacing:3rem}}
+  const handleCopyText = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedCardId(id);
+    setTimeout(() => setCopiedCardId(null), 2000);
+  };
 
-.h-eyebrow{
-  font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.5em;
-  color:var(--gold-dim);text-transform:uppercase;margin-bottom:2.5rem;
-  animation:fadeUp 1.5s ease both;
-}
+  const toggleCard = (id: string) => {
+    setOpenCards((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
-/* TORCHES */
-.torches{display:flex;gap:5rem;margin-bottom:2rem;animation:fadeUp 1s ease both}
-.torch{display:flex;flex-direction:column;align-items:center}
-.flame-wrap{width:24px;height:54px;position:relative}
-.fl{position:absolute;bottom:0;border-radius:50% 50% 30% 30%;filter:blur(1px);animation:burn 1.2s ease-in-out infinite alternate}
-.fl1{width:24px;height:48px;left:0;background:linear-gradient(180deg,#ffe040 0%,var(--ember2) 45%,var(--ember) 80%,transparent 100%)}
-.fl2{width:16px;height:34px;left:4px;bottom:4px;background:linear-gradient(180deg,#fff 0%,#ffee66 40%,rgba(255,200,0,.3) 100%);animation-duration:.85s;animation-direction:alternate-reverse}
-.fl3{width:8px;height:18px;left:8px;bottom:8px;background:linear-gradient(180deg,#fff 0%,rgba(255,255,255,.2) 100%);animation-duration:.6s}
-@keyframes burn{
-  0%{transform:scaleX(1) scaleY(1) rotate(-3deg)}
-  100%{transform:scaleX(.82) scaleY(1.12) rotate(4deg)}
-}
-.t-pole{width:10px;height:70px;background:linear-gradient(90deg,#2a1400,#6a3a10,#2a1400);border-radius:2px}
+  // Compile the builder command
+  const getCompiledBuilderCommand = () => {
+    if (isBedrockVersion) {
+      if (customName) {
+        return `/summon wither ${coordX} ${coordY} ${coordZ} "${customName}"`;
+      }
+      return `/summon wither ${coordX} ${coordY} ${coordZ}`;
+    }
 
-.h-title{
-  font-family:'Cinzel Decorative',serif;font-weight:900;
-  font-size:clamp(2.2rem,7.5vw,5.5rem);line-height:1.05;
-  color:var(--gold-bright);
-  text-shadow:0 0 18px rgba(240,192,64,.7),0 0 60px rgba(217,58,8,.4),0 4px 40px #000;
-  animation:flicker 8s ease-in-out infinite,fadeUp 1.2s ease both;
-  margin-bottom:.8rem;
-}
-@keyframes flicker{
-  0%,100%{text-shadow:0 0 18px rgba(240,192,64,.7),0 0 60px rgba(217,58,8,.4),0 4px 40px #000}
-  50%{text-shadow:0 0 30px rgba(240,192,64,1),0 0 90px rgba(217,58,8,.6),0 4px 40px #000}
-  73%{text-shadow:0 0 8px rgba(240,192,64,.2),0 0 20px rgba(217,58,8,.1),0 4px 40px #000}
-  74%{text-shadow:0 0 25px rgba(240,192,64,.8),0 0 70px rgba(217,58,8,.5),0 4px 40px #000}
-}
+    const nbtParts: string[] = [];
+    if (isNoAI) nbtParts.push("NoAI:1b");
+    if (isSilent) nbtParts.push("Silent:1b");
+    if (isNoGravity) nbtParts.push("NoGravity:1b");
+    if (isInvulnerable) nbtParts.push("Invulnerable:1b");
+    if (customName) {
+      nbtParts.push(`CustomName:'{"text":"${customName}","color":"gold","bold":true}'`);
+    }
 
-.h-sub{
-  font-family:'IM Fell English',serif;font-style:italic;
-  font-size:clamp(.9rem,2vw,1.25rem);color:var(--ash2);
-  max-width:560px;line-height:1.7;letter-spacing:.04em;
-  animation:fadeUp 2s ease both;
-}
-.orn{display:flex;align-items:center;gap:1.5rem;margin:2rem 0;animation:fadeUp 1.8s ease both}
-.orn-l{flex:1;max-width:220px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent)}
-.orn-sym{font-size:1.4rem;color:var(--gold);text-shadow:0 0 14px rgba(240,192,64,.5)}
+    const nbtStr = nbtParts.length > 0 ? ` {${nbtParts.join(",")}}` : "";
+    return `/summon minecraft:wither ${coordX} ${coordY} ${coordZ}${nbtStr}`;
+  };
 
-/* ══ NAV ══ */
-nav{
-  position:sticky;top:0;z-index:200;
-  background:rgba(6,4,2,.96);backdrop-filter:blur(12px);
-  border-bottom:2px solid var(--gold-dim);
-  display:flex;justify-content:center;flex-wrap:wrap;
-  box-shadow:0 6px 40px rgba(0,0,0,.9),0 1px 0 rgba(201,149,42,.15) inset;
-}
-nav a{
-  font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;
-  letter-spacing:.18em;text-transform:uppercase;
-  color:var(--ash3);text-decoration:none;
-  padding:1.1rem 1.6rem;
-  position:relative;transition:color .25s;
-}
-nav a::after{
-  content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;
-  background:var(--gold-bright);box-shadow:0 0 8px rgba(240,192,64,.6);
-  transition:left .3s,right .3s;
-}
-nav a:hover{color:var(--gold-bright)}
-nav a:hover::after{left:0;right:0}
+  const copyBuilderCommand = () => {
+    navigator.clipboard.writeText(getCompiledBuilderCommand());
+    setCopiedBuilder(true);
+    setTimeout(() => setCopiedBuilder(false), 2000);
+  };
 
-/* ══ SEARCH BAR ══ */
-.search-wrapper{
-  position:relative;z-index:10;
-  padding:2.5rem 2rem 0;
-  max-width:900px;margin:0 auto;
-}
-.search-box{
-  width:100%;padding:1rem 1.5rem 1rem 3.5rem;
-  background:rgba(20,12,4,.9);
-  border:1px solid var(--gold-dim);
-  border-radius:0;color:var(--ash);
-  font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:.08em;
-  outline:none;transition:border-color .3s,box-shadow .3s;
-}
-.search-box::placeholder{color:var(--ash3);letter-spacing:.15em}
-.search-box:focus{border-color:var(--gold);box-shadow:0 0 20px rgba(201,149,42,.2),inset 0 0 10px rgba(0,0,0,.5)}
-.search-icon{
-  position:absolute;left:3rem;top:50%;transform:translateY(-50%);
-  color:var(--gold-dim);font-size:1rem;pointer-events:none;
-  margin-top:1.25rem;
-}
+  // All 11 Chapters of documentation parsed from the user's HTML template
+  const ALL_SECTIONS: CommandSection[] = [
+    {
+      id: "basics",
+      rune: "ᚠ",
+      eyebrow: "Раздел I",
+      title: "Основные и системные команды",
+      desc: "Фундамент любого мира — без этих заклинаний не выстоит ни одна крепость.",
+      items: [
+        {
+          id: "help",
+          tag: "Система",
+          name: "/help [команда]",
+          short: "Список доступных команд или справка по конкретной",
+          code: `/help\n/help scoreboard`,
+          explanation: "Выводит список всех доступных команд. При указании имени — показывает синтаксис конкретной команды."
+        },
+        {
+          id: "reload",
+          tag: "Система",
+          name: "/reload",
+          short: "Перезагрузка датапаков, функций, лут-таблиц и рецептов",
+          code: `/reload`,
+          explanation: "Перегружает все датапаки на сервере прямо на лету без перезапуска.",
+          warnNote: "Главная команда разработчика. После каждого изменения в файлах датапака — обязательно /reload. Не перезапускает сервер.",
+          isSpecialNote: true
+        },
+        {
+          id: "gamemode",
+          tag: "Игрок",
+          name: "/gamemode <режим> [игрок]",
+          short: "Смена игрового режима",
+          code: `/gamemode survival\n/gamemode creative @a\n/gamemode spectator SteveTheWarrior`,
+          explanation: "Изменяет режим игры для выбранных игроков на сервере.",
+          params: [
+            { key: "survival", val: "Выживание — HP, голод, инвентарь" },
+            { key: "creative", val: "Творческий — полёт, бесконечные ресурсы" },
+            { key: "adventure", val: "Приключение — только взаимодействие" },
+            { key: "spectator", val: "Наблюдатель — летает сквозь блоки" }
+          ]
+        },
+        {
+          id: "gamerule",
+          tag: "Мир",
+          name: "/gamerule <правило> [значение]",
+          short: "Настройка правил мира",
+          code: `/gamerule keepInventory true\n/gamerule doDaylightCycle false\n/gamerule maxCommandChainLength 65536\n/gamerule commandModificationBlockLimit 32768`,
+          explanation: "Включает или выключает фундаментальные правила законов игрового процесса.",
+          params: [
+            { key: "keepInventory", val: "Сохранять инвентарь после смерти" },
+            { key: "doDaylightCycle", val: "Смена дня и ночи" },
+            { key: "commandBlockOutput", val: "Логировать вывод командных блоков в чат" },
+            { key: "maxCommandChainLength", val: "Лимит команд за тик в датапаках" },
+            { key: "commandModificationBlockLimit", val: "Лимит блоков для массового заполнения /fill и копирования /clone" }
+          ]
+        },
+        {
+          id: "tp",
+          tag: "Мир",
+          name: "/tp <цель> <x y z>",
+          short: "Телепортация сущности в точку или к другой сущности",
+          code: `/tp @s 100 64 -200\n/tp @a @p\n/teleport @e[type=zombie] ~ ~10 ~  # ~ = текущая координата`,
+          explanation: "Переносит одну или несколько целей в точные координаты или к положению другой сущности.",
+          warnNote: "~ — относительные координаты от исполнителя. ^ — локальные координаты (вперёд/вправо/вверх от направления взгляда)."
+        },
+        {
+          id: "time",
+          tag: "Мир",
+          name: "/time <set|add|query> <значение>",
+          short: "Управление временем суток",
+          code: `/time set day    # 1000 тиков\n/time set noon   # 6000\n/time set night  # 13000\n/time set 18000  # Полночь\n/time add 6000\n/time query daytime`,
+          explanation: "Позволяет изменять игровое время суток или считывать его текущие показатели."
+        },
+        {
+          id: "kill",
+          tag: "Сущность",
+          name: "/kill [цель]",
+          short: "Мгновенное уничтожение сущности",
+          code: `/kill                     # Убить себя\n/kill @e[type=zombie]   # Всех зомби\n/kill @e[type=!player]  # Всё кроме игроков`,
+          explanation: "Накладывает абсолютный разрушительный урон, игнорирующий щиты и броню."
+        },
+        {
+          id: "random",
+          tag: "Математика",
+          name: "/random <value|roll> <диапазон>",
+          short: "Генерация случайных чисел без сид-уязвимостей",
+          code: `/random value 1..100                   # Рандомное число в чат\n/random roll 1..6                      # Имитация кубика d6\n/execute store result score @s num run random value 1..10`,
+          explanation: "Нативная (с версии 1.20) команда генерации псевдослучайных распределений. Заменяет медленные рандомайзеры сундуков и отлично подходит для механик критического урона, шансов и кастомных костей."
+        }
+      ]
+    },
+    {
+      id: "selectors",
+      rune: "ᚢ",
+      eyebrow: "Раздел II",
+      title: "Селекторы целей",
+      desc: "Кого ты призываешь своим заклинанием — определяют руны-селекторы.",
+      items: [
+        {
+          id: "selectors_desc",
+          tag: "Фильтры",
+          name: "Спецификаторы [@...]",
+          short: "Фильтрация и ограничение выборки сущностей",
+          code: `# Только зомби в радиусе 10 блоков\n@e[type=zombie,distance=..10]\n\n# Ближайший игрок с тегом и очками\n@a[tag=warrior,scores={kills=5..},limit=1,sort=nearest]\n\n# Все, кроме игроков, в прямоугольнике\n@e[type=!player,dx=20,dy=10,dz=20]`,
+          explanation: "Фильтры целей позволяют сузить выборку до нужных объектов в пространстве по параметрам.",
+          params: [
+            { key: "distance=..10", val: "Радиус поиска (..10 = до 10 блоков, 5..10 = диапазон от 5 до 10)" },
+            { key: "dx,dy,dz", val: "Объём зоны поиска параллелепипедом" },
+            { key: "type=zombie", val: "Тип сущности. Восклицательный знак инвертирует: type=!player" },
+            { key: "tag=boss", val: "Наличие строкового тега. tag=!init — его отсутствие" },
+            { key: "team=Red", val: "Фильтр по скорборд-команде" },
+            { key: "name=\"Steve\"", val: "Фильтр по имени сущности" },
+            { key: "scores={deaths=5..}", val: "Проверка очков в scoreboard у цели" },
+            { key: "level=30..", val: "Уровень опыта игрока" },
+            { key: "gamemode=creative", val: "Текущий игровой режим игрока" },
+            { key: "limit=1", val: "Ограничение количества целей на выходе" },
+            { key: "sort=nearest", val: "Способ сортировки: nearest, furthest, random, arbitrary" },
+            { key: "nbt={OnGround:1b}", val: "Проверка NBT-данных (медленно, нагружает ЦП!)" },
+            { key: "predicate=ns:check", val: "Проверка файла предиката из датапака" }
+          ]
+        }
+      ]
+    },
+    {
+      id: "execute",
+      rune: "ᚦ",
+      eyebrow: "Раздел III",
+      title: "/execute — Конструктор контекста",
+      desc: "Самое мощное заклинание зала. Строится цепочкой модификаторов — каждый меняет контекст выполнения.",
+      items: [
+        {
+          id: "execute_context",
+          tag: "Контекст",
+          name: "Модификаторы контекста",
+          short: "as, at, in, positioned, rotated, facing, anchored",
+          code: `# Выполнить команду от имени каждого игрока\n/execute as @a run say Я воин!\n\n# От имени всех зомби, на их позиции\n/execute as @e[type=zombie] at @s run particle flame ~ ~ ~\n\n# Смотреть в сторону ближайшего игрока\n/execute as @e[tag=guard] at @s facing entity @p eyes run ...`,
+          explanation: "Позволяют смещать имя исполнителя, позицию в пространстве, поворот головы и измерение перед непосредственным запуском функции.",
+          params: [
+            { key: "as <цель>", val: "Исполнитель (@s). Координаты НЕ меняются" },
+            { key: "at <цель>", val: "Позиция, поворот головы и измерение на принадлежащие цели" },
+            { key: "in <измерение>", val: "Переносит контекст в другое измерение (overworld/nether/end)" },
+            { key: "positioned <x y z>", val: "Смещает только координаты выполнения в точку" },
+            { key: "rotated <yaw pitch>", val: "Смещает только направление взгляда" },
+            { key: "facing entity @p eyes", val: "Поворачивает взгляд к глазам или ногам выбранной сущности" },
+            { key: "anchored eyes|feet", val: "Смещает координаты ^ ^ ^ на уровень глаз или ног" }
+          ]
+        },
+        {
+          id: "execute_conditions",
+          tag: "Условия",
+          name: "if / unless — Ветвление",
+          short: "Условные операторы внутри /execute",
+          code: `# Если под ногами камень — дать эффект\n/execute as @a at @s if block ~ ~-1 ~ stone run effect give @s speed 1 0\n\n# Если в мире есть дракон\n/execute if entity @e[type=ender_dragon] run say Дракон жив!\n\n# Если очки kills >= 10\n/execute as @a if score @s kills matches 10.. run ...\n\n# Сложная цепочка\n/execute as @a[tag=active] at @s anchored eyes if block ^ ^ ^1 air run particle flame ^ ^ ^1`,
+          explanation: "Проверяют условия, без выполнения которых остальная цепочка обрывается. IF требует успеха, UNLESS требует неуспеха.",
+          params: [
+            { key: "if block <xyz> <блок>", val: "Проверка конкретного типа блока по координатам" },
+            { key: "if blocks r1 r2 dest all|masked", val: "Сравнение двух регионов блоков на идентичность" },
+            { key: "if entity <сущность>", val: "Существует ли хотя бы одна такая сущность в мире" },
+            { key: "if score ... matches", val: "Сравнение очков скорборда (<, <=, =, >, >=, matches)" },
+            { key: "if data <block|entity|storage>", val: "Существует ли NBT-тег по указанному пути" },
+            { key: "if predicate <id>", val: "Запуск файла-предиката из датапака" },
+            { key: "if dimension <id>", val: "Контекст находится в указанном измерении" },
+            { key: "if loaded <xyz>", val: "Прогружен ли чанк на этих координатах (критично для стабильности!)" }
+          ]
+        },
+        {
+          id: "execute_store",
+          tag: "Хранение",
+          name: "store result|success",
+          short: "Сохранение результата выполнения в переменную или NBT",
+          code: `# Записать HP игрока в скорборд\n/execute store result score @s hp_obj run data get entity @s Health\n\n# Успех (1 или 0) в storage\n/execute store success storage my_pack:main result byte 1 run ...`,
+          explanation: "Записывает возвращаемое числовое значение или успешность (0 или 1) выполненной команды в переменную, NBT блока или сущности.",
+          params: [
+            { key: "result", val: "Записать числовое значение (HP, количество предметов, сигнал)" },
+            { key: "success", val: "Записать успешность (1 если успешно, 0 если выполнено с ошибкой)" },
+            { key: "score <цель> <объект>", val: "Сохранить в переменную скорборда цели" },
+            { key: "storage <id> <путь> <тип> <х>", val: "Сохранить в глобальное хранилище датапака" },
+            { key: "entity <сущность> <путь>", val: "Сохранить напрямую в NBT-тег сущности" },
+            { key: "block <xyz> <путь>", val: "Сохранить в NBT-тег тайл-блока (сундук, воронка, КБ)" },
+            { key: "bossbar <id> value|max", val: "Сохранить в показатели полосы босса" }
+          ],
+          warnNote: "Типы данных для сохранения: byte · short · int · long · float · double"
+        },
+        {
+          id: "execute_on",
+          tag: "Связи",
+          name: "execute on <отношение>",
+          short: "Смещение контекста по биологическим и физическим связям (1.20+)",
+          code: `# Выполнить от лица того, кто атаковал сущность\n/execute as @e[type=zombie] on attacker run info @s\n\n# Телепортировать наездника к себе\n/execute as @s on passenger run tp @s ~ ~ ~\n\n# Получить жертву атаки или цель взгляда\n/execute as @p on target run effect give @s wither 5 0`,
+          explanation: "Сверхэффективный (с версии 1.20) способ мгновенно извлекать связанные сущности без громоздкого перебора в радиусе и селекторного шума.",
+          params: [
+            { key: "attacker", val: "Последний, кто нанёс урон этой сущности" },
+            { key: "target", val: "Текущая цель атаки или раздражения агрессивного моба" },
+            { key: "vehicle", val: "Транспортное средство, на котором сидит сущность в данный момент" },
+            { key: "passenger", val: "Верхний наездник, который сидит на текущей сущности" },
+            { key: "origin", val: "Творец объекта (креатор или стрелок стрелы/тризубца)" },
+            { key: "owner", val: "Приручающий хозяин питомца (волка, кота, попугая, лошади)" }
+          ]
+        }
+      ]
+    },
+    {
+      id: "scoreboard",
+      rune: "ᚨ",
+      eyebrow: "Раздел IV",
+      title: "/scoreboard — Игровая СУБД",
+      desc: "Система переменных и очков. Хранит числа, отслеживает статистику, создаёт игровые механики.",
+      items: [
+        {
+          id: "sb_objectives",
+          tag: "Objectives",
+          name: "scoreboard objectives",
+          short: "Создание и управление задачами (переменными)",
+          code: `/scoreboard objectives add kills playerKillCount\n/scoreboard objectives add timer dummy "Таймер"\n/scoreboard objectives setdisplay sidebar kills\n/scoreboard objectives list\n/scoreboard objectives remove timer`,
+          explanation: "Управляет базой переменных (задач) игрового мира.",
+          params: [
+            { key: "dummy", val: "Переменная изменяется только командами (основной тип для логики)" },
+            { key: "deathCount", val: "Счетчик автоматически отслеживает смерти игрока" },
+            { key: "playerKillCount", val: "Счетчик автоматически отслеживает убийства игроков" },
+            { key: "custom:minecraft.leave_game", val: "Счетчик отслеживает выходы игрока с сервера" }
+          ],
+          warnNote: "Ячейки отображения (display): sidebar · list · belowName · sidebar.team.red"
+        },
+        {
+          id: "sb_players",
+          tag: "Players",
+          name: "scoreboard players",
+          short: "Работа с очками сущностей и математика",
+          code: `/scoreboard players set @s timer 100\n/scoreboard players add @s kills 1\n/scoreboard players remove @a hp 5\n/scoreboard players get @s kills\n/scoreboard players reset @s timer\n\n# Математика между переменными\n/scoreboard players operation @s result += @s bonus\n/scoreboard players operation @s hp %= #const divider\n/scoreboard players operation @s a >< @s b  # Обмен`,
+          explanation: "Оперирует значениями конкретных игроков или технических фейковых сущностей.",
+          warnNote: "Используй фейковые ники (например, #global или #const) как имена без реальных игроков: /scoreboard players set #global timer 0",
+          isSpecialNote: true
+        }
+      ]
+    },
+    {
+      id: "nbt",
+      rune: "ᚱ",
+      eyebrow: "Раздел V",
+      title: "/data — Манипуляция NBT",
+      desc: "Прямое чтение и запись в тайные хранилища данных — сущностей, блоков и глобального storage.",
+      items: [
+        {
+          id: "data_commands",
+          tag: "NBT",
+          name: "/data get|merge|modify|remove",
+          short: "Читать и изменять NBT у сущностей, блоков и хранилищ",
+          code: `# Читать HP игрока\n/data get entity @s Health\n\n# Слить данные с сущностью\n/data merge entity @s {CustomName:'{"text":"Воин"}'}\n\n# Добавить в конец массива хранилища\n/data modify storage my_pack:main cooldowns append value 100\n\n# Скопировать из сундука в storage\n/data modify storage my_pack:main chest_data set from block ~ ~ ~ Items\n\n# Удалить тег\n/data remove entity @s CustomName`,
+          explanation: "Предоставляет полный доступ к внутренним структурам NBT Майнкрафта.",
+          params: [
+            { key: "/data get", val: "Извлечение значения конкретного NBT-тега" },
+            { key: "/data merge", val: "Слияние данных — перезаписывает совпадения, сохраняет другие" },
+            { key: "/data remove", val: "Мгновенное удаление тега из объекта" },
+            { key: "/data modify ... set", val: "Полная перезапись значения" },
+            { key: "/data modify ... append", val: "Добавить элемент в конец списка NBT" },
+            { key: "/data modify ... prepend", val: "Добавить элемент в начало списка NBT" },
+            { key: "/data modify ... insert N", val: "Вставить элемент по указанному индексу" }
+          ],
+          warnNote: "⚠ Игрокам нельзя менять NBT напрямую! Только считывать. Команда `/data merge entity @s` для игроков заблокирована ядром. Используй атрибуты или компоненты.",
+          isSpecialNote: true
+        }
+      ]
+    },
+    {
+      id: "items",
+      rune: "ᚲ",
+      eyebrow: "Раздел VI",
+      title: "/item + Компоненты предметов",
+      desc: "В версии 1.20.5+ старые NBT-теги полностью заменены структурированной системой компонентов.",
+      items: [
+        {
+          id: "item_give",
+          tag: "Инвентарь",
+          name: "/give <цель> <предмет[компоненты]>",
+          short: "Выдача предмета с кастомными свойствами",
+          code: `# Меч с зачарованием и кастомным именем\n/give @s netherite_sword[\n  custom_name='{"text":"Клинок Судьбы","color":"gold","bold":true}',\n  enchantments={levels:{"minecraft:sharpness":5,"minecraft:looting":3}},\n  lore=['{"text":"Выкован в горниле","color":"gray"}'],\n  unbreakable={}]\n\n# Кастомная еда\n/give @s iron_ingot[food={nutrition:4,saturation:2.5,can_always_eat:true}]`,
+          explanation: "Выдаёт игроку предметы с подробнейшей модификацией параметров, его текстуры и эффектов.",
+          params: [
+            { key: "custom_data={...}", val: "Кастомные NBT-данные для использования в датапаках" },
+            { key: "custom_name='...'", val: "Отображаемое имя предмета в стандартном JSON-формате" },
+            { key: "lore=[...]", val: "Массив JSON-строк описания под именем" },
+            { key: "enchantments={...}", val: "Чары и их уровни" },
+            { key: "food={...}", val: "Превращает любой предмет в пищу" },
+            { key: "unbreakable={}", val: "Делает инструмент абсолютно неразрушимым" }
+          ]
+        },
+        {
+          id: "item_replace",
+          tag: "Инвентарь",
+          name: "/item replace|modify",
+          short: "Замена и изменение предметов в слотах",
+          code: `# Заменить предмет в основной руке\n/item replace entity @s weapon.mainhand with diamond_sword\n\n# Первый слот сундука\n/item replace block ~ ~ ~ container.0 with apple 32\n\n# Применить модификатор из датапака\n/item modify entity @s weapon.mainhand my_pack:add_fire`,
+          explanation: "Позволяет изменять инвентарь существ и контейнеров блоков напрямую."
+        },
+        {
+          id: "item_enchant",
+          tag: "Чары",
+          name: "/enchant <цель> <чар> [уровень]",
+          short: "Зачаровать предмет в руке",
+          code: `/enchant @s minecraft:sharpness 5\n/enchant @a minecraft:protection 4`,
+          explanation: "Зачаровывает предмет, удерживаемый в руке выбранным игроком.",
+          warnNote: "Имеет лимиты стандартного креатива выживания. Для обхода любых лимитов — выдавай предмет через /give с компонентом enchantments."
+        },
+        {
+          id: "item_clear",
+          tag: "Инвентарь",
+          name: "/clear [цель] [предмет] [кол-во]",
+          short: "Очистка инвентаря",
+          code: `/clear                        # Очистить себя полностью\n/clear @a                   # Всех игроков\n/clear @s minecraft:dirt  # Только землю\n/clear @s minecraft:dirt 32 # Удалить ровно 32 блока земли`,
+          explanation: "Стирает предметы из инвентарей игроков."
+        }
+      ]
+    },
+    {
+      id: "world",
+      rune: "ᚷ",
+      eyebrow: "Раздел VII",
+      title: "Мир и блоки",
+      desc: "Переписать облик мира — setblock, fill, clone, fillbiome и структуры.",
+      items: [
+        {
+          id: "world_setblock",
+          tag: "Блоки",
+          name: "/setblock <x y z> <блок> [режим]",
+          short: "Установить один блок по координатам",
+          code: `/setblock 100 64 -200 minecraft:stone\n/setblock ~ ~-1 ~ minecraft:chest[facing=north] replace\n/setblock ~ ~ ~ minecraft:air destroy`,
+          explanation: "Спавнит одиночный блок в мире по указанной координатной точке.",
+          params: [
+            { key: "destroy", val: "Ломает старый блок с частицами и выпадением предметов на пол" },
+            { key: "keep", val: "Устанавливает новый блок только если на координатах был воздух" },
+            { key: "replace", val: "Молча и бесследно заменяет старый блок (режим по умолчанию)" }
+          ]
+        },
+        {
+          id: "world_fill",
+          tag: "Блоки",
+          name: "/fill <x1 y1 z1> <x2 y2 z2> <блок> [режим]",
+          short: "Заполнение области блоками",
+          code: `/fill ~-5 ~-1 ~-5 ~5 ~5 ~5 minecraft:stone\n/fill 0 60 0 20 70 20 minecraft:oak_planks hollow\n/fill 0 64 0 100 64 100 java:grass_block replace minecraft:dirt`,
+          explanation: "Массово заполняет выбранную кубическую область укрупненными блоками.",
+          params: [
+            { key: "hollow", val: "Оставляет коробку с прослойкой воздуха внутри" },
+            { key: "outline", val: "Заполняет только по контурам, не трогая то, что было внутри" },
+            { key: "keep", val: "Заполняет блоки только там, где была пустота (воздух)" },
+            { key: "replace [фильтр]", val: "Переписывает только те блоки, которые соответствуют указанному фильтру" }
+          ]
+        },
+        {
+          id: "world_clone",
+          tag: "Блоки",
+          name: "/clone <r1> <r2> <dest> [режим]",
+          short: "Копирование области блоков в другое место",
+          code: `/clone 0 64 0 10 74 10  100 64 100  masked\n/clone 0 64 0 10 74 10  50 64 50   filtered minecraft:chest\n/clone 0 64 0 10 74 10  0 64 15    replace move`,
+          explanation: "Проецирует выбранную трехмерную постройку на другую координатную точку в пространстве.",
+          params: [
+            { key: "masked", val: "Игнорирует блоки воздуха источника при проецировании" },
+            { key: "filtered <блок>", val: "Копирует строго только один выбранный тип блока" },
+            { key: "move", val: "Переносит регион на новую позицию, стирая его в исходной локации" },
+            { key: "force", val: "Вынужденное копирование даже при пересечении регионов друг с другом" }
+          ]
+        },
+        {
+          id: "world_place",
+          tag: "Структуры",
+          name: "/place structure|feature|template",
+          short: "Генерация структур и элементов мира",
+          code: `# Деревня\n/place structure minecraft:village_snowy ~ ~ ~\n\n# Одно дерево\n/place feature minecraft:oak ~ ~ ~\n\n# Файл .nbt из датапака (полуразрушенный на 70%)\n/place template my_pack:my_building ~ ~ ~ none none 0.7 12345`,
+          explanation: "Генерирует готовые шаблоны построек и элементы ландшафта.",
+          warnNote: "Параметр integrity (0.0-1.0) для шаблонов: имитирует естественное разрушение спавнящейся структуры."
+        },
+        {
+          id: "world_biome",
+          tag: "Биомы",
+          name: "/fillbiome <r1> <r2> <id_биома>",
+          short: "Изменение биома в регионе",
+          code: `/fillbiome 0 -64 0 100 320 100 minecraft:desert`,
+          explanation: "Перекрашивает биологический тип территории на новый тип.",
+          warnNote: "⚠ Требует принудительного обновления чанков на клиенте игрока с помощью сочетания клавиш F3+A после успешного завершения команды."
+        }
+      ]
+    },
+    {
+      id: "entities",
+      rune: "ᚹ",
+      eyebrow: "Раздел VIII",
+      title: "Сущности и эффекты",
+      desc: "Призыв послушных манекенов, начертание магических эффектов и деформация базовых атрибутов.",
+      items: [
+        {
+          id: "ent_summon",
+          tag: "Сущности",
+          name: "/summon <сущность> [x y z] [NBT]",
+          short: "Создание сущностей и технических объектов",
+          code: `# Обычный зомби\n/summon minecraft:zombie ~ ~ ~\n\n# Технический маркер с тегами\n/summon minecraft:marker ~ ~ ~ {Tags:[\"raycast_point\",\"init\"]}\n\n# Дисплей блока\n/summon minecraft:block_display ~ ~ ~ {block_state:{Name:\"minecraft:diamond_block\"}}`,
+          explanation: "Призывает мобов или специальные вспомогательные виртуальные ориентиры.",
+          params: [
+            { key: "minecraft:marker", val: "Технический невидимый маркер без лагов. Лучшая точка для рейкастов и хранения тегов" },
+            { key: "minecraft:interaction", val: "Невидимый куб-хитбокс — перехватывает клики мыши и атаки игроков" },
+            { key: "minecraft:block_display", val: "Позволяет рендерить увеличивающиеся блоки под любым наклоном без модов" }
+          ]
+        },
+        {
+          id: "ent_effect",
+          tag: "Эффекты",
+          name: "/effect give|clear <цель> <эффект>",
+          short: "Выдача и снятие эффектов зелий",
+          code: `/effect give @s minecraft:speed 60 2 true\n#                           длит.(сек) уровень скрыть_частицы\n/effect give @a minecraft:regeneration 20 0\n/effect clear @s                    # Снять всё\n/effect clear @s minecraft:poison   # Только яд`,
+          explanation: "Накладывает магические баффы или дебаффы на существ."
+        },
+        {
+          id: "ent_attributes",
+          tag: "Атрибуты",
+          name: "/attribute <цель> <атрибут> <get|base|modifier>",
+          short: "Изменение базовых параметров сущностей",
+          code: `/attribute @s generic.max_health base set 40\n/attribute @s generic.movement_speed base set 0.15\n/attribute @s generic.scale base set 2.0  # 1.20.5+\n/attribute @s generic.gravity base set 0.04`,
+          explanation: "Напрямую кастомизирует физические свойства: урон, высоту шага, масштаб и гравитацию.",
+          params: [
+            { key: "generic.max_health", val: "Предельное количество сердец HP моба" },
+            { key: "generic.movement_speed", val: "Скорость бега в пространстве (0.10 = базовый темп игрока)" },
+            { key: "generic.scale", val: "Мгновенное изменение физических габаритов моба (0.06 - 16.0) в 1.20.5+" },
+            { key: "generic.gravity", val: "Вес моба в пространстве. Позволяет делать невесомых призраков" }
+          ]
+        },
+         {
+          id: "ent_xp",
+          tag: "Игрок",
+          name: "/xp <add|set|query> <цель> <кол-во> [points|levels]",
+          short: "Управление опытом игрока",
+          code: `/xp add @s 100 points\n/xp add @s 5 levels\n/xp set @s 0 levels\n/xp query @s levels`,
+          explanation: "Модифицирует или считывает шкалу опыта игроков."
+        },
+        {
+          id: "ent_damage",
+          tag: "Сущности",
+          name: "/damage <цель> <количество> [тип_урона] [attacker]",
+          short: "Нанесение точного урона с кастомным источником",
+          code: `# Нанести 10 единиц (5 сердец) чистого урона без источника\n/damage @s 10\n\n# Поджечь моба, как будто его ударил игрок\n/damage @e[type=creeper,limit=1,sort=nearest] 5 minecraft:fireball by @p\n\n# Урон от иссушения со специфическим типом\n/damage @a 2 minecraft:wither`,
+          explanation: "Новая (1.19.4+) полноценная команда для точной реализации боевых механик, триггеров уклонения и игровых ядов в обход громоздких зелий.",
+          params: [
+            { key: "minecraft:wither", val: "Убивающий тип урона иссушения, игнорирующий щит и броню" },
+            { key: "minecraft:sonic_boom", val: "Направленная атака Вардена, безупречно пробивающая стены" },
+            { key: "minecraft:magic", val: "Магический урон, уменьшаемый только чарами типа 'Защита'" },
+            { key: "minecraft:starve", val: "Урон от истощения/голода" }
+          ]
+        },
+        {
+          id: "ent_ride",
+          tag: "Физика",
+          name: "/ride <цель> mount|dismount <транспорт>",
+          short: "Установка существ друг на друга (создание башен)",
+          code: `# Посадить зомби на курицу\n/ride @e[type=zombie,limit=1] mount @e[type=chicken,limit=1]\n\n# Заставить свинью слезть с игрока\n/ride @s dismount`,
+          explanation: "Управляет верховой ездой и конструированием составных боссов, кастомных физических кареток или оружейных турелей."
+        }
+      ]
+    },
+    {
+      id: "server",
+      rune: "ᚺ",
+      eyebrow: "Раздел IX",
+      title: "Администрирование сервера",
+      desc: "Управление доступом, бан-листы, ведение логов и замер точного TPS/производительности.",
+      items: [
+        {
+          id: "srv_admin",
+          tag: "Сервер",
+          name: "Команды администратора",
+          short: "op, kick, ban, whitelist, stop, save",
+          code: `/op Steve          # Выдать права оператора\n/deop Steve        # Забрать права\n/kick Steve Нарушение\n/ban Steve Причина  # Бан по нику\n/ban-ip Steve      # Бан по IP\n/pardon Steve      # Разбан\n/whitelist add Steve\n/whitelist on\n/list               # Кто онлайн\n/stop              # Безопасная остановка\n/save-all flush   # Принудительное сохранение`,
+          explanation: "Служебный набор консольных директив для модерирования сервера и сейва мира."
+        },
+        {
+          id: "srv_perf",
+          tag: "Дебаг",
+          name: "/perf <start|stop> и /debug",
+          short: "Профилирование производительности сервера",
+          code: `/perf start     # Запустить 10-20 сек мониторинг\n/perf stop      # Отчёт в /debug/profiler/\n/debug report   # Снимок состояния системы`,
+          explanation: "Измеряет производительность тик-рейта, помогая обнаружить источники просадок FPS.",
+          warnNote: "/perf незаменим при сильном падении TPS. Запусти на 15 секунд во время лагов и читай сгенерированный сервером текстовый отчет.",
+          isSpecialNote: true
+        }
+      ]
+    },
+    {
+      id: "tick",
+      rune: "ᚾ",
+      eyebrow: "Раздел X",
+      title: "/tick — Управление тикрейтом",
+      desc: "Контроль над самим временем мира — заморозить, ускорить, прокрутить покадрово.",
+      items: [
+        {
+          id: "tck_engine",
+          tag: "Движок",
+          name: "/tick query|rate|freeze|step|sprint",
+          short: "Полный контроль скорости игрового времени",
+          code: `/tick query         # Текущий MSPT и TPS\n/tick rate 20       # Норма (20 тиков/сек)\n/tick rate 5        # Замедление в 4 раза\n/tick rate 500      # Ускорение для быстрого теста ферм\n/tick freeze        # Заморозить весь мир\n/tick step 1        # Прокрутить ровно 1 тик вперёд\n/tick step 100      # Продвинуться на 100 тиков\n/tick unfreeze      # Снять мир с паузы\n/tick sprint 72000  # Насильно просчитать час игрового времени`,
+          explanation: "Попиксельный и покадровый анализ взрывов и спавна, останавливающий время мира на сервере.",
+          warnNote: "⚒ Для датапакеров: комбо `/tick freeze` + `/tick step 1` — незаменимо. Позволяет изолированно изучать поведение хитбоксов и взрывных снарядов.",
+          isSpecialNote: true
+        }
+      ]
+    },
+    {
+      id: "misc",
+      rune: "ᛁ",
+      eyebrow: "Раздел XI",
+      title: "Прочие команды",
+      desc: "Запуски функций внутри датапаков, наложение рунических тегов и вывод визуальных элементов на экран.",
+      items: [
+        {
+          id: "msc_function",
+          tag: "Датапак",
+          name: "/function <имя> и /return",
+          short: "Запуск файлов функций и возврат значения",
+          code: `/function my_pack:init\n/function my_pack:boss/phase_2\n\n# Макрос (1.20.2+) — передача аргументов\n/function my_pack:set_hp {value: 20}\n# В файле функции: /attribute @s generic.max_health base set $(value)\n\n# Возврат значения из функции\n/return 1`,
+          explanation: "Главная команда для обращения к скомпилированным библиотекам датапаков."
+        },
+        {
+          id: "msc_tag",
+          tag: "Датапак",
+          name: "/tag <цель> <add|remove|list> <имя>",
+          short: "Строковые метки на сущностях для фильтрации",
+          code: `/tag @s add warrior\n/tag @e[type=zombie] add custom_boss\n/tag @s remove init\n# Использование: @e[tag=custom_boss,limit=1]`,
+          explanation: "Предоставляет строковые ярлыки для бесконечной адресной фильтрации мобов без скорбордов."
+        },
+        {
+          id: "msc_bossbar",
+          tag: "UI",
+          name: "/bossbar",
+          short: "Создание и управление полосками боссов",
+          code: `/bossbar add my_pack:raid '{"text":"Набег"}'\n/bossbar set my_pack:raid color red\n/bossbar set my_pack:raid style notched_10\n/bossbar set my_pack:raid max 100\n/bossbar set my_pack:raid value 75\n/bossbar set my_pack:raid players @a`,
+          explanation: "Конструирует интерактивные шкалы вверху экрана.",
+          warnNote: "Доступные цвета шкал: pink · blue · red · green · yellow · purple · white\nСтили шкал: progress · notched_6 · notched_10 · notched_12 · notched_20"
+        },
+        {
+          id: "msc_title",
+          tag: "UI",
+          name: "/title <цель> <title|subtitle|actionbar>",
+          short: "Вывод текста на экран игрока",
+          code: `/title @a title '{"text":"ВЫ ПОБЕДИЛИ","color":"gold","bold":true}'\n/title @a subtitle '{"text":"Волна завершена","color":"gray"}'\n/title @s actionbar '{"text":"Критический удар!","color":"red"}'\n/title @a times 10 40 10  # fade_in stay fade_out (в тиках)\n/title @a clear`,
+          explanation: "Отображает форматированный JSON текст в самом центре экрана."
+        },
+        {
+          id: "msc_advancement",
+          tag: "Игрок",
+          name: "/advancement grant|revoke",
+          short: "Выдача и отзыв достижений",
+          code: `/advancement grant @s only my_pack:first_kill\n/advancement grant @s everything\n/advancement revoke @s from minecraft:story/root`,
+          explanation: "Манипулирует деревом наград и триггерами прогресса игрока.",
+          warnNote: "Достижения типа `impossible` — частая уловка в датапаках для невидимой проверки флагов у игроков."
+        },
+        {
+          id: "msc_loot",
+          tag: "Инвентарь",
+          name: "/loot <give|insert|spawn|replace>",
+          short: "Генерация предметов по таблицам выпадения (Loot Tables)",
+          code: `# Выдать игроку добычу рыболова\n/loot give @s fish minecraft:gameplay/fishing\n\n# Заспавнить дроп зомби на весу над головой\n/loot spawn ~ ~2 ~ kill @e[type=zombie,limit=1]\n\n# Вставить лут сундука с шахтой в сундук под ногами\n/loot insert ~ ~-1 ~ loot minecraft:chests/abandoned_mineshaft`,
+          explanation: "Позволяет запрашивать, копировать или симулировать файлы лута, выгружая кастомные артефакты, руды или моб-дропы без убийства.",
+          params: [
+            { key: "give <игрок>", val: "Выдаёт полученные предметы напрямую в инвентарь игрока" },
+            { key: "insert <xyz>", val: "Помещает сгенерированные вещи в указанный контейнер (сундук, воронка)" },
+            { key: "spawn <xyz>", val: "Выбрасывает лут в мир в виде физического плавающего предмета" },
+            { key: "replace block|entity", val: "Заменяет предметы в определенных слотах брони или инвентаря" }
+          ]
+        },
+        {
+          id: "msc_camera",
+          tag: "Камера",
+          name: "/camera <игрок> set|clear|fade ...",
+          short: "Управление углом обзора и кинематографичными сценами (1.20+)",
+          code: `# Сделать затемнение экрана (Fade) в красный цвет\n/camera @a fade time 0.5 2.0 0.5 color 255 0 0\n\n# Установить камеру сверху игрока (для катсцен)\n/camera @s set minecraft:free pos ~ ~10 ~-5 rot 60 0\n\n# Вернуть камеру в стандартное состояние от первого лица\n/camera @s clear`,
+          explanation: "Предоставляет полноценный инструмент для катсцен, дрожания зрения, сюжетного ослепления и изменения перспективы.",
+          warnNote: "Настройка 'pos' принимает как абсолютные, так и относительные / локальные координаты относительно игрока."
+        },
+        {
+          id: "msc_worldborder",
+          tag: "Мир",
+          name: "/worldborder",
+          short: "Управление границей мира",
+          code: `/worldborder set 1000        # Радиус 1000 блоков\n/worldborder add -100 60    # Сужать на 100 блоков за 60 сек\n/worldborder center 0 0\n/worldborder damage amount 0.5\n/worldborder warning distance 50`,
+          explanation: "Ограничивает радиус исследования карты светящимся барьером."
+        }
+      ]
+    }
+  ];
 
-/* ══ MAIN LAYOUT ══ */
-main{
-  position:relative;z-index:2;
-  max-width:1200px;margin:0 auto;
-  padding:0 2rem 6rem;
-  display:grid;grid-template-columns:240px 1fr;gap:3rem;
-  padding-top:3rem;
-}
-@media(max-width:860px){
-  main{grid-template-columns:1fr}
-  .sidebar{display:none}
-  .rune-strip,.rune-strip-r{display:none}
-}
+  // Helper to filter items across all sections when a search query is active
+  const getFilteredItems = () => {
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) return [];
+    
+    const results: { section: CommandSection; item: CommandItem }[] = [];
+    ALL_SECTIONS.forEach((sec) => {
+      sec.items.forEach((item) => {
+        const matches = 
+          item.name.toLowerCase().includes(query) ||
+          item.short.toLowerCase().includes(query) ||
+          item.explanation.toLowerCase().includes(query) ||
+          item.code.toLowerCase().includes(query) ||
+          (item.tag && item.tag.toLowerCase().includes(query));
+        if (matches) {
+          results.push({ section: sec, item });
+        }
+      });
+    });
+    return results;
+  };
 
-/* ══ SIDEBAR ══ */
-.sidebar{
-  position:sticky;top:80px;height:fit-content;
-  border:1px solid var(--gold-dim);
-  background:rgba(14,8,4,.7);
-  padding:0;
-}
-.sb-title{
-  font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;
-  letter-spacing:.25em;text-transform:uppercase;color:var(--gold);
-  padding:.9rem 1.2rem;border-bottom:1px solid var(--gold-dim);
-  background:rgba(201,149,42,.05);
-}
-.sb-link{
-  display:block;padding:.65rem 1.2rem;
-  font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.1em;
-  color:var(--ash3);text-decoration:none;text-transform:uppercase;
-  border-bottom:1px solid rgba(106,79,16,.3);
-  transition:color .2s,background .2s,padding-left .2s;
-}
-.sb-link:hover{color:var(--gold-bright);background:rgba(201,149,42,.06);padding-left:1.8rem}
-.sb-rune{opacity:.4;margin-right:.4em}
+  const filteredSearchResults = getFilteredItems();
 
-/* ══ CONTENT ══ */
-.content{}
-
-/* Section header */
-.sec{margin-bottom:4rem}
-.sec-head{
-  display:flex;align-items:center;gap:1.5rem;
-  margin-bottom:2rem;padding-bottom:1.2rem;
-  border-bottom:1px solid var(--gold-dim);
-  position:relative;
-}
-.sec-head::after{
-  content:'';position:absolute;bottom:-1px;left:0;width:80px;height:1px;
-  background:var(--gold-bright);box-shadow:0 0 8px rgba(240,192,64,.5);
-}
-.sec-rune{
-  font-size:2rem;color:var(--gold);
-  text-shadow:0 0 15px rgba(240,192,64,.4);
-  flex-shrink:0;
-}
-.sec-label{
-  font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.3em;
-  color:var(--gold-dim);text-transform:uppercase;margin-bottom:.35rem;
-}
-.sec-title{
-  font-family:'Cinzel Decorative',serif;font-weight:700;
-  font-size:clamp(1.1rem,2.5vw,1.7rem);
-  color:var(--gold);line-height:1.15;
-  text-shadow:0 0 15px rgba(201,149,42,.25);
-}
-.sec-desc{
-  font-size:.9rem;line-height:1.8;color:var(--ash2);
-  font-style:italic;margin-bottom:1.5rem;
-}
-
-/* COMMAND CARD */
-.cmd-card{
-  position:relative;
-  background:var(--code-bg);
-  border:1px solid var(--code-border);
-  border-left:3px solid var(--gold-dim);
-  margin-bottom:.75rem;
-  transition:border-left-color .2s,box-shadow .2s;
-  overflow:hidden;
-}
-.cmd-card::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,rgba(201,149,42,.04) 0%,transparent 40%);
-  pointer-events:none;
-}
-.cmd-card:hover{
-  border-left-color:var(--gold);
-  box-shadow:0 4px 25px rgba(201,149,42,.1),-3px 0 12px rgba(201,149,42,.15);
-}
-.cmd-header{
-  display:flex;align-items:flex-start;gap:1rem;
-  padding:.9rem 1.2rem;cursor:pointer;
-  user-select:none;
-}
-.cmd-tag{
-  flex-shrink:0;margin-top:.1rem;
-  font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.15em;
-  padding:.2rem .6rem;border:1px solid var(--gold-dim);
-  color:var(--gold-dim);text-transform:uppercase;white-space:nowrap;
-}
-.cmd-name{
-  font-family:'Cinzel',serif;font-size:.9rem;font-weight:700;
-  color:var(--gold-bright);letter-spacing:.05em;
-  text-shadow:0 0 10px rgba(240,192,64,.2);
-  flex:1;
-}
-.cmd-short{
-  font-size:.8rem;color:var(--ash3);font-style:italic;
-  font-family:'IM Fell English',serif;
-  margin-top:.25rem;
-}
-.cmd-toggle{
-  flex-shrink:0;color:var(--gold-dim);font-size:.7rem;
-  transition:transform .3s;margin-top:.3rem;
-}
-.cmd-card.open .cmd-toggle{transform:rotate(180deg)}
-.cmd-body{
-  display:none;padding:0 1.2rem 1rem;
-  border-top:1px solid rgba(58,42,8,.6);
-}
-.cmd-card.open .cmd-body{display:block}
-
-/* Code block */
-.code-block{
-  background:#020100;border:1px solid rgba(58,42,8,.8);
-  padding:.8rem 1.1rem;margin:.8rem 0;
-  font-family:'Courier New',monospace;font-size:.78rem;line-height:1.6;
-  color:#a0b060;overflow-x:auto;position:relative;
-}
-.code-block::before{
-  content:'⚙';position:absolute;top:.4rem;right:.7rem;
-  font-size:.65rem;color:var(--gold-dim);opacity:.5;
-}
-.syn{color:var(--gold);}
-.val{color:#7dd080;}
-.cmt{color:var(--ash3);font-style:italic;}
-.opt{color:#80b0d0;}
-.kw{color:#e08040;}
-
-/* Params table */
-.params{width:100%;border-collapse:collapse;margin-top:1rem;font-size:.78rem}
-.params th{
-  font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;
-  color:var(--gold-dim);text-transform:uppercase;text-align:left;
-  padding:.5rem .8rem;border-bottom:1px solid var(--code-border);background:rgba(201,149,42,.04);
-}
-.params td{
-  padding:.45rem .8rem;border-bottom:1px solid rgba(30,18,8,.8);
-  vertical-align:top;color:var(--ash2);
-}
-.params tr:hover td{background:rgba(201,149,42,.03)}
-.params td:first-child{font-family:'Courier New',monospace;font-size:.72rem;color:#7dd080;white-space:nowrap}
-.params td:nth-child(2){color:var(--ash3);font-size:.7rem}
-
-/* Note box */
-.note{
-  border-left:2px solid var(--ember);padding:.6rem 1rem;
-  margin:.8rem 0;background:rgba(217,58,8,.06);
-  font-size:.8rem;color:var(--ash2);font-style:italic;
-}
-.note-title{font-style:normal;color:var(--ember2);font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.3rem}
-
-/* SELECTOR TABLE */
-.sel-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;
-  background:var(--gold-dim);border:1px solid var(--gold-dim);margin-top:1.5rem;
-}
-.sel-cell{
-  background:var(--code-bg);padding:1.2rem;transition:background .2s;
-}
-.sel-cell:hover{background:rgba(201,149,42,.07)}
-.sel-sym{
-  font-family:'Cinzel Decorative',serif;font-size:1.4rem;
-  color:var(--gold-bright);text-shadow:0 0 12px rgba(240,192,64,.4);
-  margin-bottom:.5rem;display:block;
-}
-.sel-name{
-  font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;
-  color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem;
-}
-.sel-desc{font-size:.78rem;color:var(--ash2);line-height:1.5;font-style:italic}
-
-/* DIVIDER */
-.div-gold{
-  position:relative;text-align:center;margin:3rem 0;
-}
-.div-gold::before{
-  content:'';position:absolute;top:50%;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--gold-dim) 20%,var(--gold) 50%,var(--gold-dim) 80%,transparent);
-}
-.div-gold span{
-  position:relative;background:var(--dark);padding:0 1.5rem;
-  font-family:'Cinzel Decorative',serif;font-size:1rem;color:var(--gold-dim);
-}
-
-/* REVEAL */
-.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
-.reveal.vis{opacity:1;transform:none}
-
-/* FOOTER */
-footer{
-  position:relative;z-index:2;background:#000;
-  border-top:2px solid var(--gold-dim);
-  padding:3rem 2rem;text-align:center;
-}
-.ft-runes{
-  font-size:1.2rem;color:var(--gold-dim);letter-spacing:.5em;
-  display:block;margin-bottom:1.2rem;
-  text-shadow:0 0 10px rgba(201,149,42,.2);
-}
-.ft-text{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.25em;color:#2a2010;text-transform:uppercase}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-
-/* HIDDEN by search */
-.cmd-card.hidden{display:none}
-</style>
-</head>
-<body>
-
-<div id="fire-bg"></div>
-<div class="rune-strip">ᚠ · ᚢ · ᚦ · ᚨ · ᚱ · ᚲ · ᚷ · ᚹ · ᚺ · ᚾ · ᛁ · ᛃ · ᛇ · ᛈ · ᛉ · ᛊ · ᛏ · ᛒ · ᛖ · ᛗ · ᛚ · ᛜ · ᛞ · ᛟ</div>
-<div class="rune-strip rune-strip-r">ᛟ · ᛞ · ᛜ · ᛚ · ᛗ · ᛖ · ᛒ · ᛏ · ᛊ · ᛉ · ᛈ · ᛇ · ᛃ · ᛁ · ᚾ · ᚺ · ᚹ · ᚷ · ᚲ · ᚱ · ᚨ · ᚦ · ᚢ · ᚠ</div>
-
-<!-- ══════════ HEADER ══════════ -->
-<header>
-  <p class="h-eyebrow">ᚷᚱᛁᛗᛟᛁᚱᛖ · Свитки Командного Зала · ᚷᚱᛁᛗᛟᛁᚱᛖ</p>
-  <div class="torches">
-    <div class="torch"><div class="flame-wrap"><div class="fl fl1"></div><div class="fl fl2"></div><div class="fl fl3"></div></div><div class="t-pole"></div></div>
-    <div class="torch" style="animation-delay:.4s"><div class="flame-wrap"><div class="fl fl1" style="animation-delay:.3s"></div><div class="fl fl2" style="animation-delay:.2s"></div><div class="fl fl3" style="animation-delay:.5s"></div></div><div class="t-pole"></div></div>
-  </div>
-  <h1 class="h-title">Свитки<br>Командного Зала</h1>
-  <div class="orn"><div class="orn-l"></div><div class="orn-sym">⚒</div><div class="orn-l"></div></div>
-  <p class="h-sub">Полный кодекс боевых заклинаний, высеченных в камне для датапакеров, администраторов и строителей миров</p>
-</header>
-
-<!-- ══════════ NAV ══════════ -->
-<nav>
-  <a href="#basics">Основные</a>
-  <a href="#selectors">Селекторы</a>
-  <a href="#execute">Execute</a>
-  <a href="#scoreboard">Scoreboard</a>
-  <a href="#nbt">NBT/Data</a>
-  <a href="#items">Предметы</a>
-  <a href="#world">Мир</a>
-  <a href="#server">Сервер</a>
-</nav>
-
-<!-- ══════════ SEARCH ══════════ -->
-<div class="search-wrapper">
-  <span class="search-icon">⚔</span>
-  <input class="search-box" id="searchBox" type="text" placeholder="Искать команду... (например: scoreboard, kill, tp)">
-</div>
-
-<!-- ══════════ MAIN ══════════ -->
-<main>
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sb-title">Оглавление</div>
-    <a href="#basics"    class="sb-link"><span class="sb-rune">ᚠ</span> Основные команды</a>
-    <a href="#selectors" class="sb-link"><span class="sb-rune">ᚢ</span> Селекторы целей</a>
-    <a href="#execute"   class="sb-link"><span class="sb-rune">ᚦ</span> /execute</a>
-    <a href="#scoreboard"class="sb-link"><span class="sb-rune">ᚨ</span> /scoreboard</a>
-    <a href="#nbt"       class="sb-link"><span class="sb-rune">ᚱ</span> /data (NBT)</a>
-    <a href="#items"     class="sb-link"><span class="sb-rune">ᚲ</span> /item + Компоненты</a>
-    <a href="#world"     class="sb-link"><span class="sb-rune">ᚷ</span> Мир и блоки</a>
-    <a href="#entities"  class="sb-link"><span class="sb-rune">ᚹ</span> Сущности и эффекты</a>
-    <a href="#server"    class="sb-link"><span class="sb-rune">ᚺ</span> Сервер / Дебаг</a>
-    <a href="#tick"      class="sb-link"><span class="sb-rune">ᚾ</span> /tick (Тикрейт)</a>
-    <a href="#misc"      class="sb-link"><span class="sb-rune">ᛁ</span> Прочее</a>
-  </aside>
-
-  <!-- CONTENT -->
-  <div class="content">
-
-    <!-- ═══ BASICS ═══ -->
-    <section id="basics" class="sec reveal">
-      <div class="sec-head">
-        <span class="sec-rune">ᚠ</span>
-        <div>
-          <div class="sec-label">Раздел I</div>
-          <div class="sec-title">Основные и системные команды</div>
-        </div>
+  return (
+    <div className="min-h-screen bg-color-dark text-color-ash body-noise relative pb-20 font-serif">
+      
+      {/* ── BACKGROUND FIRE PARTICLES ENGINE ── */}
+      <div id="fire-bg">
+        {sparks.map((spark) => (
+          <div
+            key={spark.id}
+            className="sp"
+            style={{
+              left: `${spark.left}%`,
+              width: `${spark.size}px`,
+              height: `${spark.size}px`,
+              background: spark.color,
+              animationDuration: `${spark.duration}s`,
+              animationDelay: `${spark.delay}s`,
+              boxShadow: `0 0 ${spark.size * 2}px ${spark.color}`,
+              ["--d" as any]: `${spark.d}px`
+            }}
+          />
+        ))}
       </div>
-      <p class="sec-desc">Фундамент любого мира — без этих заклинаний не выстоит ни одна крепость.</p>
 
-      <div class="cmd-card" data-search="help справка команды">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Система</span>
-          <div><div class="cmd-name">/help [команда]</div><div class="cmd-short">Список доступных команд или справка по конкретной</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/help</span><br><span class="syn">/help</span> <span class="val">scoreboard</span></div>
-          <p style="font-size:.82rem;color:var(--ash2);font-style:italic">Выводит список всех доступных команд. При указании имени — показывает синтаксис конкретной команды.</p>
-        </div>
+      {/* ── RUNIC GLOWING SIDE STRIPS ── */}
+      <div className="rune-strip select-none" aria-hidden="true">
+        ᚠ · ᚢ · ᚦ · ᚨ · ᚱ · ᚲ · ᚷ · ᚹ · ᚺ · ᚾ · ᛁ · ᛃ · ᛇ · ᛈ · ᛉ · ᛊ · ᛏ · ᛒ · ᛖ · ᛗ · ᛚ · ᛜ · ᛞ · ᛟ
+      </div>
+      <div className="rune-strip rune-strip-r select-none" aria-hidden="true">
+        ᛟ · ᛞ · ᛜ · ᛚ · ᛗ · ᛖ · ᛒ · ᛏ · ᛊ · ᛉ · ᛈ · ᛇ · ᛃ · ᛁ · ᚾ · ᚺ · ᚹ · ᚷ · ᚲ · ᚱ · ᚨ · ᚦ · ᚢ · ᚠ
       </div>
 
-      <div class="cmd-card" data-search="reload перезагрузить датапак функции рецепты">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Система</span>
-          <div><div class="cmd-name">/reload</div><div class="cmd-short">Перезагрузка датапаков, функций, лут-таблиц и рецептов</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/reload</span></div>
-          <div class="note"><div class="note-title">⚒ Для датапакеров</div>Главная команда разработчика. После каждого изменения в файлах датапака — обязательно /reload. Не перезапускает сервер.</div>
-        </div>
-      </div>
-
-      <div class="cmd-card" data-search="gamemode режим survival creative adventure spectator">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Игрок</span>
-          <div><div class="cmd-name">/gamemode &lt;режим&gt; [игрок]</div><div class="cmd-short">Смена игрового режима</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/gamemode</span> <span class="kw">survival</span><br><span class="syn">/gamemode</span> <span class="kw">creative</span> <span class="val">@a</span><br><span class="syn">/gamemode</span> <span class="kw">spectator</span> <span class="opt">SteveTheWarrior</span></div>
-          <table class="params"><tr><th>Режим</th><th>Описание</th></tr>
-            <tr><td>survival</td><td>Выживание — HP, голод, инвентарь</td></tr>
-            <tr><td>creative</td><td>Творческий — полёт, бесконечные ресурсы</td></tr>
-            <tr><td>adventure</td><td>Приключение — только взаимодействие</td></tr>
-            <tr><td>spectator</td><td>Наблюдатель — летает сквозь блоки</td></tr>
-          </table>
-        </div>
-      </div>
-
-      <div class="cmd-card" data-search="gamerule правило keepInventory daylightCycle">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Мир</span>
-          <div><div class="cmd-name">/gamerule &lt;правило&gt; [значение]</div><div class="cmd-short">Настройка правил мира</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/gamerule</span> <span class="kw">keepInventory</span> <span class="val">true</span><br><span class="syn">/gamerule</span> <span class="kw">doDaylightCycle</span> <span class="val">false</span><br><span class="syn">/gamerule</span> <span class="kw">maxCommandChainLength</span> <span class="val">65536</span><br><span class="syn">/gamerule</span> <span class="kw">commandModificationBlockLimit</span> <span class="val">32768</span></div>
-          <table class="params"><tr><th>Правило</th><th>Назначение</th></tr>
-            <tr><td>keepInventory</td><td>Сохранять инвентарь после смерти</td></tr>
-            <tr><td>doDaylightCycle</td><td>Смена дня и ночи</td></tr>
-            <tr><td>commandBlockOutput</td><td>Логировать вывод КБ в чат</td></tr>
-            <tr><td>maxCommandChainLength</td><td>Лимит команд за тик (датапак)</td></tr>
-            <tr><td>commandModificationBlockLimit</td><td>Лимит блоков для /fill и /clone</td></tr>
-          </table>
-        </div>
-      </div>
-
-      <div class="cmd-card" data-search="tp teleport телепортация координаты">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Мир</span>
-          <div><div class="cmd-name">/tp &lt;цель&gt; &lt;x y z&gt;</div><div class="cmd-short">Телепортация сущности в точку или к другой сущности</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/tp</span> <span class="val">@s</span> <span class="opt">100 64 -200</span><br><span class="syn">/tp</span> <span class="val">@a</span> <span class="val">@p</span><br><span class="syn">/teleport</span> <span class="val">@e[type=zombie]</span> <span class="opt">~ ~10 ~</span>  <span class="cmt"># ~ = текущая координата</span></div>
-          <div class="note"><div class="note-title">Тильда (~) и Каретка (^)</div>~ — относительные координаты от исполнителя. ^ — локальные координаты (вперёд/вправо/вверх от взгляда).</div>
-        </div>
-      </div>
-
-      <div class="cmd-card" data-search="time время день ночь set">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Мир</span>
-          <div><div class="cmd-name">/time &lt;set|add|query&gt; &lt;значение&gt;</div><div class="cmd-short">Управление временем суток</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/time set</span> <span class="kw">day</span>    <span class="cmt"># 1000 тиков</span><br><span class="syn">/time set</span> <span class="kw">noon</span>   <span class="cmt"># 6000</span><br><span class="syn">/time set</span> <span class="kw">night</span>  <span class="cmt"># 13000</span><br><span class="syn">/time set</span> <span class="val">18000</span>  <span class="cmt"># Полночь</span><br><span class="syn">/time add</span> <span class="val">6000</span><br><span class="syn">/time query</span> <span class="kw">daytime</span></div>
-        </div>
-      </div>
-
-      <div class="cmd-card" data-search="kill убить уничтожить сущность">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Сущность</span>
-          <div><div class="cmd-name">/kill [цель]</div><div class="cmd-short">Мгновенное уничтожение сущности</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/kill</span>                     <span class="cmt"># Убить себя</span><br><span class="syn">/kill</span> <span class="val">@e[type=zombie]</span>   <span class="cmt"># Всех зомби</span><br><span class="syn">/kill</span> <span class="val">@e[type=!player]</span>  <span class="cmt"># Всё кроме игроков</span></div>
-        </div>
-      </div>
-    </section>
-
-    <div class="div-gold reveal"><span>ᚢ</span></div>
-
-    <!-- ═══ SELECTORS ═══ -->
-    <section id="selectors" class="sec reveal">
-      <div class="sec-head">
-        <span class="sec-rune">ᚢ</span>
-        <div><div class="sec-label">Раздел II</div><div class="sec-title">Селекторы целей</div></div>
-      </div>
-      <p class="sec-desc">Кого ты призываешь своим заклинанием — определяют руны-селекторы.</p>
-
-      <div class="sel-grid">
-        <div class="sel-cell"><span class="sel-sym">@p</span><div class="sel-name">Ближайший игрок</div><p class="sel-desc">Выбирает одного ближайшего к исполнителю живого игрока</p></div>
-        <div class="sel-cell"><span class="sel-sym">@r</span><div class="sel-name">Случайный игрок</div><p class="sel-desc">Выбирает случайного игрока на сервере</p></div>
-        <div class="sel-cell"><span class="sel-sym">@a</span><div class="sel-name">Все игроки</div><p class="sel-desc">Все игроки, включая мёртвых и в режиме наблюдателя</p></div>
-        <div class="sel-cell"><span class="sel-sym">@e</span><div class="sel-name">Все сущности</div><p class="sel-desc">Все живые и технические сущности: мобы, снаряды, маркеры, стойки</p></div>
-        <div class="sel-cell"><span class="sel-sym">@s</span><div class="sel-name">Исполнитель</div><p class="sel-desc">Текущий контекст выполнения — тот, кто запустил команду</p></div>
-      </div>
-
-      <div style="margin-top:2rem">
-        <div class="cmd-card" data-search="селектор фильтр distance type tag team name scores limit sort">
-          <div class="cmd-header" onclick="toggle(this)">
-            <span class="cmd-tag">Фильтры</span>
-            <div><div class="cmd-name">Спецификаторы [@...]</div><div class="cmd-short">Фильтрация и ограничение выборки сущностей</div></div>
-            <span class="cmd-toggle">▼</span>
+      {/* ── EPIC TORCH-LIT HEADER ── */}
+      <header>
+        <p className="h-eyebrow font-display">ᚷᚱᛁᛗᛟᛁᚱᛖ · Свитки Командного Зала · ᚷᚱᛁᛗᛟᛁᚱᛖ</p>
+        <div className="torches">
+          <div className="torch" id="left-torch">
+            <div className="flame-wrap">
+              <div className="fl fl1"></div>
+              <div className="fl fl2"></div>
+              <div className="fl fl3"></div>
+            </div>
+            <div className="t-pole"></div>
           </div>
-          <div class="cmd-body">
-            <div class="code-block"><span class="cmt"># Только зомби в радиусе 10 блоков</span><br><span class="val">@e</span>[<span class="kw">type</span>=zombie,<span class="kw">distance</span>=..10]<br><br><span class="cmt"># Ближайший игрок с тегом и очками</span><br><span class="val">@a</span>[<span class="kw">tag</span>=warrior,<span class="kw">scores</span>={kills=5..},<span class="kw">limit</span>=1,<span class="kw">sort</span>=nearest]<br><br><span class="cmt"># Все, кроме игроков, в прямоугольнике</span><br><span class="val">@e</span>[<span class="kw">type</span>=!player,<span class="kw">dx</span>=20,<span class="kw">dy</span>=10,<span class="kw">dz</span>=20]</div>
-            <table class="params">
-              <tr><th>Параметр</th><th>Описание</th></tr>
-              <tr><td>distance=..10</td><td>Радиус поиска (..10 = до 10, 5..10 = от 5 до 10)</td></tr>
-              <tr><td>dx,dy,dz</td><td>Объём зоны поиска параллелепипедом</td></tr>
-              <tr><td>type=zombie</td><td>Тип сущности. ! инвертирует: type=!player</td></tr>
-              <tr><td>tag=boss</td><td>Наличие строкового тега. tag=!init — отсутствие</td></tr>
-              <tr><td>team=Red</td><td>Фильтр по скорборд-команде</td></tr>
-              <tr><td>name="Steve"</td><td>Фильтр по имени сущности</td></tr>
-              <tr><td>scores={deaths=5..}</td><td>Проверка очков скорборда</td></tr>
-              <tr><td>level=30..</td><td>Уровень опыта игрока</td></tr>
-              <tr><td>gamemode=creative</td><td>Игровой режим</td></tr>
-              <tr><td>limit=1</td><td>Ограничение числа целей</td></tr>
-              <tr><td>sort=nearest</td><td>Сортировка: nearest, furthest, random, arbitrary</td></tr>
-              <tr><td>nbt={OnGround:1b}</td><td>Проверка NBT-данных (медленно!)</td></tr>
-              <tr><td>predicate=ns:check</td><td>Файл предиката из датапака</td></tr>
-            </table>
+          <div className="torch" id="right-torch" style={{ animationDelay: ".4s" }}>
+            <div className="flame-wrap">
+              <div className="fl fl1" style={{ animationDelay: ".3s" }}></div>
+              <div className="fl fl2" style={{ animationDelay: ".2s" }}></div>
+              <div className="fl fl3" style={{ animationDelay: ".5s" }}></div>
+            </div>
+            <div className="t-pole"></div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <div class="div-gold reveal"><span>ᚦ</span></div>
-
-    <!-- ═══ EXECUTE ═══ -->
-    <section id="execute" class="sec reveal">
-      <div class="sec-head">
-        <span class="sec-rune">ᚦ</span>
-        <div><div class="sec-label">Раздел III</div><div class="sec-title">/execute — Конструктор контекста</div></div>
-      </div>
-      <p class="sec-desc">Самое мощное заклинание зала. Строится цепочкой модификаторов — каждый меняет контекст выполнения.</p>
-
-      <div class="cmd-card" data-search="execute as at in positioned rotated контекст">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Контекст</span>
-          <div><div class="cmd-name">Модификаторы контекста</div><div class="cmd-short">as, at, in, positioned, rotated, facing, anchored</div></div>
-          <span class="cmd-toggle">▼</span>
+        <h1 className="h-title font-dec uppercase">
+          Свитки<br />Командного Зала
+        </h1>
+        <div className="orn">
+          <div className="orn-l"></div>
+          <div className="orn-sym text-color-gold text-2xl font-bold">⚒</div>
+          <div className="orn-l"></div>
         </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="cmt"># Выполнить команду от имени каждого игрока</span><br><span class="syn">/execute as</span> <span class="val">@a</span> <span class="kw">run</span> <span class="opt">say Я воин!</span><br><br><span class="cmt"># От имени всех зомби, на их позиции</span><br><span class="syn">/execute as</span> <span class="val">@e[type=zombie]</span> <span class="syn">at</span> <span class="val">@s</span> <span class="kw">run</span> <span class="opt">particle flame ~ ~ ~</span><br><br><span class="cmt"># Смотреть в сторону ближайшего игрока</span><br><span class="syn">/execute as</span> <span class="val">@e[tag=guard]</span> <span class="syn">at</span> <span class="val">@s</span> <span class="syn">facing entity</span> <span class="val">@p</span> eyes <span class="kw">run</span> <span class="opt">...</span></div>
-          <table class="params">
-            <tr><th>Модификатор</th><th>Что меняет</th></tr>
-            <tr><td>as &lt;цель&gt;</td><td>Исполнителя (@s). Координаты НЕ меняет</td></tr>
-            <tr><td>at &lt;цель&gt;</td><td>Позицию, поворот и измерение на принадлежащие цели</td></tr>
-            <tr><td>in &lt;измерение&gt;</td><td>Переносит контекст в другое измерение (overworld/nether/end)</td></tr>
-            <tr><td>positioned &lt;x y z&gt;</td><td>Только координаты выполнения</td></tr>
-            <tr><td>rotated &lt;yaw pitch&gt;</td><td>Только направление взгляда</td></tr>
-            <tr><td>facing entity @p eyes</td><td>Повернуть взгляд к глазам/ногам сущности</td></tr>
-            <tr><td>anchored eyes|feet</td><td>Смещает ^ ^ ^ относительно уровня глаз или ног</td></tr>
-          </table>
-        </div>
-      </div>
+        <p className="h-sub font-serif">
+          Кодекс призыва Визеров и боевых серверных команд, высеченный в камне для датапакеров, архитекторов миров и администраторов
+        </p>
+      </header>
 
-      <div class="cmd-card" data-search="execute if unless block entity score data predicate условие">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Условия</span>
-          <div><div class="cmd-name">if / unless — Ветвление</div><div class="cmd-short">Условные операторы внутри /execute</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="cmt"># Если под ногами камень — дать эффект</span><br><span class="syn">/execute as</span> <span class="val">@a</span> <span class="syn">at</span> <span class="val">@s</span> <span class="kw">if block</span> ~ ~-1 ~ stone <span class="kw">run</span> <span class="opt">effect give @s speed 1 0</span><br><br><span class="cmt"># Если в мире есть дракон</span><br><span class="syn">/execute</span> <span class="kw">if entity</span> <span class="val">@e[type=ender_dragon]</span> <span class="kw">run</span> <span class="opt">say Дракон жив!</span><br><br><span class="cmt"># Если очки kills >= 10</span><br><span class="syn">/execute as</span> <span class="val">@a</span> <span class="kw">if score</span> <span class="val">@s</span> kills <span class="kw">matches</span> 10.. <span class="kw">run</span> <span class="opt">...</span><br><br><span class="cmt"># Сложная цепочка (пример из документа)</span><br><span class="syn">/execute as</span> <span class="val">@a[tag=active]</span> <span class="syn">at</span> <span class="val">@s</span> <span class="syn">anchored eyes</span> <span class="kw">if block</span> ^ ^ ^1 air <span class="kw">run</span> particle flame ^ ^ ^1</div>
-          <table class="params">
-            <tr><th>Условие</th><th>Описание</th></tr>
-            <tr><td>if block &lt;xyz&gt; &lt;блок&gt;</td><td>Проверка конкретного блока по координатам</td></tr>
-            <tr><td>if blocks r1 r2 dest all|masked</td><td>Сравнение двух регионов блоков</td></tr>
-            <tr><td>if entity &lt;сущность&gt;</td><td>Существует ли хотя бы одна такая сущность</td></tr>
-            <tr><td>if score ... matches</td><td>Сравнение очков скорборда (&lt; &lt;= = &gt; &gt;= matches)</td></tr>
-            <tr><td>if data &lt;block|entity|storage&gt;</td><td>Существует ли NBT-тег по пути</td></tr>
-            <tr><td>if predicate &lt;id&gt;</td><td>Запуск файла-предиката из датапака</td></tr>
-            <tr><td>if dimension &lt;id&gt;</td><td>Контекст находится в указанном измерении?</td></tr>
-            <tr><td>if loaded &lt;xyz&gt;</td><td>Прогружен ли чанк по координатам (критично!)</td></tr>
-          </table>
-        </div>
-      </div>
+      {/* ── STICKY TOP PRIMARY NAVIGATION ── */}
+      <nav className="sticky top-0 z-50">
+        <button
+          onClick={() => { setActiveTab("simulator"); setSearchQuery(""); }}
+          className={`font-display text-xs font-bold uppercase tracking-widest px-6 py-4 transition-all relative ${
+            activeTab === "simulator" ? "text-color-gold-bright" : "text-color-ash2 hover:text-color-gold-bright"
+          }`}
+        >
+          <span>🏯 Горнило Клеток (Simulator)</span>
+          {activeTab === "simulator" && (
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-color-gold to-transparent" />
+          )}
+        </button>
 
-      <div class="cmd-card" data-search="execute store result success записать сохранить">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Хранение</span>
-          <div><div class="cmd-name">store result|success</div><div class="cmd-short">Сохранение результата выполнения в переменную или NBT</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="cmt"># Записать HP игрока в скорборд</span><br><span class="syn">/execute store result score</span> <span class="val">@s</span> hp_obj <span class="kw">run</span> data get entity <span class="val">@s</span> Health<br><br><span class="cmt"># Успех (1 или 0) в storage</span><br><span class="syn">/execute store success storage</span> <span class="opt">my_pack:main</span> result <span class="kw">byte</span> 1 <span class="kw">run</span> <span class="opt">...</span></div>
-          <table class="params">
-            <tr><th>Тип</th><th>Описание</th></tr>
-            <tr><td>result</td><td>Числовое значение (кол-во предметов, HP, уровень сигнала)</td></tr>
-            <tr><td>success</td><td>1 если команда выполнена, 0 если нет</td></tr>
-            <tr><td>score &lt;цель&gt; &lt;объект&gt;</td><td>В переменную скорборда</td></tr>
-            <tr><td>storage &lt;id&gt; &lt;путь&gt; &lt;тип&gt; &lt;x&gt;</td><td>В глобальное хранилище датапака</td></tr>
-            <tr><td>entity &lt;сущность&gt; &lt;путь&gt;</td><td>В NBT сущности</td></tr>
-            <tr><td>block &lt;xyz&gt; &lt;путь&gt;</td><td>В NBT блока (сундук, КБ)</td></tr>
-            <tr><td>bossbar &lt;id&gt; value|max</td><td>В значение боссбара</td></tr>
-          </table>
-          <div class="note"><div class="note-title">Типы данных</div>byte · short · int · long · float · double</div>
-        </div>
-      </div>
-    </section>
+        <button
+          onClick={() => { setActiveTab("builder"); setSearchQuery(""); }}
+          className={`font-display text-xs font-bold uppercase tracking-widest px-6 py-4 transition-all relative ${
+            activeTab === "builder" ? "text-color-gold-bright" : "text-color-ash2 hover:text-color-gold-bright"
+          }`}
+        >
+          <span>🎛️ Конструктор NBT</span>
+          {activeTab === "builder" && (
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-color-gold to-transparent" />
+          )}
+        </button>
 
-    <div class="div-gold reveal"><span>ᚨ</span></div>
+        <button
+          onClick={() => { setActiveTab("codex"); }}
+          className={`font-display text-xs font-bold uppercase tracking-widest px-6 py-4 transition-all relative ${
+            activeTab === "codex" ? "text-color-gold-bright" : "text-color-ash2 hover:text-color-gold-bright"
+          }`}
+        >
+          <span>📜 Командный Кодекс</span>
+          {activeTab === "codex" && (
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-color-gold to-transparent" />
+          )}
+        </button>
 
-    <!-- ═══ SCOREBOARD ═══ -->
-    <section id="scoreboard" class="sec reveal">
-      <div class="sec-head">
-        <span class="sec-rune">ᚨ</span>
-        <div><div class="sec-label">Раздел IV</div><div class="sec-title">/scoreboard — Игровая СУБД</div></div>
-      </div>
-      <p class="sec-desc">Система переменных и очков. Хранит числа, отслеживает статистику, создаёт игровые механики.</p>
+        <button
+          onClick={() => { setActiveTab("wiki"); setSearchQuery(""); }}
+          className={`font-display text-xs font-bold uppercase tracking-widest px-6 py-4 transition-all relative ${
+            activeTab === "wiki" ? "text-color-gold-bright" : "text-color-ash2 hover:text-color-gold-bright"
+          }`}
+        >
+          <span>🛡️ Законы Удержания (Wiki)</span>
+          {activeTab === "wiki" && (
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-color-gold to-transparent" />
+          )}
+        </button>
+      </nav>
 
-      <div class="cmd-card" data-search="scoreboard objectives add remove list setdisplay задача переменная">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Objectives</span>
-          <div><div class="cmd-name">scoreboard objectives</div><div class="cmd-short">Создание и управление задачами (переменными)</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/scoreboard objectives add</span> <span class="val">kills</span> <span class="kw">playerKillCount</span><br><span class="syn">/scoreboard objectives add</span> <span class="val">timer</span> <span class="kw">dummy</span> <span class="opt">"Таймер"</span><br><span class="syn">/scoreboard objectives setdisplay</span> <span class="kw">sidebar</span> <span class="val">kills</span><br><span class="syn">/scoreboard objectives list</span><br><span class="syn">/scoreboard objectives remove</span> <span class="val">timer</span></div>
-          <table class="params">
-            <tr><th>Критерий</th><th>Что отслеживает</th></tr>
-            <tr><td>dummy</td><td>Изменяется только командами (основной для датапаков)</td></tr>
-            <tr><td>deathCount</td><td>Количество смертей игрока</td></tr>
-            <tr><td>playerKillCount</td><td>Убийства игроков</td></tr>
-            <tr><td>custom:minecraft.leave_game</td><td>Выходы из игры</td></tr>
-          </table>
-          <div class="note"><div class="note-title">Ячейки отображения</div>sidebar · list · belowName · sidebar.team.red</div>
+      {/* ── INTELLIGENT SEARCH BAR ── */}
+      <div className="search-wrapper max-w-[900px] mx-auto mt-10 px-4 md:px-0">
+        <div className="relative">
+          <span className="search-icon absolute left-4 top-1/2 -translate-y-1/2 text-color-gold-dim">⚔</span>
+          <input
+            id="searchBox"
+            type="text"
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              // Fallback to codex tab as soon as user types search queries
+              if (activeTab !== "codex" && activeTab !== "builder") {
+                setActiveTab("codex");
+              }
+            }}
+            placeholder="Искать команду в заклинаниях... (например: scoreboard, kill, tp)"
+            className="search-box w-full bg-[#100905]/95 border border-color-gold-dim px-12 py-4 rounded-none text-color-ash placeholder-color-ash3 font-display focus:border-color-gold text-sm tracking-wide"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-mono font-bold text-color-gold-dim hover:text-color-gold-bright uppercase tracking-widest"
+            >
+              СБРОС X
+            </button>
+          )}
         </div>
       </div>
 
-      <div class="cmd-card" data-search="scoreboard players get set add remove reset операция математика">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Players</span>
-          <div><div class="cmd-name">scoreboard players</div><div class="cmd-short">Работа с очками сущностей и математика</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/scoreboard players set</span> <span class="val">@s</span> timer <span class="opt">100</span><br><span class="syn">/scoreboard players add</span> <span class="val">@s</span> kills <span class="opt">1</span><br><span class="syn">/scoreboard players remove</span> <span class="val">@a</span> hp <span class="opt">5</span><br><span class="syn">/scoreboard players get</span> <span class="val">@s</span> kills<br><span class="syn">/scoreboard players reset</span> <span class="val">@s</span> timer<br><br><span class="cmt"># Математика между переменными</span><br><span class="syn">/scoreboard players operation</span> <span class="val">@s</span> result <span class="kw">+=</span> <span class="val">@s</span> bonus<br><span class="syn">/scoreboard players operation</span> <span class="val">@s</span> hp <span class="kw">%=</span> <span class="val">#const</span> divider<br><span class="syn">/scoreboard players operation</span> <span class="val">@s</span> a <span class="kw">><</span> <span class="val">@s</span> b  <span class="cmt"># Обмен</span></div>
-          <div class="note"><div class="note-title">Операции</div>= · += · -= · *= · /= · %= · > (макс) · &lt; (мин) · >< (обмен)</div>
-          <div class="note"><div class="note-title">Фейковые ники</div>Используй #global или #const как имена без реального игрока: scoreboard players set #global timer 0</div>
-        </div>
-      </div>
-    </section>
+      {/* ── MAIN CONTENT GRID ── */}
+      <main className={`mx-auto px-6 md:px-12 mt-12 grid grid-cols-1 md:grid-cols-12 gap-8 relative z-10 transition-all duration-300 ${
+        isWorkspaceExpanded && activeTab === "simulator" ? "max-w-[1780px] w-full" : "max-w-[1240px]"
+      }`}>
+        
+        {/* SIDE TABLE OF CONTENTS (aside sidebar) */}
+        <aside className={`col-span-1 md:col-span-3 h-fit sticky top-24 border border-color-gold-dim bg-[#0a0604]/90 p-1 divide-y divide-color-gold-dim/40 rounded shadow-2xl select-none transition-all duration-300 ${
+          isWorkspaceExpanded && activeTab === "simulator" ? "hidden" : "hidden md:block"
+        }`}>
+          <div className="sb-title font-display text-xs font-bold uppercase tracking-widest px-4 py-3 bg-color-gold-dim/10 text-color-gold-bright flex items-center justify-between">
+            <span>Оглавление кодекса</span>
+            <span className="text-[10px] text-color-gold-dim font-mono">ᛘ v1.20</span>
+          </div>
 
-    <div class="div-gold reveal"><span>ᚱ</span></div>
+          <button
+            onClick={() => { setActiveTab("simulator"); setSearchQuery(""); }}
+            className={`w-full text-left px-4 py-3 text-xs uppercase font-display tracking-widest flex items-center gap-2 transition ${
+              activeTab === "simulator" ? "bg-color-gold/10 text-color-gold-bright font-extrabold" : "text-color-ash2 hover:bg-color-gold/5 hover:text-color-ash"
+            }`}
+          >
+            <span className="text-color-gold text-sm">ᛘ</span>
+            <span>Горнило Визеров</span>
+          </button>
 
-    <!-- ═══ NBT ═══ -->
-    <section id="nbt" class="sec reveal">
-      <div class="sec-head">
-        <span class="sec-rune">ᚱ</span>
-        <div><div class="sec-label">Раздел V</div><div class="sec-title">/data — Манипуляция NBT</div></div>
-      </div>
-      <p class="sec-desc">Прямое чтение и запись в тайные хранилища данных — сущностей, блоков и глобального storage.</p>
+          <button
+            onClick={() => { setActiveTab("builder"); setSearchQuery(""); }}
+            className={`w-full text-left px-4 py-3 text-xs uppercase font-display tracking-widest flex items-center gap-2 transition ${
+              activeTab === "builder" ? "bg-color-gold/10 text-color-gold-bright font-extrabold" : "text-color-ash2 hover:bg-color-gold/5 hover:text-color-ash"
+            }`}
+          >
+            <span className="text-color-gold text-sm">🎛️</span>
+            <span>Конструктор NBT</span>
+          </button>
 
-      <div class="cmd-card" data-search="data get merge modify remove block entity storage nbt путь">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">NBT</span>
-          <div><div class="cmd-name">/data get|merge|modify|remove</div><div class="cmd-short">Читать и изменять NBT у сущностей, блоков и хранилищ</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="cmt"># Читать HP игрока</span><br><span class="syn">/data get entity</span> <span class="val">@s</span> Health<br><br><span class="cmt"># Слить данные с сущностью</span><br><span class="syn">/data merge entity</span> <span class="val">@s</span> {CustomName:'<span class="opt">{"text":"Воин"}</span>'}<br><br><span class="cmt"># Добавить в конец массива хранилища</span><br><span class="syn">/data modify storage</span> <span class="opt">my_pack:main</span> cooldowns <span class="kw">append value</span> <span class="val">100</span><br><br><span class="cmt"># Скопировать из сундука в storage</span><br><span class="syn">/data modify storage</span> <span class="opt">my_pack:main</span> chest_data <span class="kw">set from block</span> ~ ~ ~ Items<br><br><span class="cmt"># Удалить тег</span><br><span class="syn">/data remove entity</span> <span class="val">@s</span> CustomName</div>
-          <table class="params">
-            <tr><th>Команда</th><th>Описание</th></tr>
-            <tr><td>/data get</td><td>Вывод NBT или значения тега (с множителем)</td></tr>
-            <tr><td>/data merge</td><td>Слияние — перезаписывает совпадения, добавляет новые</td></tr>
-            <tr><td>/data remove</td><td>Удаление тега по пути</td></tr>
-            <tr><td>/data modify ... set</td><td>Полная замена значения</td></tr>
-            <tr><td>/data modify ... append</td><td>Добавить в конец списка</td></tr>
-            <tr><td>/data modify ... prepend</td><td>Добавить в начало списка</td></tr>
-            <tr><td>/data modify ... insert N</td><td>Вставить по индексу</td></tr>
-          </table>
-          <div class="note"><div class="note-title">⚠ Игрокам нельзя менять NBT напрямую</div>Только читать. /data merge entity @s не работает для игрока. Используй /attribute или компоненты.</div>
-        </div>
-      </div>
-    </section>
+          {ALL_SECTIONS.map((sec, idx) => (
+            <button
+              key={sec.id}
+              onClick={() => {
+                setActiveTab("codex");
+                // Scroll smoothly to that exact section ID inside the page
+                setTimeout(() => {
+                  const el = document.getElementById(sec.id);
+                  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                }, 100);
+              }}
+              className={`w-full text-left px-4 py-3.5 text-xs uppercase font-display tracking-widest flex items-center gap-2.5 transition ${
+                activeTab === "codex" ? "text-color-ash" : "text-color-ash2 hover:bg-color-gold/5 hover:text-color-ash"
+              }`}
+            >
+              <span className="text-color-gold text-xs">{sec.rune}</span>
+              <span className="truncate">{idx + 1}. {sec.title.split(" — ")[0]}</span>
+            </button>
+          ))}
 
-    <div class="div-gold reveal"><span>ᚲ</span></div>
+          <button
+            onClick={() => { setActiveTab("wiki"); setSearchQuery(""); }}
+            className={`w-full text-left px-4 py-3.5 text-xs uppercase font-display tracking-widest flex items-center gap-2.5 transition ${
+              activeTab === "wiki" ? "bg-color-gold/10 text-color-gold-bright font-extrabold" : "text-color-ash2 hover:bg-color-gold/5 hover:text-color-ash"
+            }`}
+          >
+            <span className="text-color-gold text-sm">🛡️</span>
+            <span>Библиотека ЛОРА & Wiki</span>
+          </button>
+        </aside>
 
-    <!-- ═══ ITEMS ═══ -->
-    <section id="items" class="sec reveal">
-      <div class="sec-head">
-        <span class="sec-rune">ᚲ</span>
-        <div><div class="sec-label">Раздел VI</div><div class="sec-title">/item + Компоненты предметов</div></div>
-      </div>
-      <p class="sec-desc">В версии 1.20.5+ старые NBT-теги заменены системой компонентов в квадратных скобках.</p>
+        {/* DETAILS DESK MODULES CONTAINER */}
+        <div className={`space-y-12 transition-all duration-300 ${
+          isWorkspaceExpanded && activeTab === "simulator" ? "col-span-1 md:col-span-12" : "col-span-1 md:col-span-9"
+        }`}>
+          
+          <AnimatePresence mode="wait">
+            
+            {/* 🏰 TAB: INTERACTIVE 3D/2D WITHER CAGE SANDBOX BUILDER */}
+            {activeTab === "simulator" && !searchQuery && (
+              <motion.div
+                key="simulator"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-6"
+              >
+                <div className="sec-head flex items-center gap-4 border-b border-color-gold-dim pb-3">
+                  <span className="sec-rune text-3xl font-bold text-color-gold-bright drop-shadow-[0_0_10px_rgba(240,192,64,0.4)]">
+                    ᛘ
+                  </span>
+                  <div>
+                    <div className="sec-label font-display text-[10px] tracking-widest text-color-gold-dim uppercase">
+                      Лаборатория Чертежей
+                    </div>
+                    <h2 className="sec-title font-dec font-extrabold text-color-gold hover:text-color-gold-bright transition">
+                      Горнило Клеток: Тестировщик Визерфит
+                    </h2>
+                  </div>
+                </div>
+                <p className="sec-desc text-xs sm:text-sm text-color-ash2 font-sans leading-relaxed">
+                  Интерактивная трехмерная среда для сборки, визуализации и структурной герметизации иссушителей. Расставляйте блоки песка душ, обсидиана, бедрока, симулируйте детонацию и выгружайте точные скрипты верификации.
+                </p>
 
-      <div class="cmd-card" data-search="give предмет выдать компоненты 1.20.5">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Инвентарь</span>
-          <div><div class="cmd-name">/give &lt;цель&gt; &lt;предмет[компоненты]&gt;</div><div class="cmd-short">Выдача предмета с кастомными свойствами</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="cmt"># Меч с зачарованием и кастомным именем</span><br><span class="syn">/give</span> <span class="val">@s</span> netherite_sword[<br>  <span class="kw">custom_name</span>='<span class="opt">{"text":"Клинок Судьбы","color":"gold","bold":true}</span>',<br>  <span class="kw">enchantments</span>={levels:{"minecraft:sharpness":5,"minecraft:looting":3}},<br>  <span class="kw">lore</span>=['<span class="opt">{"text":"Выкован в горниле","color":"gray"}</span>'],<br>  <span class="kw">unbreakable</span>={}]<br><br><span class="cmt"># Кастомная еда</span><br><span class="syn">/give</span> <span class="val">@s</span> iron_ingot[<span class="kw">food</span>={nutrition:4,saturation:2.5,can_always_eat:true}]</div>
-          <table class="params">
-            <tr><th>Компонент</th><th>Описание</th></tr>
-            <tr><td>custom_data={...}</td><td>Кастомные NBT-теги для датапаков</td></tr>
-            <tr><td>custom_name='...'</td><td>Имя предмета в JSON-формате</td></tr>
-            <tr><td>lore=[...]</td><td>Описание — массив JSON-строк</td></tr>
-            <tr><td>damage=100</td><td>Текущая поломка инструмента</td></tr>
-            <tr><td>max_stack_size=99</td><td>Максимальный размер стака (1–99)</td></tr>
-            <tr><td>enchantment_glint_override=true</td><td>Принудительный блеск зачарования</td></tr>
-            <tr><td>enchantments={levels:{...}}</td><td>Чары и их уровни</td></tr>
-            <tr><td>attribute_modifiers=[...]</td><td>Кастомные атрибуты (скорость, урон)</td></tr>
-            <tr><td>food={nutrition:4,...}</td><td>Сделать предмет съедобным</td></tr>
-            <tr><td>unbreakable={}</td><td>Неломаемый инструмент</td></tr>
-          </table>
-        </div>
-      </div>
+                <WitherfiteWorkspace 
+                  isExpanded={isWorkspaceExpanded} 
+                  onToggleExpand={() => setIsWorkspaceExpanded(!isWorkspaceExpanded)} 
+                />
+              </motion.div>
+            )}
 
-      <div class="cmd-card" data-search="item replace modify слот инвентарь">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Инвентарь</span>
-          <div><div class="cmd-name">/item replace|modify</div><div class="cmd-short">Замена и изменение предметов в слотах</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="cmt"># Заменить предмет в основной руке</span><br><span class="syn">/item replace entity</span> <span class="val">@s</span> <span class="kw">weapon.mainhand</span> with diamond_sword<br><br><span class="cmt"># Первый слот сундука</span><br><span class="syn">/item replace block</span> ~ ~ ~ <span class="kw">container.0</span> with apple 32<br><br><span class="cmt"># Применить модификатор из датапака</span><br><span class="syn">/item modify entity</span> <span class="val">@s</span> <span class="kw">weapon.mainhand</span> <span class="opt">my_pack:add_fire</span></div>
-        </div>
-      </div>
+            {/* 🎛️ TAB: CUSTOMIZE TAGS & COMMAND BUILDER SUMMON */}
+            {activeTab === "builder" && !searchQuery && (
+              <motion.div
+                key="builder"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-8"
+              >
+                <div className="sec-head flex items-center gap-4 border-b border-color-gold-dim pb-3">
+                  <span className="sec-rune text-3xl font-bold text-color-gold-bright drop-shadow-[0_0_10px_rgba(240,192,64,0.4)]">
+                    🎛️
+                  </span>
+                  <div>
+                    <div className="sec-label font-display text-[10px] tracking-widest text-color-gold-dim uppercase">
+                      Транслятор тегов
+                    </div>
+                    <h2 className="sec-title font-dec font-extrabold text-color-gold hover:text-color-gold-bright transition">
+                      Интерактивный Конструктор NBT-Призыва
+                    </h2>
+                  </div>
+                </div>
+                
+                <p className="sec-desc text-xs sm:text-sm text-color-ash2 font-sans leading-relaxed">
+                  Полноценный визуальный пульт для деформации характеристик спавнящегося иссушителя в Java и Bedrock. Сгенерируйте и досконально разберите точный синтаксис команды призыва Визера с произвольными NBT-тегами.
+                </p>
 
-      <div class="cmd-card" data-search="enchant зачаровать чар уровень">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Чары</span>
-          <div><div class="cmd-name">/enchant &lt;цель&gt; &lt;чар&gt; [уровень]</div><div class="cmd-short">Зачаровать предмет в руке</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/enchant</span> <span class="val">@s</span> <span class="kw">minecraft:sharpness</span> <span class="val">5</span><br><span class="syn">/enchant</span> <span class="val">@a</span> <span class="kw">minecraft:protection</span> <span class="val">4</span></div>
-          <div class="note"><div class="note-title">Ограничение выживания</div>Работает с учётом ограничений режима выживания. Для снятия ограничений — используй /give с компонентом enchantments.</div>
-        </div>
-      </div>
+                <div className="bg-[#0e0804]/90 border border-color-gold-dim rounded p-6 md:p-8 shadow-2xl relative overflow-hidden">
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-color-gold-dim pb-5 mb-6">
+                    <div>
+                      <h3 className="text-md font-bold font-display text-color-gold-bright uppercase tracking-widest flex items-center gap-2">
+                        <Terminal className="w-5 h-5 text-color-gold" />
+                        <span>Настройки Генератора /summon</span>
+                      </h3>
+                    </div>
+                    
+                    {/* Platform Selector toggle */}
+                    <div className="flex bg-black border border-color-gold-dim p-1.5 rounded text-xs">
+                      <button
+                        onClick={() => setIsBedrockVersion(false)}
+                        className={`px-4 py-1.5 rounded transition font-display uppercase tracking-wider font-extrabold cursor-pointer ${
+                          !isBedrockVersion ? "bg-gradient-to-b from-color-gold to-color-gold-dim text-black font-black" : "text-color-ash2 hover:text-color-ash"
+                        }`}
+                      >
+                        Java Edition (NBT)
+                      </button>
+                      <button
+                        onClick={() => setIsBedrockVersion(true)}
+                        className={`px-4 py-1.5 rounded transition font-display uppercase tracking-wider font-extrabold cursor-pointer ${
+                          isBedrockVersion ? "bg-gradient-to-b from-color-gold to-color-gold-dim text-black font-black" : "text-color-ash2 hover:text-color-ash"
+                        }`}
+                      >
+                        Bedrock (Names Only)
+                      </button>
+                    </div>
+                  </div>
 
-      <div class="cmd-card" data-search="clear очистить инвентарь удалить предмет">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Инвентарь</span>
-          <div><div class="cmd-name">/clear [цель] [предмет] [кол-во]</div><div class="cmd-short">Очистка инвентаря</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/clear</span>                        <span class="cmt"># Очистить себя полностью</span><br><span class="syn">/clear</span> <span class="val">@a</span>                   <span class="cmt"># Всех игроков</span><br><span class="syn">/clear</span> <span class="val">@s</span> <span class="kw">minecraft:dirt</span>  <span class="cmt"># Только землю</span><br><span class="syn">/clear</span> <span class="val">@s</span> <span class="kw">minecraft:dirt</span> <span class="val">32</span> <span class="cmt"># Удалить 32 блока земли</span></div>
-        </div>
-      </div>
-    </section>
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    
+                    {/* Toggles Panel */}
+                    <div className="lg:col-span-5 space-y-5">
+                      <div className="text-xs font-bold font-display text-color-gold uppercase tracking-widest flex items-center gap-2 mb-2">
+                        <Sliders className="w-4.5 h-4.5" />
+                        <span>Параметры Сущности (NBT tags)</span>
+                      </div>
 
-    <div class="div-gold reveal"><span>ᚷ</span></div>
+                      {!isBedrockVersion ? (
+                        <div className="space-y-4 bg-black/50 p-4 border border-color-gold-dim/40 rounded">
+                          <label className="flex items-center justify-between gap-4 cursor-pointer group">
+                            <div>
+                              <span className="text-xs font-bold text-neutral-200 group-hover:text-color-gold-bright transition font-display">NoAI:1b (Заморозка)</span>
+                              <p className="text-[10px] text-color-ash2">Иссушитель полностью замрёт, не выпуская взрывные синие черепа</p>
+                            </div>
+                            <input
+                              type="checkbox"
+                              checked={isNoAI}
+                              onChange={(e) => setIsNoAI(e.target.checked)}
+                              className="w-4.5 h-4.5 accent-color-gold cursor-pointer"
+                            />
+                          </label>
 
-    <!-- ═══ WORLD ═══ -->
-    <section id="world" class="sec reveal">
-      <div class="sec-head">
-        <span class="sec-rune">ᚷ</span>
-        <div><div class="sec-label">Раздел VII</div><div class="sec-title">Мир и блоки</div></div>
-      </div>
-      <p class="sec-desc">Переписать облик мира — setblock, fill, clone, fillbiome и структуры.</p>
+                          <hr className="border-color-gold-dim/20" />
 
-      <div class="cmd-card" data-search="setblock установить блок координаты destroy keep replace">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Блоки</span>
-          <div><div class="cmd-name">/setblock &lt;x y z&gt; &lt;блок&gt; [режим]</div><div class="cmd-short">Установить один блок по координатам</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/setblock</span> <span class="opt">100 64 -200</span> <span class="kw">minecraft:stone</span><br><span class="syn">/setblock</span> ~ ~-1 ~ <span class="kw">minecraft:chest</span>[<span class="opt">facing=north</span>] <span class="val">replace</span><br><span class="syn">/setblock</span> ~ ~ ~ <span class="kw">minecraft:air</span> <span class="val">destroy</span></div>
-          <table class="params">
-            <tr><th>Режим</th><th>Описание</th></tr>
-            <tr><td>destroy</td><td>Ломает блок с частицами и дропом предметов</td></tr>
-            <tr><td>keep</td><td>Ставит только если там был воздух</td></tr>
-            <tr><td>replace</td><td>Молча заменяет (по умолчанию)</td></tr>
-          </table>
-        </div>
-      </div>
+                          <label className="flex items-center justify-between gap-4 cursor-pointer group">
+                            <div>
+                              <span className="text-xs font-bold text-neutral-200 group-hover:text-color-gold-bright transition font-display">Silent:1b (Заглушение)</span>
+                              <p className="text-[10px] text-color-ash2">Заглушает громоподобный рёв спавна для фоновых ферм</p>
+                            </div>
+                            <input
+                              type="checkbox"
+                              checked={isSilent}
+                              onChange={(e) => setIsSilent(e.target.checked)}
+                              className="w-4.5 h-4.5 accent-color-gold cursor-pointer"
+                            />
+                          </label>
 
-      <div class="cmd-card" data-search="fill заполнить область блоки hollow outline replace">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Блоки</span>
-          <div><div class="cmd-name">/fill &lt;x1 y1 z1&gt; &lt;x2 y2 z2&gt; &lt;блок&gt; [режим]</div><div class="cmd-short">Заполнение области блоками</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/fill</span> <span class="opt">~-5 ~-1 ~-5 ~5 ~5 ~5</span> <span class="kw">minecraft:stone</span><br><span class="syn">/fill</span> <span class="opt">0 60 0 20 70 20</span> <span class="kw">minecraft:oak_planks</span> <span class="val">hollow</span><br><span class="syn">/fill</span> <span class="opt">0 64 0 100 64 100</span> <span class="kw">minecraft:grass_block</span> <span class="val">replace minecraft:dirt</span></div>
-          <table class="params">
-            <tr><th>Режим</th><th>Описание</th></tr>
-            <tr><td>hollow</td><td>Коробка с воздухом внутри</td></tr>
-            <tr><td>outline</td><td>Коробка, не трогает содержимое</td></tr>
-            <tr><td>keep</td><td>Заполняет только воздух</td></tr>
-            <tr><td>replace [фильтр]</td><td>Заменяет только указанный тип блоков</td></tr>
-            <tr><td>destroy</td><td>Ломает с дропом (медленно!)</td></tr>
-          </table>
-        </div>
-      </div>
+                          <hr className="border-color-gold-dim/20" />
 
-      <div class="cmd-card" data-search="clone копировать регион блоки move force masked filtered">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Блоки</span>
-          <div><div class="cmd-name">/clone &lt;r1&gt; &lt;r2&gt; &lt;dest&gt; [режим]</div><div class="cmd-short">Копирование области блоков в другое место</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/clone</span> <span class="opt">0 64 0 10 74 10</span>  <span class="opt">100 64 100</span>  <span class="val">masked</span><br><span class="syn">/clone</span> <span class="opt">0 64 0 10 74 10</span>  <span class="opt">50 64 50</span>   <span class="val">filtered</span> <span class="kw">minecraft:chest</span><br><span class="syn">/clone</span> <span class="opt">0 64 0 10 74 10</span>  <span class="opt">0 64 15</span>    <span class="val">replace move</span></div>
-          <table class="params">
-            <tr><th>Режим</th><th>Описание</th></tr>
-            <tr><td>masked</td><td>Игнорирует воздух источника</td></tr>
-            <tr><td>filtered &lt;блок&gt;</td><td>Копирует только указанный тип</td></tr>
-            <tr><td>move</td><td>Переносит, удаляет на старом месте</td></tr>
-            <tr><td>force</td><td>Копирование с перекрытием зон</td></tr>
-          </table>
-        </div>
-      </div>
+                          <label className="flex items-center justify-between gap-4 cursor-pointer group">
+                            <div>
+                              <span className="text-xs font-bold text-neutral-200 group-hover:text-color-gold-bright transition font-display">NoGravity:1b (Весомость)</span>
+                              <p className="text-[10px] text-color-ash2">Игнорировать гравитацию и удерживать визера в воздухе</p>
+                            </div>
+                            <input
+                              type="checkbox"
+                              checked={isNoGravity}
+                              onChange={(e) => setIsNoGravity(e.target.checked)}
+                              className="w-4.5 h-4.5 accent-color-gold cursor-pointer"
+                            />
+                          </label>
 
-      <div class="cmd-card" data-search="place structure feature template spawn структура спавн nbt">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Структуры</span>
-          <div><div class="cmd-name">/place structure|feature|template</div><div class="cmd-short">Генерация структур и элементов мира</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="cmt"># Деревня</span><br><span class="syn">/place structure</span> <span class="val">minecraft:village_snowy</span> ~ ~ ~<br><br><span class="cmt"># Одно дерево</span><br><span class="syn">/place feature</span> <span class="val">minecraft:oak</span> ~ ~ ~<br><br><span class="cmt"># Файл .nbt из датапака (полуразрушенный на 70%)</span><br><span class="syn">/place template</span> <span class="val">my_pack:my_building</span> ~ ~ ~ <span class="kw">none none</span> <span class="opt">0.7</span> <span class="val">12345</span></div>
-          <div class="note"><div class="note-title">integrity</div>Параметр 0.0–1.0 для /place template: спавн структуры сразу полуразрушенной. 1.0 = целая, 0.5 = половина блоков.</div>
-        </div>
-      </div>
+                          <hr className="border-color-gold-dim/20" />
 
-      <div class="cmd-card" data-search="fillbiome биом регион чанк">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Биомы</span>
-          <div><div class="cmd-name">/fillbiome &lt;r1&gt; &lt;r2&gt; &lt;id_биома&gt;</div><div class="cmd-short">Изменение биома в регионе</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/fillbiome</span> <span class="opt">0 -64 0 100 320 100</span> <span class="val">minecraft:desert</span></div>
-          <div class="note"><div class="note-title">⚠ Требует перегрузки чанков</div>Нажми F3+A после выполнения, чтобы увидеть смену цвета травы и воды. На сервере каждый игрок должен сделать это сам.</div>
-        </div>
-      </div>
-    </section>
+                          <label className="flex items-center justify-between gap-4 cursor-pointer group">
+                            <div>
+                              <span className="text-xs font-bold text-neutral-200 group-hover:text-color-gold-bright transition font-display">Invulnerable (Неуязвимый)</span>
+                              <p className="text-[10px] text-color-ash2">Ограничит урон от удушья, позволяя зажать моба вечно</p>
+                            </div>
+                            <input
+                              type="checkbox"
+                              checked={isInvulnerable}
+                              onChange={(e) => setIsInvulnerable(e.target.checked)}
+                              className="w-4.5 h-4.5 accent-color-gold cursor-pointer"
+                            />
+                          </label>
+                        </div>
+                      ) : (
+                        <div className="bg-black/80 p-4 border border-color-gold-dim/35 text-xs text-color-ash2 leading-relaxed space-y-3.5 rounded text-center">
+                          <AlertTriangle className="w-6 h-6 text-color-gold mx-auto" />
+                          <p className="font-bold text-white uppercase font-display tracking-wider">Откат синтаксиса Bedrock</p>
+                          <p className="text-[11px]">
+                            В Bedrock Edition спавнер <code className="text-color-gold bg-black px-1.5 py-0.5 font-mono">/summon</code> не парсит параметры в фигурных скобках. Мы автоматически переключаем синтаксис на текстовые кавычки имени!
+                          </p>
+                        </div>
+                      )}
 
-    <div class="div-gold reveal"><span>ᚹ</span></div>
+                      <div className="space-y-4">
+                        <div>
+                          <span className="text-[11px] font-mono text-color-ash2 block uppercase tracking-widest mb-1.5">Кастомное Имя (CustomName Tag):</span>
+                          <input
+                            type="text"
+                            value={customName}
+                            onChange={(e) => setCustomName(e.target.value)}
+                            className="w-full bg-[#100805] border border-color-gold-dim/60 px-3 py-2 text-xs font-mono text-color-gold-bright placeholder-color-ash3 focus:outline-none focus:border-color-gold"
+                            placeholder="Wither_Prisoner"
+                          />
+                        </div>
 
-    <!-- ═══ ENTITIES ═══ -->
-    <section id="entities" class="sec reveal">
-      <div class="sec-head">
-        <span class="sec-rune">ᚹ</span>
-        <div><div class="sec-label">Раздел VIII</div><div class="sec-title">Сущности и эффекты</div></div>
-      </div>
+                        <div className="grid grid-cols-3 gap-3">
+                          <div>
+                            <span className="text-[9.5px] font-mono text-color-ash2 block uppercase tracking-wider">Смещение X:</span>
+                            <input
+                              type="text"
+                              value={coordX}
+                              onChange={(e) => setCoordX(e.target.value)}
+                              className="w-full bg-black border border-color-gold-dim/60 px-2 py-1.5 text-center text-xs font-mono text-white"
+                            />
+                          </div>
+                          <div>
+                            <span className="text-[9.5px] font-mono text-color-ash2 block uppercase tracking-wider">Смещение Y:</span>
+                            <input
+                              type="text"
+                              value={coordY}
+                              onChange={(e) => setCoordY(e.target.value)}
+                              className="w-full bg-black border border-color-gold-dim/60 px-2 py-1.5 text-center text-xs font-mono text-white"
+                            />
+                          </div>
+                          <div>
+                            <span className="text-[9.5px] font-mono text-color-ash2 block uppercase tracking-wider">Смещение Z:</span>
+                            <input
+                              type="text"
+                              value={coordZ}
+                              onChange={(e) => setCoordZ(e.target.value)}
+                              className="w-full bg-black border border-color-gold-dim/60 px-2 py-1.5 text-center text-xs font-mono text-white"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
-      <div class="cmd-card" data-search="summon спавн сущность моб NBT маркер interaction block_display">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Сущности</span>
-          <div><div class="cmd-name">/summon &lt;сущность&gt; [x y z] [NBT]</div><div class="cmd-short">Создание сущностей и технических объектов</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="cmt"># Обычный зомби</span><br><span class="syn">/summon</span> <span class="val">minecraft:zombie</span> ~ ~ ~<br><br><span class="cmt"># Технический маркер с тегами</span><br><span class="syn">/summon</span> <span class="val">minecraft:marker</span> ~ ~ ~ {Tags:["<span class="opt">raycast_point</span>","<span class="opt">init</span>"]}<br><br><span class="cmt"># Дисплей блока</span><br><span class="syn">/summon</span> <span class="val">minecraft:block_display</span> ~ ~ ~ {block_state:{Name:"<span class="kw">minecraft:diamond_block</span>"}}</div>
-          <table class="params">
-            <tr><th>Техническая сущность</th><th>Назначение</th></tr>
-            <tr><td>minecraft:marker</td><td>Невидимая точка, не лагает. Для хранения координат и тегов</td></tr>
-            <tr><td>minecraft:interaction</td><td>Невидимый хитбокс — считывает клики и атаки игроков</td></tr>
-            <tr><td>minecraft:block_display</td><td>Рендеринг блоков любого размера без модов</td></tr>
-            <tr><td>minecraft:item_display</td><td>Рендеринг предметов под любым углом</td></tr>
-          </table>
-        </div>
-      </div>
+                    {/* Result Code Block Panel */}
+                    <div className="lg:col-span-7 space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-bold font-mono text-color-gold uppercase tracking-widest flex items-center gap-1.5">
+                          <Terminal className="w-4 h-4" />
+                          <span>Магическая формула:</span>
+                        </span>
+                        
+                        <button
+                          onClick={copyBuilderCommand}
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-color-gold hover:bg-color-gold-bright text-black font-display font-black uppercase tracking-wider transition shadow-lg shrink-0 cursor-pointer"
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                          <span>{copiedBuilder ? "СКОПИРОВАНО!" : "КОПИРОВАТЬ РУНУ"}</span>
+                        </button>
+                      </div>
 
-      <div class="cmd-card" data-search="effect эффект зелье give clear частицы">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Эффекты</span>
-          <div><div class="cmd-name">/effect give|clear &lt;цель&gt; &lt;эффект&gt;</div><div class="cmd-short">Выдача и снятие эффектов зелий</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/effect give</span> <span class="val">@s</span> <span class="kw">minecraft:speed</span> <span class="opt">60</span> <span class="opt">2</span> <span class="val">true</span><br><span class="cmt">#                           длит.(сек) уровень скрыть_частицы</span><br><span class="syn">/effect give</span> <span class="val">@a</span> <span class="kw">minecraft:regeneration</span> <span class="opt">20</span> <span class="opt">0</span><br><span class="syn">/effect clear</span> <span class="val">@s</span>                    <span class="cmt"># Снять всё</span><br><span class="syn">/effect clear</span> <span class="val">@s</span> <span class="kw">minecraft:poison</span>   <span class="cmt"># Только яд</span></div>
-        </div>
-      </div>
+                      <div className="p-4 bg-black border border-color-gold-dim/80 rounded relative select-all shadow-inner">
+                        <span className="absolute top-2 right-2 text-[8px] font-mono text-color-gold-dim tracking-widest uppercase">SUMMON STRING</span>
+                        <code className="text-xs sm:text-[13px] font-mono text-color-gold-bright block whitespace-pre-wrap leading-relaxed">
+                          {getCompiledBuilderCommand()}
+                        </code>
+                      </div>
 
-      <div class="cmd-card" data-search="attribute атрибут здоровье скорость урон масштаб гравитация прыжок">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Атрибуты</span>
-          <div><div class="cmd-name">/attribute &lt;цель&gt; &lt;атрибут&gt; &lt;get|base|modifier&gt;</div><div class="cmd-short">Изменение базовых параметров сущностей</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/attribute</span> <span class="val">@s</span> <span class="kw">generic.max_health</span> base set <span class="val">40</span><br><span class="syn">/attribute</span> <span class="val">@s</span> <span class="kw">generic.movement_speed</span> base set <span class="val">0.15</span><br><span class="syn">/attribute</span> <span class="val">@s</span> <span class="kw">generic.scale</span> base set <span class="val">2.0</span>  <span class="cmt"># 1.20.5+</span><br><span class="syn">/attribute</span> <span class="val">@s</span> <span class="kw">generic.gravity</span> base set <span class="val">0.04</span></div>
-          <table class="params">
-            <tr><th>Атрибут</th><th>Описание</th></tr>
-            <tr><td>generic.max_health</td><td>Максимальное здоровье</td></tr>
-            <tr><td>generic.movement_speed</td><td>Скорость ходьбы (0.1 = норма)</td></tr>
-            <tr><td>generic.attack_damage</td><td>Базовый урон</td></tr>
-            <tr><td>generic.scale</td><td>Физический масштаб (0.0625–16.0), 1.20.5+</td></tr>
-            <tr><td>generic.step_height</td><td>Высота блока без прыжка</td></tr>
-            <tr><td>generic.gravity</td><td>Сила гравитации</td></tr>
-            <tr><td>generic.jump_strength</td><td>Сила прыжка</td></tr>
-          </table>
-        </div>
-      </div>
+                      {/* Component breakdown visualization */}
+                      <div className="p-4 bg-black/40 border border-color-gold-dim/30 rounded-xl space-y-3.5">
+                        <span className="text-xs font-bold font-display text-white uppercase block border-b border-color-gold-dim/20 pb-2">Разбор анатомии формулы:</span>
+                        
+                        <div className="space-y-3 text-[11.5px] leading-relaxed">
+                          <div className="flex gap-2">
+                            <span className="text-color-gold font-mono font-bold">/summon</span>
+                            <div className="text-color-ash">
+                              <strong className="text-color-ash">Базовое начало:</strong> Системное заклинание генерации сущностей на сервере.
+                            </div>
+                          </div>
 
-      <div class="cmd-card" data-search="xp опыт уровни points add set query">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Игрок</span>
-          <div><div class="cmd-name">/xp &lt;add|set|query&gt; &lt;цель&gt; &lt;кол-во&gt; [points|levels]</div><div class="cmd-short">Управление опытом игрока</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/xp add</span> <span class="val">@s</span> <span class="opt">100</span> <span class="kw">points</span><br><span class="syn">/xp add</span> <span class="val">@s</span> <span class="opt">5</span> <span class="kw">levels</span><br><span class="syn">/xp set</span> <span class="val">@s</span> <span class="opt">0</span> <span class="kw">levels</span><br><span class="syn">/xp query</span> <span class="val">@s</span> <span class="kw">levels</span></div>
-        </div>
-      </div>
-    </section>
+                          <div className="flex gap-2 animate-fadeIn">
+                            <span className="text-color-gold font-mono font-bold">minecraft:wither</span>
+                            <div className="text-color-ash">
+                              <strong className="text-color-ash">Идентификатор босса:</strong> Внутреннее имя скелета-иссушителя в ядре Minecraft Java.
+                            </div>
+                          </div>
 
-    <div class="div-gold reveal"><span>ᚺ</span></div>
+                          <div className="flex gap-2">
+                            <span className="text-color-gold font-mono font-bold">{coordX} {coordY} {coordZ}</span>
+                            <div className="text-color-ash">
+                              <strong className="text-color-ash">Координаты:</strong> Масштаб относительного смещения tilde-символами. <code className="bg-black px-1 text-[#ffee66]">~2</code> означает сместить на два блока выше уровня головы.
+                            </div>
+                          </div>
 
-    <!-- ═══ SERVER ═══ -->
-    <section id="server" class="sec reveal">
-      <div class="sec-head">
-        <span class="sec-rune">ᚺ</span>
-        <div><div class="sec-label">Раздел IX</div><div class="sec-title">Администрирование сервера</div></div>
-      </div>
+                          {!isBedrockVersion && (
+                            <>
+                              {isNoAI && (
+                                <div className="flex gap-2">
+                                  <span className="text-[#ffee66] font-mono font-bold">NoAI:1b</span>
+                                  <div className="text-color-ash">
+                                    <strong className="text-white">Интеллект OFF:</strong> Отключает боевые тактики. Визер не будет двигать головами, обнаруживать игроков и плеваться черепами во время тестов.
+                                  </div>
+                                </div>
+                              )}
 
-      <div class="cmd-card" data-search="op deop kick ban whitelist list stop save admin">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Сервер</span>
-          <div><div class="cmd-name">Команды администратора</div><div class="cmd-short">op, kick, ban, whitelist, stop, save</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/op</span> <span class="val">Steve</span>          <span class="cmt"># Выдать права оператора</span><br><span class="syn">/deop</span> <span class="val">Steve</span>        <span class="cmt"># Забрать права</span><br><span class="syn">/kick</span> <span class="val">Steve</span> <span class="opt">Нарушение</span><br><span class="syn">/ban</span> <span class="val">Steve</span> <span class="opt">Причина</span>  <span class="cmt"># Бан по нику</span><br><span class="syn">/ban-ip</span> <span class="val">Steve</span>      <span class="cmt"># Бан по IP</span><br><span class="syn">/pardon</span> <span class="val">Steve</span>      <span class="cmt"># Разбан</span><br><span class="syn">/whitelist add</span> <span class="val">Steve</span><br><span class="syn">/whitelist on</span><br><span class="syn">/list</span>               <span class="cmt"># Кто онлайн</span><br><span class="syn">/stop</span>              <span class="cmt"># Безопасная остановка</span><br><span class="syn">/save-all flush</span>   <span class="cmt"># Принудительное сохранение</span></div>
-        </div>
-      </div>
+                              {isSilent && (
+                                <div className="flex gap-2">
+                                  <span className="text-[#ffee66] font-mono font-bold">Silent:1b</span>
+                                  <div className="text-color-ash">
+                                    <strong className="text-white">Тишина:</strong> Глушит звуки удушья, а также зловещие рёвы взрывов во время детонации.
+                                  </div>
+                                </div>
+                              )}
 
-      <div class="cmd-card" data-search="perf debug профилировщик лаги TPS производительность">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Дебаг</span>
-          <div><div class="cmd-name">/perf &lt;start|stop&gt; и /debug</div><div class="cmd-short">Профилирование производительности сервера</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/perf start</span>     <span class="cmt"># Запустить 10-20 сек мониторинг</span><br><span class="syn">/perf stop</span>      <span class="cmt"># Отчёт в /debug/profiler/</span><br><span class="syn">/debug report</span>   <span class="cmt"># Снимок состояния системы</span></div>
-          <div class="note"><div class="note-title">Когда использовать</div>/perf незаменим при падении TPS. Запусти на 15 секунд нагрузки, остановить — и читай отчёт: он покажет, какие функции датапака или мобы пожирают тики.</div>
-        </div>
-      </div>
-    </section>
+                              {isNoGravity && (
+                                <div className="flex gap-2">
+                                  <span className="text-[#ffee66] font-mono font-bold">NoGravity:1b</span>
+                                  <div className="text-color-ash">
+                                    <strong className="text-white">Невесомость:</strong> Игнорирует гравитационное падение, удерживаясь точно на назначенных координатах.
+                                  </div>
+                                </div>
+                              )}
 
-    <div class="div-gold reveal"><span>ᚾ</span></div>
+                              {isInvulnerable && (
+                                <div className="flex gap-2">
+                                  <span className="text-[#ffee66] font-mono font-bold">Invulnerable:1b</span>
+                                  <div className="text-color-ash">
+                                    <strong className="text-white">Абсолютное здоровье:</strong> Спасает иссушителя от удушья в блоках бедрока или обсидиана, делая его бессмертным.
+                                  </div>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
 
-    <!-- ═══ TICK ═══ -->
-    <section id="tick" class="sec reveal">
-      <div class="sec-head">
-        <span class="sec-rune">ᚾ</span>
-        <div><div class="sec-label">Раздел X</div><div class="sec-title">/tick — Управление тикрейтом</div></div>
-      </div>
-      <p class="sec-desc">Контроль над самим временем мира — заморозить, ускорить, прокрутить покадрово.</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
 
-      <div class="cmd-card" data-search="tick rate freeze unfreeze step sprint TPS тикрейт время мир">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Движок</span>
-          <div><div class="cmd-name">/tick query|rate|freeze|step|sprint</div><div class="cmd-short">Полный контроль скорости игрового времени</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/tick query</span>         <span class="cmt"># Текущий MSPT и TPS</span><br><span class="syn">/tick rate</span> <span class="val">20</span>       <span class="cmt"># Норма (20 тиков/сек)</span><br><span class="syn">/tick rate</span> <span class="val">5</span>        <span class="cmt"># Замедление в 4 раза</span><br><span class="syn">/tick rate</span> <span class="val">500</span>      <span class="cmt"># Ускорение для теста ферм</span><br><span class="syn">/tick freeze</span>        <span class="cmt"># Заморозить мир</span><br><span class="syn">/tick step</span> <span class="val">1</span>        <span class="cmt"># Прокрутить 1 тик (при freeze)</span><br><span class="syn">/tick step</span> <span class="val">100</span>      <span class="cmt"># 100 тиков вперёд</span><br><span class="syn">/tick unfreeze</span>      <span class="cmt"># Снять паузу</span><br><span class="syn">/tick sprint</span> <span class="val">72000</span>  <span class="cmt"># Прокрутить час игрового времени</span></div>
-          <div class="note"><div class="note-title">⚒ Для датапакеров</div>/tick freeze + /tick step 1 = покадровый дебаг. Можно остановить мир, проверить состояние всех NBT и очков, и проверить следующий тик изолированно.</div>
-        </div>
-      </div>
-    </section>
+            {/* 📜 TAB: CODE CHRONICLES CODEX (All 11 lists of commands) */}
+            {(activeTab === "codex" || searchQuery) && (
+              <motion.div
+                key="codex"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-12"
+              >
+                
+                {/* Search outcomes list conditional trigger */}
+                {searchQuery.trim() !== "" ? (
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-2 border-b border-color-gold-dim pb-3">
+                      <span className="w-2 h-2 rounded-full bg-color-gold animate-pulse" />
+                      <span className="text-xs font-mono font-bold uppercase text-color-gold-bright tracking-widest">
+                        Найдено в свитках древних заклинаний ({filteredSearchResults.length}):
+                      </span>
+                    </div>
 
-    <div class="div-gold reveal"><span>ᛁ</span></div>
+                    {filteredSearchResults.length === 0 ? (
+                      <div className="p-16 text-center bg-[#070402] border border-color-gold-dim/40 rounded-xl space-y-3 shadow-2xl">
+                        <AlertTriangle className="w-8 h-8 text-color-gold mx-auto animate-pulse" />
+                        <h4 className="font-display font-extrabold text-white uppercase tracking-wider text-sm">Свиток Пуст</h4>
+                        <p className="text-xs text-color-ash2 max-w-md mx-auto leading-relaxed">
+                          По вашим руническим символам совпадений не найдено. Попробуйте поискать <code className="text-color-gold">scoreboard</code>, <code className="text-color-gold">kill</code>, <code className="text-color-gold">execute</code> или <code className="text-color-gold">summon</code>.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {filteredSearchResults.map(({ section, item }) => (
+                          <div
+                            key={item.id}
+                            className={`cmd-card ${openCards[item.id] ? "open" : ""}`}
+                          >
+                            <div className="cmd-header flex justify-between items-start" onClick={() => toggleCard(item.id)}>
+                              <div className="flex gap-3.5 items-start">
+                                <span className="cmd-tag">{item.tag}</span>
+                                <div>
+                                  <div className="cmd-name">{item.name}</div>
+                                  <div className="cmd-short">{item.short}</div>
+                                </div>
+                              </div>
+                              <span className="cmd-toggle text-color-gold text-xs">{openCards[item.id] ? "▲" : "▼"}</span>
+                            </div>
 
-    <!-- ═══ MISC ═══ -->
-    <section id="misc" class="sec reveal">
-      <div class="sec-head">
-        <span class="sec-rune">ᛁ</span>
-        <div><div class="sec-label">Раздел XI</div><div class="sec-title">Прочие команды</div></div>
-      </div>
+                            <div className="cmd-body animate-fadeIn space-y-4">
+                              <div className="relative">
+                                <pre className="code-block p-4 rounded text-xs select-all">
+                                  {item.code}
+                                </pre>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleCopyText(item.code, item.id);
+                                  }}
+                                  className="absolute top-3.5 right-4 px-2.5 py-1 text-[9px] font-display uppercase tracking-widest font-black bg-color-gold/90 hover:bg-color-gold text-neutral-900 rounded cursor-pointer transition active:scale-95"
+                                >
+                                  {copiedCardId === item.id ? "СКОПИРОВАНО!" : "КОПИРОВАТЬ 📋"}
+                                </button>
+                              </div>
 
-      <div class="cmd-card" data-search="function функция mcfunction датапак запуск макрос">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Датапак</span>
-          <div><div class="cmd-name">/function &lt;имя&gt; и /return</div><div class="cmd-short">Запуск файлов функций и возврат значения</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/function</span> <span class="opt">my_pack:init</span><br><span class="syn">/function</span> <span class="opt">my_pack:boss/phase_2</span><br><br><span class="cmt"># Макрос (1.20.2+) — передача аргументов</span><br><span class="syn">/function</span> <span class="opt">my_pack:set_hp</span> {value: <span class="val">20</span>}<br><span class="cmt"># В файле функции: /attribute @s generic.max_health base set $(value)</span><br><br><span class="cmt"># Возврат значения из функции</span><br><span class="syn">/return</span> <span class="val">1</span></div>
-        </div>
-      </div>
+                              <p className="text-xs text-color-ash font-sans leading-relaxed">
+                                {item.explanation}
+                              </p>
 
-      <div class="cmd-card" data-search="tag тег сущность add remove list фильтр">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Датапак</span>
-          <div><div class="cmd-name">/tag &lt;цель&gt; &lt;add|remove|list&gt; &lt;имя&gt;</div><div class="cmd-short">Строковые метки на сущностях для фильтрации</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/tag</span> <span class="val">@s</span> <span class="kw">add</span> <span class="opt">warrior</span><br><span class="syn">/tag</span> <span class="val">@e[type=zombie]</span> <span class="kw">add</span> <span class="opt">custom_boss</span><br><span class="syn">/tag</span> <span class="val">@s</span> <span class="kw">remove</span> <span class="opt">init</span><br><span class="cmt"># Использование: @e[tag=custom_boss,limit=1]</span></div>
-        </div>
-      </div>
+                              {item.params && (
+                                <div className="space-y-2 mt-4">
+                                  <span className="text-[10px] font-mono text-color-gold uppercase tracking-wider block">Карта параметров:</span>
+                                  <table className="params">
+                                    <thead>
+                                      <tr>
+                                        <th>Критерий / Ключ</th>
+                                        <th>Магическое назначение</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {item.params.map((p, idx) => (
+                                        <tr key={idx}>
+                                          <td className="font-mono text-[11px] text-color-gold-bright">{p.key}</td>
+                                          <td className="text-color-ash2 text-[11px] font-sans">{p.val}</td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              )}
 
-      <div class="cmd-card" data-search="bossbar босс бар полоска создать remove set">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">UI</span>
-          <div><div class="cmd-name">/bossbar</div><div class="cmd-short">Создание и управление полосками боссов</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/bossbar add</span> <span class="opt">my_pack:raid</span> '{"text":"Набег"}'<br><span class="syn">/bossbar set</span> <span class="opt">my_pack:raid</span> <span class="kw">color</span> red<br><span class="syn">/bossbar set</span> <span class="opt">my_pack:raid</span> <span class="kw">style</span> notched_10<br><span class="syn">/bossbar set</span> <span class="opt">my_pack:raid</span> <span class="kw">max</span> <span class="val">100</span><br><span class="syn">/bossbar set</span> <span class="opt">my_pack:raid</span> <span class="kw">value</span> <span class="val">75</span><br><span class="syn">/bossbar set</span> <span class="opt">my_pack:raid</span> <span class="kw">players</span> <span class="val">@a</span></div>
-          <div class="note"><div class="note-title">Цвета</div>pink · blue · red · green · yellow · purple · white</div>
-          <div class="note"><div class="note-title">Стили</div>progress · notched_6 · notched_10 · notched_12 · notched_20</div>
-        </div>
-      </div>
+                              {item.warnNote && (
+                                <div className={`note ${item.isSpecialNote ? "border-color-gold bg-color-gold/5" : "border-color-ember bg-color-ember/5"}`}>
+                                  <div className="note-title font-display">{item.isSpecialNote ? "⚒ ЗАМЕТКА СОЗДАТЕЛЯ" : "⚠️ ПРЕДОСТЕРЕЖЕНИЕ ВАЛЬХАЛЛЫ"}</div>
+                                  <div className="text-[11.5px] font-sans leading-relaxed">{item.warnNote}</div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  // Continuous listings of all commands sections with exact designs
+                  ALL_SECTIONS.map((sec, secIdx) => (
+                    <section key={sec.id} id={sec.id} className="sec space-y-6 scroll-mt-24">
+                      
+                      {/* Section Title Header */}
+                      <div className="sec-head flex items-center gap-4 border-b border-color-gold-dim pb-3">
+                        <span className="sec-rune text-3xl font-bold text-color-gold-bright drop-shadow-[0_0_10px_rgba(240,192,64,0.4)]">
+                          {sec.rune}
+                        </span>
+                        <div>
+                          <div className="sec-label font-display text-[10px] tracking-widest text-color-gold-dim uppercase">
+                            {sec.eyebrow}
+                          </div>
+                          <h2 className="sec-title font-dec font-extrabold text-color-gold hover:text-color-gold-bright transition">
+                            {sec.title}
+                          </h2>
+                        </div>
+                      </div>
 
-      <div class="cmd-card" data-search="title subtitle actionbar экран текст json">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">UI</span>
-          <div><div class="cmd-name">/title &lt;цель&gt; &lt;title|subtitle|actionbar&gt;</div><div class="cmd-short">Вывод текста на экран игрока</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/title</span> <span class="val">@a</span> <span class="kw">title</span> '{"text":"ВЫ ПОБЕДИЛИ","color":"gold","bold":true}'<br><span class="syn">/title</span> <span class="val">@a</span> <span class="kw">subtitle</span> '{"text":"Волна завершена","color":"gray"}'<br><span class="syn">/title</span> <span class="val">@s</span> <span class="kw">actionbar</span> '{"text":"Критический удар!","color":"red"}'<br><span class="syn">/title</span> <span class="val">@a</span> <span class="kw">times</span> <span class="opt">10 40 10</span>  <span class="cmt"># fade_in stay fade_out (в тиках)</span><br><span class="syn">/title</span> <span class="val">@a</span> <span class="kw">clear</span></div>
-        </div>
-      </div>
+                      <p className="sec-desc text-xs sm:text-sm text-color-ash2 italic font-serif">
+                        {sec.desc}
+                      </p>
 
-      <div class="cmd-card" data-search="advancement достижение ачивка grant revoke">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Игрок</span>
-          <div><div class="cmd-name">/advancement grant|revoke</div><div class="cmd-short">Выдача и отзыв достижений</div></div>
-          <span class="cmd-toggle">▼</span>
+                      {/* Scoreboard unique view grid for selectors block */}
+                      {sec.id === "selectors" && (
+                        <div className="sel-grid grid grid-cols-1 sm:grid-cols-5 gap-0.5 border border-color-gold-dim select-none">
+                          <div className="sel-cell p-4 text-center">
+                            <span className="sel-sym block text-xl text-color-gold-bright">@p</span>
+                            <div className="sel-name text-[10px] font-bold text-color-gold uppercase font-display mt-1">Ближайший</div>
+                            <p className="sel-desc text-[10.5px] text-color-ash2 font-sans italic leading-relaxed mt-1">Один ближайший живой игрок</p>
+                          </div>
+                          <div className="sel-cell p-4 text-center">
+                            <span className="sel-sym block text-xl text-color-gold-bright">@r</span>
+                            <div className="sel-name text-[10px] font-bold text-color-gold uppercase font-display mt-1">Случайный</div>
+                            <p className="sel-desc text-[10.5px] text-color-ash2 font-sans italic leading-relaxed mt-1">Один случайный игрок на сервере</p>
+                          </div>
+                          <div className="sel-cell p-4 text-center">
+                            <span className="sel-sym block text-xl text-color-gold-bright">@a</span>
+                            <div className="sel-name text-[10px] font-bold text-color-gold uppercase font-display mt-1">Все Игроки</div>
+                            <p className="sel-desc text-[10.5px] text-color-ash2 font-sans italic leading-relaxed mt-1">Все игроки, включая мёртвых</p>
+                          </div>
+                          <div className="sel-cell p-4 text-center">
+                            <span className="sel-sym block text-xl text-color-gold-bright">@e</span>
+                            <div className="sel-name text-[10px] font-bold text-color-gold uppercase font-display mt-1">Все Сущности</div>
+                            <p className="sel-desc text-[10.5px] text-color-ash2 font-sans italic leading-relaxed mt-1">Абсолютно все живые и тех-объекты</p>
+                          </div>
+                          <div className="sel-cell p-4 text-center">
+                            <span className="sel-sym block text-xl text-color-gold-bright">@s</span>
+                            <div className="sel-name text-[10px] font-bold text-color-gold uppercase font-display mt-1">Себя (@s)</div>
+                            <p className="sel-desc text-[10.5px] text-color-ash2 font-sans italic leading-relaxed mt-1">Текущий конкретный исполнитель</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Render individual cards belonging to the section */}
+                      <div className="space-y-4">
+                        {sec.items.map((item) => (
+                          <div
+                            key={item.id}
+                            className={`cmd-card ${openCards[item.id] ? "open" : ""}`}
+                          >
+                            <div className="cmd-header flex justify-between items-start p-4 hover:bg-color-gold-dim/5 transition duration-150 cursor-pointer select-none" onClick={() => toggleCard(item.id)}>
+                              <div className="flex gap-4 items-start">
+                                <span className="cmd-tag px-2.5 py-0.5 text-[9px] font-display font-extrabold tracking-widest text-color-gold-dim border border-color-gold-dim/40 rounded uppercase bg-color-gold-dim/5">
+                                  {item.tag}
+                                </span>
+                                <div>
+                                  <div className="cmd-name text-sm font-bold font-display text-color-gold-bright tracking-wide">
+                                    {item.name}
+                                  </div>
+                                  <div className="cmd-short text-[11.5px] text-color-ash3 italic font-serif mt-0.5">
+                                    {item.short}
+                                  </div>
+                                </div>
+                              </div>
+                              <span className="cmd-toggle text-color-gold-dim text-xs mt-1.5">{openCards[item.id] ? "▲" : "▼"}</span>
+                            </div>
+
+                            <div className="cmd-body p-4 border-t border-color-gold-dim/35 bg-[#030101]/80 animate-fadeIn space-y-4" style={{ display: openCards[item.id] ? "block" : "none" }}>
+                              <div className="relative">
+                                <pre className="code-block p-4 rounded text-xs select-all text-[#a0b060] font-mono whitespace-pre bg-[#010000] border border-color-gold-dim/30">
+                                  {item.code}
+                                </pre>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleCopyText(item.code, item.id);
+                                  }}
+                                  className="absolute top-3.5 right-4 px-2.5 py-1 text-[9px] font-display uppercase tracking-widest font-black bg-color-gold text-black rounded cursor-pointer hover:bg-color-gold-bright transition active:scale-95"
+                                >
+                                  {copiedCardId === item.id ? "СКОПИРОВАНО!" : "КОПИРОВАТЬ РУНУ"}
+                                </button>
+                              </div>
+
+                              <p className="text-xs text-color-ash font-sans leading-relaxed">
+                                {item.explanation}
+                              </p>
+
+                              {item.params && (
+                                <div className="space-y-2 mt-4 overflow-x-auto">
+                                  <span className="text-[10px] font-mono text-color-gold uppercase tracking-wider block font-bold">Таблица параметров:</span>
+                                  <table className="params w-full text-left border-collapse">
+                                    <thead>
+                                      <tr className="border-b border-color-gold-dim">
+                                        <th className="p-2 font-display text-[9px] text-color-gold">Условие/Критерий</th>
+                                        <th className="p-2 font-display text-[9px] text-color-gold">Детализация действия</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-color-gold-dim/15">
+                                      {item.params.map((p, idx) => (
+                                        <tr key={idx} className="hover:bg-color-gold/5 transition">
+                                          <td className="p-2 font-mono text-[10.5px] text-color-gold-bright whitespace-nowrap">{p.key}</td>
+                                          <td className="p-2 text-color-ash2 text-[11px] font-sans leading-relaxed">{p.val}</td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              )}
+
+                              {item.warnNote && (
+                                <div className={`note mt-4 border-l-2 p-3 ${item.isSpecialNote ? "border-color-gold bg-color-gold/5" : "border-color-ember bg-color-ember/5"}`}>
+                                  <div className="note-title text-[10px] font-display font-extrabold uppercase tracking-wider text-color-gold mb-1">
+                                    {item.isSpecialNote ? "☞ Полезно Датапакеру" : "⚠️ Внимание / Опасность"}
+                                  </div>
+                                  <p className="text-[11.5px] text-color-ash font-sans leading-relaxed">
+                                    {item.warnNote}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {secIdx < ALL_SECTIONS.length - 1 && (
+                        <div className="div-gold text-center py-6 select-none" aria-hidden="true">
+                          <span className="text-color-gold-dim hover:text-color-gold transition duration-300">᚛ ⚒ ᚜</span>
+                        </div>
+                      )}
+                    </section>
+                  ))
+                )}
+
+              </motion.div>
+            )}
+
+            {/* 🛡️ TAB: EXPLOSION LAWS & BINDER REFERENCE (Wiki) */}
+            {activeTab === "wiki" && !searchQuery && (
+              <motion.div
+                key="wiki"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+              >
+                
+                {/* Wiki Block 1 */}
+                <div className="bg-[#0e0804]/90 border border-color-gold-dim p-6 shadow-2xl space-y-5 rounded relative">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-color-gold/5 to-transparent pointer-events-none" />
+                  
+                  <div className="flex items-center gap-3 border-b border-color-gold-dim pb-3">
+                    <div className="p-2.5 bg-color-gold-dim/10 border border-color-gold-dim text-color-gold-bright rounded">
+                      <Shield className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-base font-bold font-display uppercase tracking-widest text-color-gold-bright">Как устроен Зажим Визера в Бедроке?</h3>
+                  </div>
+
+                  <div className="space-y-4 text-xs sm:text-sm text-color-ash leading-relaxed">
+                    <p>
+                      В ванильной игре Minecraft Визер (Wither) — это летающий босс, который парит и стреляет взрывными головами во всех живых существ. Но так как Бедрок (Бедрок-блоки) неразрушим, его можно использовать в качестве преграды.
+                    </p>
+                    <p>
+                      Наиболее частым способом является спавн Визера горизонтально прямо под центральным фонтаном выхода из Портала Края (End Portal). Bedrock фонтана расположен в виде чаши 3х3.
+                    </p>
+
+                    <div className="bg-black/80 p-4 border border-color-gold-dim/40 rounded-xl space-y-3">
+                      <p className="font-extrabold text-color-gold font-display text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+                        <Skull className="w-4 h-4 text-color-gold" />
+                        <span>Правила успешного спавна:</span>
+                      </p>
+                      <ul className="space-y-2 text-color-ash2 text-xs font-sans">
+                        <li className="flex gap-2">
+                          <span className="text-color-gold">᚛</span>
+                          <span>Головы скелета должны размещаться в последнюю очередь. Смысл в том, чтобы инициировать алгоритм игры.</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span className="text-color-gold">᚛</span>
+                          <span>Если над головой Визера воздух, он взлетит вверх. Перекрытие Y слоя воздухом прервет зажим.</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span className="text-color-gold">᚛</span>
+                          <span>Для блокирования в Java визер должен упираться центральной головой в Бедрок блока портала (Y=3). Это лишает его возможности двигаться и стрелять.</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span className="text-color-gold">᚛</span>
+                          <span>Для Бедрок-версии (Bedrock Edition) зажатие сложнее, так как ниже 50% здоровья Визер выполняет рывок и ломает любые блоки в радиусе, включая обсидиан. Клетка Бедрока в этом случае должна полностью закрывать его на 360 градусов.</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Wiki Block 2 */}
+                <div className="bg-[#0e0804]/90 border border-color-gold-dim p-6 shadow-2xl space-y-5 rounded relative">
+                  <div className="flex items-center gap-3 border-b border-color-gold-dim pb-3">
+                    <div className="p-2.5 bg-color-gold-dim/10 border border-color-gold-dim text-color-gold-bright rounded">
+                      <Flame className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-base font-bold font-display uppercase tracking-widest text-color-gold-bright">Взрывоустойчивость Блоков</h3>
+                  </div>
+
+                  <div className="space-y-4 text-color-ash leading-relaxed">
+                    <p className="text-xs sm:text-sm">
+                      При спавне Визер осуществляет мощнейший начальный взрыв силой 7, который превосходит силу ТНТ (4). Ниже приведены показатели взрывоустойчивости популярных блоков:
+                    </p>
+
+                    <div className="border border-color-gold-dim/30 rounded overflow-hidden text-xs shadow-xl font-sans">
+                      <div className="grid grid-cols-3 bg-black p-3 text-color-gold font-display font-black tracking-wider uppercase border-b border-color-gold-dim/30">
+                        <span>Блок в игре</span>
+                        <span>Устойчивость</span>
+                        <span>Уровень защиты</span>
+                      </div>
+                      <div className="divide-y divide-color-gold-dim/15 bg-black/30">
+                        <div className="grid grid-cols-3 p-2.5 hover:bg-color-gold-dim/5 transition">
+                          <span className="font-bold text-neutral-200">Bedrock (Бедрок)</span>
+                          <span className="text-color-gold-bright font-mono text-[11px]">3,600,000</span>
+                          <span className="text-[#51cf66]">100% Абсолютная</span>
+                        </div>
+                        <div className="grid grid-cols-3 p-2.5 hover:bg-color-gold-dim/5 transition">
+                          <span className="font-bold text-neutral-200">Obsidian (Обсидиан)</span>
+                          <span className="text-indigo-400 font-mono text-[11px]">1,200</span>
+                          <span className="text-indigo-300">Временная (Ломают черепа)</span>
+                        </div>
+                        <div className="grid grid-cols-3 p-2.5 hover:bg-color-gold-dim/5 transition">
+                          <span className="font-bold text-neutral-200">Water Source (Вода)</span>
+                          <span className="text-blue-400 font-mono text-[11px]">100</span>
+                          <span className="text-blue-300">Полностью гасит взрыв</span>
+                        </div>
+                        <div className="grid grid-cols-3 p-2.5 hover:bg-color-gold-dim/5 transition">
+                          <span className="font-bold text-neutral-200">Stone (Грубый Камень)</span>
+                          <span className="text-red-400 font-mono text-[11px]">6</span>
+                          <span className="text-red-400">Стирается в пыль взрывом</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-color-gold/5 border border-color-gold/20 rounded p-4 flex items-start gap-2.5 font-sans">
+                      <Info className="w-5 h-5 text-color-gold-bright shrink-0 mt-0.5" />
+                      <p className="text-xs text-color-ash leading-relaxed">
+                        <strong>Синяя Голова Визера (Blue Wither Skull)</strong> имеет особый алгоритм: при полёте она обращается со всеми стандартными блоками (даже обсидианом), как с имеющими взрывоустойчивость 4 и ниже. Именно поэтому обсидиан не дает 100% защиты при длительном фарме, если визера не зажать в анимации удушья!
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+              </motion.div>
+            )}
+
+          </AnimatePresence>
+
         </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/advancement grant</span> <span class="val">@s</span> <span class="kw">only</span> <span class="opt">my_pack:first_kill</span><br><span class="syn">/advancement grant</span> <span class="val">@s</span> <span class="kw">everything</span><br><span class="syn">/advancement revoke</span> <span class="val">@s</span> <span class="kw">from</span> <span class="opt">minecraft:story/root</span></div>
-          <div class="note"><div class="note-title">В датапаках</div>Достижения с trigger=impossible используются как невидимые события — игрок не видит их в меню, но /execute if score срабатывает.</div>
+
+      </main>
+
+      {/* ── FOOTER IN MITCH-MEDIEVAL RUNIC COAL STYLE ── */}
+      <footer className="bg-black border-t border-color-gold-dim mt-24 py-12 text-center relative z-20">
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-color-gold-dim to-transparent" />
+        <span className="ft-runes block text-sm tracking-widest text-[#4a3512] font-mono mb-4 text-center">
+          ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ ᛏ ᛒ ᛖ ᛗ ᛚ ᛜ ᛞ ᛟ
+        </span>
+        <div className="ft-text font-display text-[11px] tracking-widest text-color-gold-dim uppercase mb-2">
+          Свитки Командного Зала · Minecraft Java Edition · Версии 1.20+
         </div>
-      </div>
+        <p className="text-[10px] text-color-ash3 max-w-2xl mx-auto leading-relaxed font-sans px-6">
+          Создано как полноценная интерактивная лаборатория для симуляции Визерфита (Witherfite Sandbox). Все права сохранены. Консольная утилита удержания и расчета взрывоустойчивости.
+        </p>
+      </footer>
 
-      <div class="cmd-card" data-search="worldborder граница мир радиус урон">
-        <div class="cmd-header" onclick="toggle(this)">
-          <span class="cmd-tag">Мир</span>
-          <div><div class="cmd-name">/worldborder</div><div class="cmd-short">Управление границей мира</div></div>
-          <span class="cmd-toggle">▼</span>
-        </div>
-        <div class="cmd-body">
-          <div class="code-block"><span class="syn">/worldborder set</span> <span class="val">1000</span>        <span class="cmt"># Радиус 1000 блоков</span><br><span class="syn">/worldborder add</span> <span class="val">-100</span> <span class="opt">60</span>    <span class="cmt"># Сужать на 100 блоков за 60 сек</span><br><span class="syn">/worldborder center</span> <span class="val">0 0</span><br><span class="syn">/worldborder damage amount</span> <span class="val">0.5</span><br><span class="syn">/worldborder warning distance</span> <span class="val">50</span></div>
-        </div>
-      </div>
-
-    </section>
-
-  </div><!-- /content -->
-</main>
-
-<footer>
-  <span class="ft-runes">ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ ᛏ ᛒ ᛖ ᛗ ᛚ ᛜ ᛞ ᛟ</span>
-  <div class="ft-text">Свитки Командного Зала · Minecraft Java Edition · Версии 1.20+</div>
-</footer>
-
-<script>
-// ── FIRE SPARKS ──
-const fb = document.getElementById('fire-bg');
-for(let i=0;i<70;i++){
-  const s=document.createElement('div');
-  s.className='sp';
-  const size=1+Math.random()*3;
-  s.style.cssText=`
-    left:${Math.random()*100}%;
-    width:${size}px;height:${size}px;
-    background:${Math.random()>.6?'#f0c040':'#ff6520'};
-    animation-duration:${5+Math.random()*9}s;
-    animation-delay:-${Math.random()*12}s;
-    --d:${(Math.random()-.5)*180}px;
-    box-shadow:0 0 ${size*2}px ${Math.random()>.5?'#f0c040':'#ff6520'};
-  `;
-  fb.appendChild(s);
+    </div>
+  );
 }
-
-// ── CARD TOGGLE ──
-function toggle(header){
-  const card=header.closest('.cmd-card');
-  card.classList.toggle('open');
-}
-
-// ── SEARCH ──
-const search=document.getElementById('searchBox');
-const cards=document.querySelectorAll('.cmd-card');
-search.addEventListener('input',()=>{
-  const q=search.value.toLowerCase().trim();
-  cards.forEach(c=>{
-    if(!q){c.classList.remove('hidden');return}
-    const txt=(c.dataset.search||'')+' '+(c.textContent||'');
-    c.classList.toggle('hidden',!txt.toLowerCase().includes(q));
-  });
-});
-
-// ── SCROLL REVEAL ──
-const obs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')});
-},{threshold:.08});
-document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-</script>
-</body>
-</html>
